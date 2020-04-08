@@ -1,0 +1,15 @@
+apiVersion: v2
+name: postgis
+version: 0.1.1
+appVersion: 12.0-2.5
+description: Chart for postgis
+keywords:
+  - postgis
+  - postgresql
+  - database
+  - postgres
+  - sql
+  - replication
+  - cluster
+home: https://www.postgresql.org/
+engine: gotpl
