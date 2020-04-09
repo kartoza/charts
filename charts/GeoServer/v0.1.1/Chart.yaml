@@ -1,0 +1,9 @@
+apiVersion: v2
+name: geoserver
+version: 0.1.1
+appVersion: 2.16.2
+description: Chart for GeoServer
+keywords:
+  - GeoServer
+  - GIS
+engine: gotpl
