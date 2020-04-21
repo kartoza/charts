@@ -1,0 +1,139 @@
+image:
+  registry: docker.io
+  repository: geonode/spcgeonode
+  tag: "django-3.0"
+  pullPolicy: IfNotPresent
+
+global:
+  # generic values
+  geonodeSiteName: geonode
+  adminUser: admin
+  adminPassword:
+    valueFrom:
+      secretKeyRef:
+        name:
+        key: admin-password
+  adminEmail: admin@localhost
+  djangoSecretKey:
+    valueFrom:
+      secretKeyRef:
+        name:
+        key: django-secret
+  databaseUsername: geonode
+  databasePassword:
+    valueFrom:
+      secretKeyRef:
+        name:
+        key: database-password
+  databaseName: geonode
+  databaseHost: postgis
+  databasePort: 5432
+  debug: "False"
+  djangoSettingsModule: geonode.local_settings
+  staticRoot: /opt/geonode/static
+  mediaRoot: /opt/geonode/media
+  geoserverURL: http://geoserver/geoserver
+  # geoserver specific values
+  geoserverAdminUser: admin
+  geoserverAdminPassword:
+    valueFrom:
+      secretKeyRef:
+        name:
+        key: geoserver-password
+  geodatabaseUsername: geonode_data
+  geodatabasePassword:
+    valueFrom:
+      secretKeyRef:
+        name:
+        key: geodatabase-password
+  geodatabaseName: geonode_data
+  geodatabaseHost: postgis
+  geodatabasePort: 5432
+
+service:
+  ## GeoNode service
+  type: ClusterIP
+  clusterIP: ""
+  # externalIPs: ""
+  port: 80
+
+  # nodePort:
+
+  annotations: {}
+
+dependencies:
+  # specify how to resolve dependencies
+  # - external: created externally
+  # - create: create dependencies using subcharts
+  geoserver: external
+  postgis: external
+
+geoserver:
+  external:
+    url: http://geoserver/geoserver
+    admin_user: admin
+    # leave empty to auto generate,
+    # fill to hardcode values,
+    # supply secrets ref to take values from secrets
+    admin_password:
+      valueFrom:
+        secretKeyRef:
+          name:
+          key: geoserver-password
+
+postgis:
+  external:
+    host: postgis
+    port: 5432
+    user: geonode
+    password:
+      valueFrom:
+        secretKeyRef:
+          name:
+          key: database-password
+
+
+persistence:
+  staticDir:
+    enabled: true
+    existingClaim: false
+    mountPath: /opt/geonode/static
+    subPath: ""
+    size: 8Gi
+    accessModes:
+      - ReadWriteOnce
+    annotations: {}
+  mediaDir:
+    enabled: true
+    existingClaim: false
+    mountPath: /opt/geonode/media
+    subPath: ""
+    size: 8Gi
+    accessModes:
+      - ReadWriteOnce
+    annotations: {}
+
+networkPolicy:
+  ## Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
+  ##
+  enabled: false
+
+  ## The Policy model to apply. When set to false, only pods with the correct
+  ## client label will have network access to the port PostgreSQL is listening
+  ## on. When true, PostgreSQL will accept connections from any source
+  ## (with the correct destination port).
+  ##
+  allowExternal: true
+
+  ## if explicitNamespacesSelector is missing or set to {}, only client Pods that are in the networkPolicy's namespace
+  ## and that match other criteria, the ones that have the good label, can reach the DB.
+  ## But sometimes, we want the DB to be accessible to clients from other namespaces, in this case, we can use this
+  ## LabelSelector to select these namespaces, note that the networkPolicy's namespace should also be explicitly added.
+  ##
+  ## Example:
+  ## explicitNamespacesSelector:
+  ##   matchLabels:
+  ##     role: frontend
+  ##   matchExpressions:
+  ##    - {key: role, operator: In, values: [frontend]}
+  explicitNamespacesSelector: {}
