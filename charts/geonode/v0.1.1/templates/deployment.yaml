@@ -88,7 +88,7 @@ spec:
             - name: GEONODE_DATABASE
               value: {{ .Values.global.databaseName | quote }}
             - name: GEONODE_DATABASE_HOST
-              value: {{ .Values.global.databaseHost | quote }}
+              value: {{ include "geonode.databaseHost" . | quote }}
             - name: GEONODE_DATABASE_PORT
               value: {{ .Values.global.databasePort | quote }}
             - name: GEONODE_DATABASE_PASSWORD
@@ -99,7 +99,7 @@ spec:
             - name: GEONODE_GEODATABASE
               value: {{ .Values.global.geodatabaseName | quote }}
             - name: GEONODE_GEODATABASE_HOST
-              value: {{ .Values.global.databaseHost | quote }}
+              value: {{ include "geonode.geodatabaseHost" . | quote }}
             - name: GEONODE_GEODATABASE_PORT
               value: {{ .Values.global.databasePort | quote }}
             - name: GEONODE_GEODATABASE_PASSWORD
@@ -118,7 +118,7 @@ spec:
             - name: MEDIA_URL
               value: "/uploaded/"
             - name: GEOSERVER_LOCATION
-              value: {{ .Values.global.geoserverURL | quote }}
+              value: {{ include "geonode.geoserverURL" . | quote }}
             - name: C_FORCE_ROOT
               value: "True"
             - name: MONITORING_ENABLED
@@ -132,6 +132,9 @@ spec:
             - name: config-volume
               mountPath: /spcgeonode/geonode/local_settings.py
               subPath: local_settings.py
+            - name: config-volume
+              mountPath: /spcgeonode/scripts/spcgeonode/django/initialize.py
+              subPath: initialize.py
             {{- if .Values.persistence.staticDir.enabled }}
             - name: static-dir
               mountPath: {{ .Values.persistence.staticDir.mountPath }}

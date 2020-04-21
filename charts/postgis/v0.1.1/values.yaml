@@ -6,7 +6,43 @@ image:
 
 postgresqlUsername: docker
 
+# Use this for prefilled password
+postgresqlPassword:
+
 postgresqlDatabase: gis
+
+# Use this if you have predefined secrets
+existingSecret: |
+
+# Define this for extra GeoServer environment variables
+extraPodEnv: |
+#  - name: KEY_1
+#    value: "VALUE_1"
+#  - name: KEY_2
+#    value: "VALUE_2"
+
+# Define this for extra secrets to be included
+extraSecret: |
+#  key_1: value_1
+
+# Define this for extra config map
+extraConfigMap: |
+# file_1: conf content
+
+# Define this for extra volume mounts in the pod
+extraVolumeMounts: |
+# You may potentially mount a config map/secret
+#  - name: custom-config
+#    mountPath: /docker-entrypoint.sh
+#    subPath: docker-entrypoint.sh
+#    readOnly: true
+
+# Define this for extra volume (in pair with extraVolumeMounts)
+extraVolume: |
+# You may potentially mount a config map/secret
+#  - name: custom-config
+#    configMap:
+#      name: geoserver-config
 
 ## PostgreSQL data dir
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
