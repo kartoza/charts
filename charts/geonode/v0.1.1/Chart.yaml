@@ -1,0 +1,9 @@
+apiVersion: v2
+name: geonode
+version: 0.1.1
+appVersion: 3.0.0
+description: Chart for GeoNode
+keywords:
+  - GeoNode
+  - GIS
+engine: gotpl

@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: geonode-config
+  labels:
+    app: geonode
+    chart: {{ template "geonode.fullname" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  {{- with .Values.labels }}
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+data:
+  local_settings.py: |
+    # Geonode database connection details
+    import os
+    GEONODE_DATABASE_USER = os.environ.get('GEONODE_DATABASE_USER')
+    GEONODE_DATABASE_PASSWORD = os.environ.get('GEONODE_DATABASE_PASSWORRD')
+    GEONODE_DATABASE = os.environ.get('GEONODE_DATABASE')
+    GEONODE_DATABASE_HOST = os.environ.get('GEONODE_DATABASE_HOST')
+    GEONODE_DATABASE_PORT = os.environ.get('GEONODE_DATABASE_PORT')
+    DATABASE_URL = 'postgres://{}:{}@{}:{}/{}'.format(GEONODE_DATABASE_USER, GEONODE_DATABASE_PASSWORD, GEONODE_DATABASE_HOST, GEONODE_DATABASE_PORT, GEONODE_DATABASE)
+    # Geodatabase connection details for datastore
+    GEONODE_GEODATABASE_USER = os.environ.get('GEONODE_GEODATABASE_USER')
+    GEONODE_GEODATABASE_PASSWORD = os.environ.get('GEONODE_GEODATABASE_PASSWORRD')
+    GEONODE_GEODATABASE = os.environ.get('GEONODE_GEODATABASE')
+    GEONODE_GEODATABASE_HOST = os.environ.get('GEONODE_GEODATABASE_HOST')
+    GEONODE_GEODATABASE_PORT = os.environ.get('GEONODE_GEODATABASE_PORT')
+    GEODATABASE_URL = 'postgres://{}:{}@{}:{}/{}'.format(GEONODE_GEODATABASE_USER, GEONODE_GEODATABASE_PASSWORD, GEONODE_GEODATABASE_HOST, GEONODE_GEODATABASE_PORT, GEONODE_GEODATABASE)
+    # import generic settings
+    from geonode.settings import *
+
+  nginx.conf: |
+    events {
+
+    }
+
+    http {
+        server {
+            listen              80;
+            server_name         {{ .Values.global.geonodeSiteName }} www.{{ .Values.global.geonodeSiteName }} 127.0.0.1 nginx;
+
+            include geonode.conf;
+        }
+
+        # Default server closes the connection
+        server {
+            listen          80 default_server;
+            listen          443;
+            server_name     _;
+            return          444;
+        }
+
+    }
+
+  geonode.conf: |
+    # This is the main conf
+
+    charset     utf-8;
+
+    # max upload size
+    client_max_body_size 100G;
+
+    # compression
+    gzip on;
+    gzip_proxied any;
+    gzip_types
+        text/css
+        text/javascript
+        text/xml
+        text/plain
+        application/javascript
+        application/x-javascript
+        application/json;
+
+    # Django media
+    location /uploaded  {
+        alias {{ .Values.global.mediaRoot }};  # your Django project's media files - amend as required
+        include  /etc/nginx/mime.types;
+        expires 365d;
+    }
+
+    location /static {
+        alias {{ .Values.global.staticRoot }}; # your Django project's static files - amend as required
+        include  /etc/nginx/mime.types;
+        expires 365d;
+    }
+
+    # Finally, send all non-media requests to the Django server.
+    location / {
+        # uwsgi_params
+        include /etc/nginx/uwsgi_params;
+
+        # Using a variable is a trick to let Nginx start even if upstream host is not up yet
+        # (see https://sandro-keil.de/blog/2017/07/24/let-nginx-start-if-upstream-host-is-unavailable-or-down/)
+        set $upstream geonode:8000;
+        uwsgi_pass $upstream;
+
+        # when a client closes the connection then keep the channel to uwsgi open. Otherwise uwsgi throws an IOError
+        uwsgi_ignore_client_abort on;
+    }
