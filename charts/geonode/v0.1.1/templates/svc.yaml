@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -22,3 +23,86 @@ spec:
   selector:
     app: geonode
     release: {{ .Release.Name | quote }}
+...
+---
+# Geoserver service for internal communications between GeoNode and GeoServer
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "geonode.fullname" . }}-geoserver
+  labels:
+    app: geonode
+    chart: {{ template "geonode.fullname" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    kubernetes.io/cluster-service: "true"
+spec:
+  type: ClusterIP
+  clusterIP: ""
+  {{- if .Values.service.externalIPs }}
+  externalIPs: {{ .Values.service.externalIPs }}
+  {{- end }}
+  ports:
+    - name: http-geoserver
+      port: 80
+      protocol: TCP
+      targetPort: http-geoserver
+  selector:
+    app: geoserver
+    release: {{ .Release.Name | quote }}
+...
+---
+# Database service for internal communications between GeoNode, GeoServer, Postgis
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "geonode.databaseHost" . }}
+  labels:
+    app: geonode
+    chart: {{ template "geonode.fullname" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    kubernetes.io/cluster-service: "true"
+spec:
+  type: ClusterIP
+  clusterIP: ""
+  {{- if .Values.service.externalIPs }}
+  externalIPs: {{ .Values.service.externalIPs }}
+  {{- end }}
+  ports:
+    - name: tcp-database
+      port: 5432
+      protocol: TCP
+      targetPort: tcp-postgis
+  selector:
+    app: postgis
+    release: {{ .Release.Name | quote }}
+...
+---
+# Geodatabase service for internal communications between GeoNode, GeoServer, Postgis
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "geonode.geodatabaseHost" . }}
+  labels:
+    app: geonode
+    chart: {{ template "geonode.fullname" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    kubernetes.io/cluster-service: "true"
+spec:
+  type: ClusterIP
+  clusterIP: ""
+  {{- if .Values.service.externalIPs }}
+  externalIPs: {{ .Values.service.externalIPs }}
+  {{- end }}
+  ports:
+    - name: tcp-database
+      port: 5432
+      protocol: TCP
+      targetPort: tcp-postgis
+  selector:
+    app: postgis
+    release: {{ .Release.Name | quote }}
+...
+

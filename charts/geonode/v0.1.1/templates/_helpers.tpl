@@ -39,6 +39,15 @@ Also, we can't use a single if because lazy evaluation is not an option
 {{- end -}}
 
 {{/*
+Derive shared secret name for this release
+Must only depends on global values
+*/}}
+{{- define "geonode.sharedSecretName" -}}
+	{{- $secretName := default (tpl .Values.global.sharedSecretName $) (tpl .Values.global.existingSecret $) -}}
+	{{- default .Release.Name $secretName -}}
+{{- end -}}
+
+{{/*
 Get the secret from declared source
 */}}
 {{- define "geonode.secretFrom" -}}
@@ -47,7 +56,7 @@ valueFrom:
   {{- if .Value.valueFrom.secretKeyRef.name }}
     name: {{ .Value.valueFrom.secretKeyRef.name | quote }}
   {{- else }}
-    name: {{ include "geonode.fullname" .Context | quote }}
+    name: {{ include "geonode.sharedSecretName" .Context | quote }}
   {{- end }}
     key: {{ .Value.valueFrom.secretKeyRef.key | quote }}
 {{- end -}}
@@ -59,7 +68,7 @@ Get the password secret.
 {{- if .Value.valueFrom.secretKeyRef.name -}}
     {{- printf "%s" (tpl .valueFrom.secretKeyRef.name $) -}}
 {{- else -}}
-    {{- printf "%s" (include "geonode.fullname" .Context) -}}
+    {{- printf "%s" (include "geonode.sharedSecretName" .Context) -}}
 {{- end -}}
 {{- end -}}
 
@@ -90,4 +99,38 @@ Return ALLOWED_HOSTS python formatted lists
 */}}
 {{- define "geonode.allowedHosts" -}}
 "['nginx','127.0.0.1','localhost','{{ .Values.global.geonodeSiteName }}']"
+{{- end -}}
+
+{{/*
+Return GeoServer Base URL to be used
+*/}}
+{{- define "geonode.geoserverURL" -}}
+{{- if not .Values.geoserver.enabled -}}
+	{{- (tpl .Values.global.geoserverURL $) -}}
+{{- else -}}
+	{{- printf "http://%s-geoserver" (include "geonode.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return database host to be used
+*/}}
+{{- define "geonode.databaseHost" -}}
+{{- if not .Values.postgis.enabled -}}
+	{{- (tpl .Values.global.databaseHost $) -}}
+{{- else -}}
+	{{- include "geonode.fullname" . -}}-database
+{{- end -}}
+{{- end -}}
+
+
+{{/*
+Return geodatabase host to be used
+*/}}
+{{- define "geonode.geodatabaseHost" -}}
+{{- if not .Values.postgis.enabled -}}
+	{{- (tpl .Values.global.geodatabaseHost $) -}}
+{{- else -}}
+	{{- include "geonode.fullname" . -}}-geodatabase
+{{- end -}}
 {{- end -}}

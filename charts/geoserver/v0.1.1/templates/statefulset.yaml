@@ -30,12 +30,15 @@ spec:
         chart: {{ template "geoserver.chart" . }}
         release: {{ .Release.Name | quote }}
         heritage: {{ .Release.Service | quote }}
-      {{- with .Values.podLabels }}
-      {{- toYaml . | indent 8 }}
-      {{- end }}
-      {{- with .Values.podAnnotations }}
-      annotations: {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | indent 8 }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: {{ template "geoserver.fullname" . }}
@@ -57,12 +60,13 @@ spec:
             - name: GEOWEBCACHE_CACHE_DIR
               value: {{ .Values.geowebcacheCacheDir | quote }}
             {{- end }}
-            {{- if .Values.geoserverAdminPassword }}
             - name: GEOSERVER_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "geoserver.secretName" . }}
                   key: geoserver-password
+            {{- with .Values.extraPodEnv }}
+            {{- tpl . $ | nindent 12 }}
             {{- end }}
           ports:
             - name: http-geoserver
