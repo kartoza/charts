@@ -1,0 +1,3 @@
+# exclude symlink
+geoserver
+postgis

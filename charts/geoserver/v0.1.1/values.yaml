@@ -64,7 +64,7 @@ persistence:
     enabled: true
     existingClaim: false
     mountPath: /opt/geoserver/data_dir
-    subPath: ""
+    subPath: "data_dir"
     size: 8Gi
     accessModes:
       - ReadWriteOnce
@@ -73,7 +73,7 @@ persistence:
     enabled: true
     existingClaim: false
     mountPath: /opt/geoserver/data_dir/gwc
-    subPath: ""
+    subPath: "gwc"
     size: 8Gi
     accessModes:
       - ReadWriteOnce

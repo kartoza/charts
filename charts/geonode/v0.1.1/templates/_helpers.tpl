@@ -1,3 +1,4 @@
+{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
@@ -83,16 +84,12 @@ Get the password ref key.
 Return password or secret value from values.yml or generate if it doesn't exists
 */}}
 {{- define "geonode.secretValue" -}}
-{{- if (index . "valueFrom") -}}
+{{- if .value -}}
+	{{- .value -}}
+{{- else if .valueFrom -}}
     {{- randAlphaNum 10 -}}
-{{- else -}}
-    {{- . -}}
 {{- end -}}
 {{- end -}}
-
-{{/*
-
-
 
 {{/*
 Return ALLOWED_HOSTS python formatted lists
@@ -108,7 +105,7 @@ Return GeoServer Base URL to be used
 {{- if not .Values.geoserver.enabled -}}
 	{{- (tpl .Values.global.geoserverURL $) -}}
 {{- else -}}
-	{{- printf "http://%s-geoserver" (include "geonode.fullname" .) -}}
+	{{- printf "http://%s-geoserver/geoserver/" (include "geonode.fullname" .) -}}
 {{- end -}}
 {{- end -}}
 
