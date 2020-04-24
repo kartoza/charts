@@ -37,7 +37,7 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
         {{- with .Values.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
+        {{- (tpl . $) | nindent 8 }}
         {{- end }}
     spec:
       containers:
@@ -82,7 +82,13 @@ spec:
               mountPath: {{ .Values.persistence.geowebcacheCacheDir.mountPath }}
               subPath: {{ .Values.persistence.geowebcacheCacheDir.subPath }}
             {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- (tpl . $) | nindent 12 }}
+            {{- end }}
       volumes:
+        {{- with .Values.extraVolume }}
+        {{- (tpl . $) | nindent 8 }}
+        {{- end }}
 {{- if and .Values.persistence.geoserverDataDir.enabled .Values.persistence.geoserverDataDir.existingClaim }}
         - name: geoserver-data-dir
           persistentVolumeClaim:

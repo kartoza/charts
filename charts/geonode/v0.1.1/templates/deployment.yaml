@@ -119,6 +119,8 @@ spec:
               value: "/uploaded/"
             - name: GEOSERVER_LOCATION
               value: {{ include "geonode.geoserverURL" . | quote }}
+            - name: SITE_HOST_NAME
+              value: {{ .Values.global.geonodeSiteName | quote }}
             - name: C_FORCE_ROOT
               value: "True"
             - name: MONITORING_ENABLED

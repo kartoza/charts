@@ -39,7 +39,7 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
         {{- with .Values.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
+        {{- (tpl . $) | nindent 8 }}
         {{- end }}
     spec:
       containers:
@@ -79,7 +79,13 @@ spec:
               mountPath: {{ .Values.persistence.mountPath }}
               subPath: {{ .Values.persistence.subPath }}
             {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- (tpl . $) | nindent 12 }}
+            {{- end }}
       volumes:
+        {{- with .Values.extraVolume }}
+        {{- (tpl . $) | nindent 8 }}
+        {{- end }}
 {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
         - name: data
           persistentVolumeClaim:

@@ -172,15 +172,15 @@ data:
 
     print("-----------------------------------------------------")
     print("8. Waiting for GeoServer")
-    _geoserver_host = os.getenv('GEOSERVER_LOCATION', 'http://geoserver:8080')
+    _geoserver_host = os.getenv('GEOSERVER_LOCATION', 'http://geoserver:8080/geoserver')
     for _ in range(60*5):
         try:
-            requests.head("{}/geoserver".format(_geoserver_host))
+            requests.head("{}".format(_geoserver_host))
             break
         except ConnectionError:
             time.sleep(1)
     else:
-        requests.head("{}/geoserver".format(_geoserver_host))
+        requests.head("{}".format(_geoserver_host))
 
     #########################################################
     # 9. Securing GeoServer
@@ -189,10 +189,14 @@ data:
     print("-----------------------------------------------------")
     print("9. Securing GeoServer")
 
+
+    geoserver_admin_username = os.getenv('GEOSERVER_ADMIN_USER')
+    geoserver_admin_password = os.getenv('GEOSERVER_ADMIN_PASSWORD')
+
     # Getting the old password
     try:
-        r1 = requests.get('{}/geoserver/rest/security/masterpw.json'.formnat(_geoserver_host),
-                          auth=(admin_username, admin_password))
+        r1 = requests.get('{}/rest/security/masterpw.json'.format(_geoserver_host),
+                          auth=(geoserver_admin_username, geoserver_admin_password))
     except requests.exceptions.ConnectionError:
         print("Unable to connect to GeoServer. Make sure GeoServer is started and accessible.")
         exit(1)
@@ -203,8 +207,8 @@ data:
         print("Randomizing master password")
         new_password = uuid.uuid4().hex
         data = json.dumps({"oldMasterPassword": old_password, "newMasterPassword": new_password})
-        r2 = requests.put('{}/geoserver/rest/security/masterpw.json'.format(_geoserver_host), data=data,
-                          headers={'Content-Type': 'application/json'}, auth=(admin_username, admin_password))
+        r2 = requests.put('{}/rest/security/masterpw.json'.format(_geoserver_host), data=data,
+                          headers={'Content-Type': 'application/json'}, auth=(geoserver_admin_username, geoserver_admin_password))
         r2.raise_for_status()
     else:
         print("Master password was already changed. No changes made.")
@@ -262,7 +266,7 @@ data:
     http {
         server {
             listen              80;
-            server_name         {{ .Values.global.geonodeSiteName }} www.{{ .Values.global.geonodeSiteName }} 127.0.0.1 nginx;
+            server_name         {{ .Values.global.geonodeSiteName }} www.{{ .Values.global.geonodeSiteName }} {{ include "geonode.fullname" . }} 127.0.0.1 nginx;
 
             include geonode.conf;
         }
@@ -317,7 +321,7 @@ data:
 
         # Using a variable is a trick to let Nginx start even if upstream host is not up yet
         # (see https://sandro-keil.de/blog/2017/07/24/let-nginx-start-if-upstream-host-is-unavailable-or-down/)
-        set $upstream geonode:8000;
+        set $upstream 127.0.0.1:8000;
         uwsgi_pass $upstream;
 
         # when a client closes the connection then keep the channel to uwsgi open. Otherwise uwsgi throws an IOError
