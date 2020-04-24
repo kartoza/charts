@@ -24,6 +24,7 @@ spec:
     app: geonode
     release: {{ .Release.Name | quote }}
 ...
+{{- if .Values.geoserver.enabled }}
 ---
 # Geoserver service for internal communications between GeoNode and GeoServer
 apiVersion: v1
@@ -51,6 +52,8 @@ spec:
     app: geoserver
     release: {{ .Release.Name | quote }}
 ...
+{{- end }}
+{{- if .Values.postgis.enabled }}
 ---
 # Database service for internal communications between GeoNode, GeoServer, Postgis
 apiVersion: v1
@@ -78,6 +81,8 @@ spec:
     app: postgis
     release: {{ .Release.Name | quote }}
 ...
+{{- end }}
+{{- if .Values.postgis.enabled }}
 ---
 # Geodatabase service for internal communications between GeoNode, GeoServer, Postgis
 apiVersion: v1
@@ -105,4 +110,4 @@ spec:
     app: postgis
     release: {{ .Release.Name | quote }}
 ...
-
+{{- end }}
