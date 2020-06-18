@@ -1,7 +1,7 @@
 image:
   registry: docker.io
   repository: kartoza/postgis
-  tag: "12.0"
+  tag: "12.1"
   pullPolicy: IfNotPresent
 
 postgresqlUsername: docker
