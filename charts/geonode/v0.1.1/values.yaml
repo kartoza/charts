@@ -325,11 +325,12 @@ postgis:
       createdb ${GEODATABASE}
       cat << EOF | su postgres -c "psql -d $GEODATABASE"
       -- Create database for Geonode to store vector layers
-      CREATE EXTENSION IF NOT EXIST postgis;
+      CREATE EXTENSION IF NOT EXISTS postgis;
       -- Create role
       CREATE ROLE ${GEODATABASE_USER};
       ALTER ROLE ${GEODATABASE_USER} LOGIN PASSWORD '${GEODATABASE_PASSWORD}';
-      ALTER DATABASE ${GEODATABASE} OWNER TO ${GEODATABASE_USER}
+      ALTER DATABASE ${GEODATABASE} OWNER TO ${GEODATABASE_USER};
+      EOF
 
 
   extraVolume: |
