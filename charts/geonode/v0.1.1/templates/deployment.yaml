@@ -179,6 +179,7 @@ spec:
         - name: config-volume
           configMap:
             name: geonode-config
+            defaultMode: 0755
 {{- if and .Values.persistence.staticDir.enabled .Values.persistence.staticDir.existingClaim }}
         - name: static-dir
           persistentVolumeClaim:

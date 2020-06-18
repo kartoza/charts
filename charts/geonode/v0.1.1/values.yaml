@@ -274,6 +274,7 @@ geoserver:
     - name: config-volume
       configMap:
         name: {{ template "geoserver.fullname" . }}
+        defaultMode: 0755
 
   extraVolumeMounts: |
     - mountPath: /docker-entrypoint.sh
@@ -335,6 +336,7 @@ postgis:
     - name: config-volume
       configMap:
         name: {{ template "postgis.fullname" . }}
+        defaultMode: 0755
 
   extraVolumeMounts: |
     - mountPath: /docker-entrypoint-initdb.d/geonode-db.sh
