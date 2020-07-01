@@ -54,4 +54,46 @@ The default install uses kartoza/postgis image, which can do the following:
 | persistence.subPath | The path inside the the volume to mount to. Useful if you want to reuse the same volume but mount the subpath for different services. |
 | persistence.size | Size of the volume to store PostgreSQL Data Dir |
 | persistence.accessModes | Access mode of the volume. Normally ReadWriteOnce because PostgreSQL is stateful |
+| service.type | The type of kubernetes service to be created. Leave it be for Headless service |
+| service.loadBalancerIP | Only used if you use LoadBalancer service.type |
+| service.externalIPs | External IPs to use for the service |
+| service.port | External port to use/expose |
+| tls.enabled | Our docker image always use TLS even if you set it to false (default certificate). If you set it to true, that means you want to use your certificate. |
+| tls.secretName | The secret location of type kubernetes.io/tls (certificate) where your certificate is located. |
+| tls.ca_file | The data key of the CA certificate in your secret. Usually called ca.crt |
+| tls.cert_file | The data key of the certificate itself in your secret. Usually called tls.crt |
+| tls.key_file | The data key for the private key of the certificate in your secret. Usually called tls.key |
 
+# Common use case
+
+## Using it as a headless service
+
+By default, we created a Headless service. Headless service can only be accessed within the cluster itself. 
+The name of the service can be used as the hostname. If you need to expose this, you can further cascade it using LoadBalancer or NodePort.
+
+## Using custom certificate in conjunction with cert-manager.io
+
+With cert-manager you can automatically create certificate. First, you need an issuer and also the certificate request object.
+Cert-manager will then create the certificate and store it into a secret. This should happen before you create the Postgis App.
+
+ Use the generated secret by filling out `tls` config options. 
+ Because Postgres works in L3/4 Layer, the generated CA must be accepted by your OS if you want to connect using self-signed certificate.
+ If not, then you can just ignore the warning. However some Database client will check the CA, depending on what is the mode of the connection,
+ which can be: disable, allow, required, verify-ca, verify-full.
+
+## Executing scripts after the database starts
+
+Sometimes you want to execute certain scripts after the database is ready. Our default image can do that (and most Postgres image based on official Postgres).
+
+The best way would be to create a ConfigMap with your scripts in it, then apply it to your Kubernetes Cluster.
+Reference: https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap
+
+Then mount it to the pod using our `extraVolume` and `extraVolumeMounts` config. If you mount it in the pod's path: `/docker-entrypoint-initdb.d/` , it will be scanned by the image.
+The executed scripts are only files with the extensions `.sql` and `.sh`.
+
+Depending on the postgres image you use, you can also mount it to directory where the entrypoint script will be executed according to that image implementations.
+
+
+## Replications
+
+TODO: Describe how replication works with stateful set pods.

@@ -44,4 +44,10 @@ To access postgres:
    export PGSSLKEY=tls.key
    ```
 
+   If you wish to view the certificate, you can check using openssl_client:
+
+   ```bash
+   openssl s_client -starttls postgres -connect <the IP address or FQDN>:<the port>
+   ```
+
 {{- end }}
