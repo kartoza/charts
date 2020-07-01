@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: postgis
+  name: {{ template "postgis.fullname" . }}
   labels:
     app: postgis
     chart: {{ template "postgis.fullname" . }}
