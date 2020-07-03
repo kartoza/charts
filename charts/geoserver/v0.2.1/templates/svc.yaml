@@ -3,8 +3,8 @@ kind: Service
 metadata:
   name: {{ template "geoserver.fullname" . }}
   labels:
-    app: geoserver
-    chart: {{ template "geoserver.fullname" . }}
+    app: {{ template "geoserver.fullname" . }}
+    chart: {{ template "geoserver.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
     kubernetes.io/cluster-service: "true"
@@ -19,5 +19,5 @@ spec:
       protocol: TCP
       targetPort: http-geoserver
   selector:
-    app: geoserver
+    app: {{ template "geoserver.fullname" . }}
     release: {{ .Release.Name | quote }}

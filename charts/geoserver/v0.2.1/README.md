@@ -66,3 +66,4 @@ Full list of options can be seen in: https://github.com/kartoza/docker-geoserver
 | service.port | External port to use/expose |
 | ingress.enabled | Switch to true to enable ingress resource |
 | ingress.host | The host name/site name the ingress will serve |
+| ingress.tls.secretName | Providing this will activate HTTPS ingress based on the provided certificate |

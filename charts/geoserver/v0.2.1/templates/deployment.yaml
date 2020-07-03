@@ -3,8 +3,8 @@ kind: Deployment
 metadata:
   name: {{ template "geoserver.fullname" . }}
   labels:
-    app: geoserver
-    chart: {{ template "geoserver.fullname" . }}
+    app: {{ template "geoserver.fullname" . }}
+    chart: {{ template "geoserver.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
   {{- with .Values.labels }}
@@ -23,7 +23,7 @@ spec:
     metadata:
       name: {{ template "geoserver.fullname" . }}
       labels:
-        app: geoserver
+        app: {{ template "geoserver.fullname" . }}
         chart: {{ template "geoserver.chart" . }}
         release: {{ .Release.Name | quote }}
         heritage: {{ .Release.Service | quote }}
@@ -73,6 +73,21 @@ spec:
           ports:
             - name: http-geoserver
               containerPort: 8080
+          startupProbe:
+            httpGet:
+              path: /geoserver
+              port: http-geoserver
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /geoserver
+              port: http-geoserver
+            failureThreshold: 1
+            periodSeconds: 10
+          readinessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 5
           volumeMounts:
             {{- if .Values.persistence.geoserverDataDir.enabled }}
             - name: geoserver-data-dir
@@ -119,40 +134,3 @@ spec:
         - name: geowebcache-cache-dir
           emptyDir: {}
 {{- end }}
-#  volumeClaimTemplates:
-#{{- if and .Values.persistence.geoserverDataDir.enabled (not .Values.persistence.geoserverDataDir.existingClaim) }}
-#    - metadata:
-#        name: geoserver-data-dir
-#      {{- with .Values.persistence.geoserverDataDir.annotations }}
-#        annotations:
-#        {{- range $key, $value := . }}
-#          {{ $key }}: {{ $value }}
-#        {{- end }}
-#      {{- end }}
-#      spec:
-#        accessModes:
-#        {{- range .Values.persistence.geoserverDataDir.accessModes }}
-#          - {{ . | quote }}
-#        {{- end }}
-#        resources:
-#          requests:
-#            storage: {{ .Values.persistence.geoserverDataDir.size | quote }}
-#{{- end }}
-#{{- if and .Values.persistence.geowebcacheCacheDir.enabled (not .Values.persistence.geowebcacheCacheDir.existingClaim) }}
-#    - metadata:
-#        name: geowebcache-cache-dir
-#      {{- with .Values.persistence.geowebcacheCacheDir.annotations }}
-#        annotations:
-#        {{- range $key, $value := . }}
-#          {{ $key }}: {{ $value }}
-#        {{- end }}
-#      {{- end }}
-#      spec:
-#        accessModes:
-#        {{- range .Values.persistence.geowebcacheCacheDir.accessModes }}
-#          - {{ . | quote }}
-#        {{- end }}
-#        resources:
-#          requests:
-#            storage: {{ .Values.persistence.geowebcacheCacheDir.size | quote }}
-#{{- end }}

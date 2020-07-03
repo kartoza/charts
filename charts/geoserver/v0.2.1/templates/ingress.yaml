@@ -8,6 +8,10 @@ metadata:
     {{- end }}
   generation: 1
   labels:
+    app: {{ template "geoserver.fullname" . }}
+    chart: {{ template "geoserver.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
     {{- with .Values.ingress.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -19,7 +23,13 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: geoserver-geoserver
+          serviceName: {{ template "geoserver.fullname" . }}
           servicePort: 80
         path: /geoserver
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: {{ .Values.ingress.tls.secretName }}
+  {{- end }}
 {{- end }}

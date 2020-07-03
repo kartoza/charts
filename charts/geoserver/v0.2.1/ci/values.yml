@@ -10,3 +10,10 @@ persistence:
     mountPath: /opt/mygeoserver/data_dir
   geowebcacheCacheDir:
     mountPath: /opt/mygeoserver/gwc
+
+ingress:
+  enabled: true
+  host: geoserver.test
+  tls:
+    enabled: true
+    secretName: geoserver-tls

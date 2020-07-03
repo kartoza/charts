@@ -67,6 +67,10 @@ ingress:
   annotations: {}
   labels: {}
   host: geoserver.hostname
+  tls:
+    enabled: false
+  ## Provide secret name if tls is enabled
+  #   secretName:
 
 persistence:
   geoserverDataDir:
