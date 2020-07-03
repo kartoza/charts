@@ -17,7 +17,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: geoserver
+      app: {{ template "geoserver.fullname" . }}
       release: {{ .Release.Name | quote }}
   template:
     metadata:
@@ -85,9 +85,6 @@ spec:
               port: http-geoserver
             failureThreshold: 1
             periodSeconds: 10
-          readinessProbe:
-            initialDelaySeconds: 5
-            periodSeconds: 5
           volumeMounts:
             {{- if .Values.persistence.geoserverDataDir.enabled }}
             - name: geoserver-data-dir
