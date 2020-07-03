@@ -3,8 +3,8 @@ kind: StatefulSet
 metadata:
   name: {{ template "postgis.fullname" . }}
   labels:
-    app: postgis
-    chart: {{ template "postgis.fullname" . }}
+    app: {{ template "postgis.fullname" . }}
+    chart: {{ template "postgis.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
   {{- with .Values.labels }}
@@ -14,20 +14,19 @@ metadata:
   annotations: {{ toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  serviceName: {{ printf "%s-%s-headless" .Release.Name .Chart.Name }}-headless
   replicas: 1
   updateStrategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: postgis
+      app: {{ template "postgis.fullname" . }}
       release: {{ .Release.Name | quote }}
       role: master
   template:
     metadata:
       name: {{ template "postgis.fullname" . }}
       labels:
-        app: postgis
+        app: {{ template "postgis.fullname" . }}
         chart: {{ template "postgis.chart" . }}
         release: {{ .Release.Name | quote }}
         heritage: {{ .Release.Service | quote }}

@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "postgis.fullname" . }}
   labels:
-    app: postgis
+    app: {{ template "postgis.fullname" . }}
     chart: {{ template "postgis.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}

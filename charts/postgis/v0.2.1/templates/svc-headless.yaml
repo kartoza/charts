@@ -4,8 +4,8 @@ kind: Service
 metadata:
   name: {{ template "postgis.fullname" . }}-headless
   labels:
-    app: postgis
-    chart: {{ template "postgis.fullname" . }}
+    app: {{ template "postgis.fullname" . }}
+    chart: {{ template "postgis.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
@@ -16,7 +16,7 @@ spec:
       targetPort: tcp-postgis
       protocol: TCP
   selector:
-    app: postgis
+    app: {{ template "postgis.fullname" . }}
     release: {{ .Release.Name | quote }}
 {{- else if (eq "LoadBalancer" .Values.service.type) -}}
 apiVersion: v1
@@ -24,8 +24,8 @@ kind: Service
 metadata:
   name: {{ template "postgis.fullname" . }}-lb
   labels:
-    app: postgis
-    chart: {{ template "postgis.fullname" . }}
+    app: {{ template "postgis.fullname" . }}
+    chart: {{ template "postgis.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
@@ -41,6 +41,6 @@ spec:
       targetPort: tcp-postgis
       protocol: TCP
   selector:
-    app: postgis
+    app: {{ template "postgis.fullname" . }}
     release: {{ .Release.Name | quote }}
 {{- end -}}
