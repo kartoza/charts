@@ -1,0 +1,158 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "geoserver.fullname" . }}
+  labels:
+    app: geoserver
+    chart: {{ template "geoserver.fullname" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  {{- with .Values.labels }}
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: geoserver
+      release: {{ .Release.Name | quote }}
+  template:
+    metadata:
+      name: {{ template "geoserver.fullname" . }}
+      labels:
+        app: geoserver
+        chart: {{ template "geoserver.chart" . }}
+        release: {{ .Release.Name | quote }}
+        heritage: {{ .Release.Service | quote }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | indent 8 }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- (tpl . $) | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+        - name: {{ template "geoserver.fullname" . }}
+          image: {{ template "geoserver.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.resources }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+          env:
+            {{- if .Values.enableJSONP }}
+            - name: ENABLE_JSONP
+              value: {{ .Values.enableJSONP | quote }}
+            {{- end }}
+            {{- if .Values.geoserverDataDir }}
+            - name: GEOSERVER_DATA_DIR
+              value: {{ .Values.geoserverDataDir | quote }}
+            {{- end }}
+            {{- if .Values.geowebcacheCacheDir }}
+            - name: GEOWEBCACHE_CACHE_DIR
+              value: {{ .Values.geowebcacheCacheDir | quote }}
+            {{- end }}
+            - name: GEOSERVER_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "geoserver.secretName" . }}
+                  key: geoserver-user
+            - name: GEOSERVER_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "geoserver.secretName" . }}
+                  key: geoserver-password
+            {{- with .Values.extraPodEnv }}
+            {{- tpl . $ | nindent 12 }}
+            {{- end }}
+          ports:
+            - name: http-geoserver
+              containerPort: 8080
+          volumeMounts:
+            {{- if .Values.persistence.geoserverDataDir.enabled }}
+            - name: geoserver-data-dir
+              mountPath: {{ .Values.persistence.geoserverDataDir.mountPath }}
+              subPath: {{ .Values.persistence.geoserverDataDir.subPath }}
+            {{- end }}
+            {{- if .Values.persistence.geowebcacheCacheDir.enabled }}
+            - name: geowebcache-cache-dir
+              mountPath: {{ .Values.persistence.geowebcacheCacheDir.mountPath }}
+              subPath: {{ .Values.persistence.geowebcacheCacheDir.subPath }}
+            {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- (tpl . $) | nindent 12 }}
+            {{- end }}
+      volumes:
+        {{- with .Values.extraVolume }}
+        {{- (tpl . $) | nindent 8 }}
+        {{- end }}
+{{- if and .Values.persistence.geoserverDataDir.enabled .Values.persistence.geoserverDataDir.existingClaim }}
+        - name: geoserver-data-dir
+          persistentVolumeClaim:
+{{- with .Values.persistence.geoserverDataDir.existingClaim }}
+            claimName: {{ tpl . $ }}
+{{- end }}
+{{- else if .Values.persistence.geoserverDataDir.enabled }}
+        - name: geoserver-data-dir
+          persistentVolumeClaim:
+            claimName: geoserver-data-dir
+{{- else if not .Values.persistence.geoserverDataDir.enabled }}
+        - name: geoserver-data-dir
+          emptyDir: {}
+{{- end }}
+{{- if and .Values.persistence.geowebcacheCacheDir.enabled .Values.persistence.geowebcacheCacheDir.existingClaim }}
+        - name: geowebcache-cache-dir
+          persistentVolumeClaim:
+{{- with .Values.persistence.geowebcacheCacheDir.existingClaim }}
+            claimName: {{ tpl . $ }}
+{{- end }}
+{{- else if .Values.persistence.geowebcacheCacheDir.enabled }}
+        - name: geowebcache-cache-dir
+          persistentVolumeClaim:
+            claimName: geowebcache-cache-dir
+{{- else if not .Values.persistence.geowebcacheCacheDir.enabled }}
+        - name: geowebcache-cache-dir
+          emptyDir: {}
+{{- end }}
+#  volumeClaimTemplates:
+#{{- if and .Values.persistence.geoserverDataDir.enabled (not .Values.persistence.geoserverDataDir.existingClaim) }}
+#    - metadata:
+#        name: geoserver-data-dir
+#      {{- with .Values.persistence.geoserverDataDir.annotations }}
+#        annotations:
+#        {{- range $key, $value := . }}
+#          {{ $key }}: {{ $value }}
+#        {{- end }}
+#      {{- end }}
+#      spec:
+#        accessModes:
+#        {{- range .Values.persistence.geoserverDataDir.accessModes }}
+#          - {{ . | quote }}
+#        {{- end }}
+#        resources:
+#          requests:
+#            storage: {{ .Values.persistence.geoserverDataDir.size | quote }}
+#{{- end }}
+#{{- if and .Values.persistence.geowebcacheCacheDir.enabled (not .Values.persistence.geowebcacheCacheDir.existingClaim) }}
+#    - metadata:
+#        name: geowebcache-cache-dir
+#      {{- with .Values.persistence.geowebcacheCacheDir.annotations }}
+#        annotations:
+#        {{- range $key, $value := . }}
+#          {{ $key }}: {{ $value }}
+#        {{- end }}
+#      {{- end }}
+#      spec:
+#        accessModes:
+#        {{- range .Values.persistence.geowebcacheCacheDir.accessModes }}
+#          - {{ . | quote }}
+#        {{- end }}
+#        resources:
+#          requests:
+#            storage: {{ .Values.persistence.geowebcacheCacheDir.size | quote }}
+#{{- end }}

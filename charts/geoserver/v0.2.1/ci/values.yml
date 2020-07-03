@@ -1,0 +1,12 @@
+---
+geoserverDataDir: /opt/mygeoserver/data_dir
+geowebcacheCacheDir: /opt/mygeoserver/gwc
+
+geoserverUser: superadmin
+geoserverPassword: superpasswordlol
+
+persistence:
+  geoserverDataDir:
+    mountPath: /opt/mygeoserver/data_dir
+  geowebcacheCacheDir:
+    mountPath: /opt/mygeoserver/gwc
