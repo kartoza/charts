@@ -49,7 +49,7 @@ extraVolume: |
 service:
   ## GeoServer service type
   type: ClusterIP
-  clusterIP: ""
+  # clusterIP: ""
   # externalIPs: ""
   port: 80
 
