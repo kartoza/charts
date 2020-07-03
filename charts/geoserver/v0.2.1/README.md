@@ -42,7 +42,6 @@ Full list of options can be seen in: https://github.com/kartoza/docker-geoserver
 | geoserverUser | GeoServer super user name |
 | geoserverPassword | GeoServer password for super user. If you fill it, it will then stored in k8s secret. |
 | existingSecret | [tpl string] The name of the secret to get the geoserver password |
-| existingSecret | [tpl string] Provide secret name or tpl expression for where the secret is |
 | extraPodEnv | [tpl string] Provide extra environment that will be passed into pods. Useful for non default image. |
 | extraSecret | [tpl string] Provide extra secret that will be included in the pods. Useful for non default image. |
 | extraConfigMap: | [tpl string] Provide extra config map that will be included in the pods. Useful for non default image. |
@@ -66,4 +65,5 @@ Full list of options can be seen in: https://github.com/kartoza/docker-geoserver
 | service.port | External port to use/expose |
 | ingress.enabled | Switch to true to enable ingress resource |
 | ingress.host | The host name/site name the ingress will serve |
+| ingress.tls.enabled | Set it to true to enable HTTPS |
 | ingress.tls.secretName | Providing this will activate HTTPS ingress based on the provided certificate |

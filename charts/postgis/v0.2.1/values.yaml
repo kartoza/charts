@@ -63,9 +63,9 @@ tls:
   # Secret of a Certificate kind that stores the certificate
   # secretName:
   # subpath of the secret
-   ca_file: ca.crt
-   cert_file: tls.crt
-   key_file: tls.key
+  ca_file: ca.crt
+  cert_file: tls.crt
+  key_file: tls.key
 
 
 ## PostgreSQL service configuration
@@ -82,7 +82,9 @@ service:
 
   ## Provide any additional annotations which may be required. Evaluated as a template.
   ##
-  annotations: {}
+  labels: |
+
+  annotations: |
   ## Set the LoadBalancer service type to internal only.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
   ##

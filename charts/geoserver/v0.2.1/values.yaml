@@ -55,7 +55,8 @@ service:
 
   # nodePort:
 
-  annotations: {}
+  labels: |
+  annotations: |
 
   # loadBalancerIP:
 
@@ -69,8 +70,8 @@ ingress:
   host: geoserver.hostname
   tls:
     enabled: false
-  ## Provide secret name if tls is enabled
-  #   secretName:
+    ## Provide secret name if tls is enabled
+    secretName: geoserver-tls
 
 persistence:
   geoserverDataDir:
