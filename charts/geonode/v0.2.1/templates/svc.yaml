@@ -47,7 +47,7 @@ spec:
       protocol: TCP
       targetPort: http-geoserver
   selector:
-    app: {{ template "geoserver.fullname" . }}
+    geonode/app: geonode
     release: {{ .Release.Name | quote }}
 ...
 {{- end }}
@@ -74,7 +74,7 @@ spec:
       protocol: TCP
       targetPort: tcp-postgis
   selector:
-    app: {{ template "postgis.fullname" . }}
+    geonode/app: geonode
     release: {{ .Release.Name | quote }}
 ...
 {{- end }}
@@ -101,7 +101,7 @@ spec:
       protocol: TCP
       targetPort: tcp-postgis
   selector:
-    app: {{ template "postgis.fullname" . }}
+    geonode/app: geonode
     release: {{ .Release.Name | quote }}
 ...
 {{- end }}
