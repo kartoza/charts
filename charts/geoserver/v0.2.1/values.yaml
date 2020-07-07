@@ -73,6 +73,9 @@ ingress:
     ## Provide secret name if tls is enabled
     secretName: geoserver-tls
 
+# probe can be overridden
+probe: |
+
 persistence:
   geoserverDataDir:
     enabled: true

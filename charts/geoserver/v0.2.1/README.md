@@ -67,3 +67,4 @@ Full list of options can be seen in: https://github.com/kartoza/docker-geoserver
 | ingress.host | The host name/site name the ingress will serve |
 | ingress.tls.enabled | Set it to true to enable HTTPS |
 | ingress.tls.secretName | Providing this will activate HTTPS ingress based on the provided certificate |
+| probe | An override options for pod probe/health check |

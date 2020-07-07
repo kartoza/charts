@@ -4,7 +4,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: geoserver-data-dir
+  name: {{ template "geoserver.fullname" . }}-geoserver-data-dir
 {{- with .Values.persistence.geoserverDataDir.annotations }}
   annotations:
   {{- range $key, $value := . }}
@@ -26,7 +26,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: geowebcache-cache-dir
+  name: {{ template "geoserver.fullname" . }}-geowebcache-cache-dir
 {{- with .Values.persistence.geowebcacheCacheDir.annotations }}
   annotations:
   {{- range $key, $value := . }}
