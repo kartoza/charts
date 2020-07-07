@@ -12,7 +12,7 @@ global:
   geonodeCommand: |
     ["/spcgeonode/scripts/spcgeonode/django/docker-entrypoint.sh"]
   geonodeArgs: |
-    ["uwsgi","--chdir=/spcgeonode","--module=geonode.wsgi","--socket=:8000","--http=127.0.0.1:8080","--processes=5","--buffer-size=8192"]
+    ["uwsgi","--chdir=/spcgeonode","--module=geonode.wsgi","--socket=:8000","--http=0.0.0.0:8080","--processes=5","--buffer-size=8192"]
   adminUser: admin
   adminPassword:
     value:
@@ -112,6 +112,9 @@ ingress:
     enabled: false
     ## Provide secret name if tls is enabled
     secretName: geonode-tls
+
+# probe can be overridden
+probe: |
 
 geoserver:
   # Set to enable to generate subcharts
@@ -337,6 +340,9 @@ geoserver:
     geowebcacheCacheDir:
       mountPath: /spcgeonode-geodatadir/gwc
 
+  podLabels: |
+    geonode/app: geonode
+
   # Use external to use external service
   external:
     url: http://geoserver/geoserver/
@@ -393,6 +399,9 @@ postgis:
     - mountPath: /docker-entrypoint-initdb.d/geonode-db.sh
       subPath: geonode-db.sh
       name: config-volume
+
+  podLabels: |
+    geonode/app: geonode
 
   external:
     host: postgis
