@@ -14,10 +14,7 @@ metadata:
   annotations: {{ toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  serviceName: {{ printf "%s-%s" .Release.Name .Chart.Name }}
   replicas: 3
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: {{ template "geonode.fullname" . }}
@@ -155,6 +152,44 @@ spec:
             {{- with .Values.extraVolumeMounts }}
             {{- (tpl . $) | nindent 12 }}
             {{- end }}
+          {{- if .Values.probe }}
+            {{- with .Values.probe }}
+            {{- tpl . $ | nindent 10 }}
+            {{- end }}
+          {{- else }}
+          startupProbe:
+            httpGet:
+              httpHeaders:
+                - name: Host
+                  value: {{ .Values.global.geonodeSiteName }}
+              path: /
+              port: http-geonode
+              scheme: HTTP
+            failureThreshold: 60
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              httpHeaders:
+                - name: Host
+                  value: {{ .Values.global.geonodeSiteName }}
+              path: /
+              port: http-geonode
+              scheme: HTTP
+            periodSeconds: 10
+            failureThreshold: 3
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              httpHeaders:
+                  - name: Host
+                    value: {{ .Values.global.geonodeSiteName }}
+              path: /
+              port: http-geonode
+              scheme: HTTP
+            periodSeconds: 10
+            failureThreshold: 3
+            successThreshold: 1
+          {{- end }}
 
         - name: {{ template "geonode.fullname" . }}-nginx
           image: nginx:1.17.2-alpine
@@ -192,7 +227,7 @@ spec:
         {{- end }}
         - name: config-volume
           configMap:
-            name: geonode-config
+            name: {{ template "geonode.fullname" . }}-config
             defaultMode: 0755
 {{- if and .Values.persistence.staticDir.enabled .Values.persistence.staticDir.existingClaim }}
         - name: static-dir
