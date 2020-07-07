@@ -14,6 +14,7 @@ metadata:
   annotations: {{ toYaml . | nindent 4 }}
   {{- end }}
 spec:
+  serviceName: {{ template "postgis.fullname" . }}-headless
   replicas: 1
   updateStrategy:
     type: RollingUpdate
@@ -31,9 +32,9 @@ spec:
         release: {{ .Release.Name | quote }}
         heritage: {{ .Release.Service | quote }}
         role: master
-      {{- with .Values.podLabels }}
-      {{- toYaml . | indent 8 }}
-      {{- end }}
+        {{- with .Values.podLabels }}
+        {{- tpl . $ | nindent 8 }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
@@ -107,6 +108,42 @@ spec:
             {{- with .Values.extraVolumeMounts }}
             {{- (tpl . $) | nindent 12 }}
             {{- end }}
+          {{- if .Values.probe }}
+            {{- with .Values.probe }}
+            {{- tpl . $ | nindent 10 }}
+            {{- end }}
+          {{- else }}
+          livenessProbe:
+            exec:
+              command:
+                - bash
+                - -c
+                - "PGPASSWORD=$POSTGRES_PASSWORD pg_isready -h localhost -U $POSTGRES_USER -d {{ template "postgresql.firstDatabaseName" . }}"
+            periodSeconds: 60
+            successThreshold: 1
+            failureThreshold: 3
+            timeoutSeconds: 2
+          startupProbe:
+            exec:
+              command:
+                - bash
+                - -c
+                - "PGPASSWORD=$POSTGRES_PASSWORD pg_isready -h localhost -U $POSTGRES_USER -d {{ template "postgresql.firstDatabaseName" . }}"
+            periodSeconds: 60
+            successThreshold: 1
+            failureThreshold: 5
+            timeoutSeconds: 2
+          readinessProbe:
+            exec:
+              command:
+                - bash
+                - -c
+                - "PGPASSWORD=$POSTGRES_PASSWORD pg_isready -h localhost -U $POSTGRES_USER -d {{ template "postgresql.firstDatabaseName" . }}"
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+            timeoutSeconds: 2
+          {{- end }}
       volumes:
         {{- if .Values.tls.enabled }}
         - name: cert

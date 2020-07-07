@@ -1,4 +1,4 @@
-
+---
 postgresqlUsername: myuser
 postgresqlPassword: mysecret
 postgresqlDatabase: dbone,dbtwo
@@ -7,7 +7,7 @@ service:
   type: LoadBalancer
   loadBalancerIP: 192.168.100.6
   externalIPs: |
-    - 192.168.100.6
+    - {{ .Values.service.loadBalancerIP }}
   port: 35432
 
 securityContext: |

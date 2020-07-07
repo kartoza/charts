@@ -67,6 +67,8 @@ tls:
   cert_file: tls.crt
   key_file: tls.key
 
+# probe can be overridden
+probe: |
 
 ## PostgreSQL service configuration
 service:

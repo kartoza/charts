@@ -98,3 +98,11 @@ Return PostgreSQL password
     {{- randAlphaNum 10 -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return first PostgreSQL database
+*/}}
+{{- define "postgresql.firstDatabaseName" -}}
+{{- $dbList := splitList "," (printf "%s" .Values.postgresqlDatabase) -}}
+{{- first $dbList -}}
+{{- end -}}
