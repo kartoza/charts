@@ -120,6 +120,8 @@ spec:
             - name: MEDIA_URL
               value: "/uploaded/"
             - name: GEOSERVER_LOCATION
+              value: {{ include "geonode.internalGeoserverURL" . | quote }}
+            - name: GEOSERVER_PUBLIC_LOCATION
               value: {{ include "geonode.geoserverURL" . | quote }}
             - name: SITE_HOST_NAME
               value: {{ .Values.global.geonodeSiteName | quote }}

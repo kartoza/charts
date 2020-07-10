@@ -3,7 +3,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "geonode.fullname" -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- $name := default .Chart.Name (default .Values.nameOverride .Values.global.nameOverride) -}}
 {{- $fullname := default (printf "%s-%s" .Release.Name $name) .Values.fullnameOverride -}}
 {{- printf "%s" $fullname | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
@@ -95,13 +95,28 @@ Return password or secret value from values.yml or generate if it doesn't exists
 Return ALLOWED_HOSTS python formatted lists
 */}}
 {{- define "geonode.allowedHosts" -}}
-"['nginx','127.0.0.1','localhost','{{ .Values.global.geonodeSiteName }}']"
+"['nginx','127.0.0.1','localhost','{{ .Values.global.geonodeSiteName }}','{{ include "geonode.fullname" . }}']"
 {{- end -}}
 
 {{/*
 Return GeoServer Base URL to be used
 */}}
 {{- define "geonode.geoserverURL" -}}
+{{- if not .Values.geoserver.enabled -}}
+	{{- (tpl .Values.global.geoserverURL $) -}}
+{{- else if (and .Values.ingress.enabled .Values.ingress.tls.enabled) -}}
+	{{- printf "https://%s/geoserver" .Values.global.geonodeSiteName -}}
+{{- else if .Values.ingress.enabled -}}
+	{{- printf "http://%s/geoserver" .Values.global.geonodeSiteName -}}
+{{- else -}}
+	{{- printf "http://%s-geoserver/geoserver/" (include "geonode.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return Internal GeoServer Base URL to be used
+*/}}
+{{- define "geonode.internalGeoserverURL" -}}
 {{- if not .Values.geoserver.enabled -}}
 	{{- (tpl .Values.global.geoserverURL $) -}}
 {{- else -}}

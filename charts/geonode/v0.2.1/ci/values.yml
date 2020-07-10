@@ -16,7 +16,17 @@ ingress:
   enabled: true
   host: geonode.test
   annotations:
-    cert-manager.io/cluster-issuer: selfsigned-issuer
+    cert-manager.io/cluster-issuer: ca-issuer
   tls:
     enabled: true
-    secretName: geonode-tls
+    secretName: geonode-self-tls
+
+geoserver:
+  ingress:
+    enabled: true
+    host: geonode.test
+    #annotations:
+    #cert-manager.io/cluster-issuer: ca-issuer
+    tls:
+      enabled: true
+      secretName: geonode-self-tls
