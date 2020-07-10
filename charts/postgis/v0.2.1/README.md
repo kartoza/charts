@@ -63,6 +63,7 @@ The default install uses kartoza/postgis image, which can do the following:
 | tls.ca_file | The data key of the CA certificate in your secret. Usually called ca.crt |
 | tls.cert_file | The data key of the certificate itself in your secret. Usually called tls.crt |
 | tls.key_file | The data key for the private key of the certificate in your secret. Usually called tls.key |
+| probe | An override options for pod probe/health check |
 
 # Common use case
 

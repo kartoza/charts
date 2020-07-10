@@ -1,0 +1,68 @@
+---
+global:
+  geonodeSiteName: geonode.test
+  adminUser: admin
+  adminPassword:
+    value: admin
+  databasePassword:
+    value: mygeonode
+  geodatabasePassword:
+    value: mygeodatabase
+  #geoserverURL: https://geonode.test/geoserver/
+  geoserverAdminPassword:
+    value: mygeoserver
+
+ingress:
+  enabled: true
+  host: geonode.test
+  annotations:
+    cert-manager.io/cluster-issuer: ca-issuer
+  tls:
+    enabled: true
+    secretName: geonode-self-tls
+
+extraVolume: |
+  - name: geonode-code
+    hostPath:
+      path: /home/lucernae/WorkingDir/geonode/geonode/scripts
+
+extraVolumeMounts: |
+  - mountPath: /spcgeonode/scripts
+    name: geonode-code
+
+geoserver:
+  ingress:
+    enabled: true
+    host: geonode.test
+    #annotations:
+    #cert-manager.io/cluster-issuer: ca-issuer
+    tls:
+      enabled: true
+      secretName: geonode-self-tls
+
+
+  extraVolume: |
+    - name: config-volume
+      configMap:
+        name: {{ template "geoserver.fullname" . }}
+        defaultMode: 0755
+    - name: geonode-code
+      hostPath:
+        path: /home/lucernae/WorkingDir/geonode/geonode
+    {{- if .Values.ingress.tls.enabled }}
+    - name: tls-volume
+      secret:
+        secretName: {{ .Values.ingress.tls.secretName | quote }}
+    {{- end }}
+
+  extraVolumeMounts: |
+    - mountPath: /docker-entrypoint.sh
+      subPath: docker-entrypoint.sh
+      name: config-volume
+    - mountPath: /opt/geonode
+      name: geonode-code
+    {{- if .Values.ingress.tls.enabled }}
+    - mountPath: /tmp/tls-secrets/tls.crt
+      subPath: tls.crt
+      name: tls-volume
+    {{- end }}

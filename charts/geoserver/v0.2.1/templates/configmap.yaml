@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "postgis.fullname" . }}
+  name: {{ template "geoserver.fullname" . }}
   labels:
-    app: {{ template "postgis.fullname" . }}
-    chart: {{ template "postgis.chart" . }}
+    app: {{ template "geoserver.fullname" . }}
+    chart: {{ template "geoserver.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
   {{- with .Values.labels }}
