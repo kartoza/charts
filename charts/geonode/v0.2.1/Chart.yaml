@@ -13,7 +13,7 @@ sources:
 maintainers:
   - name: Rizky Maulana Nugraha
     email: rizky@kartoza.com
-icon: https://raw.githubusercontent.com/GeoNode/documentation/master/about/img/geonode-logo_for_readme.gif
+icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/geonode-logo_for_readme.gif
 engine: gotpl
 dependencies:
   - name: postgis

@@ -18,4 +18,4 @@ maintainers:
   - name: Rizky Maulana Nugraha
     email: rizky@kartoza.com
 engine: gotpl
-icon: https://raw.githubusercontent.com/lucernae/kartoza-rancher-charts/geonode/assets/logo/postgis.png
+icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/postgis.png

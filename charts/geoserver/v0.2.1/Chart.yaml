@@ -13,5 +13,5 @@ maintainers:
   - name: Rizky Maulana Nugraha
     email: rizky@kartoza.com
 engine: gotpl
-icon: https://raw.githubusercontent.com/geoserver/geoserver/master/doc/en/themes/geoserver/static/GeoServer_500.png
+icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/GeoServer_500.png
 
