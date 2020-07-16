@@ -14,5 +14,5 @@ maintainers:
   - name: Rizky Maulana Nugraha
     email: rizky@kartoza.com
 engine: gotpl
-icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/qgis-serrver.png
+icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/qgis-server.png
 
