@@ -19,3 +19,7 @@ tls:
   ca_file: ca.crt
   cert_file: tls.crt
   key_file: tls.key
+
+extraPodSpec: |
+  nodeSelector:
+    label: value

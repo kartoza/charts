@@ -144,6 +144,9 @@ spec:
             failureThreshold: 3
             timeoutSeconds: 2
           {{- end }}
+      {{- with .Values.extraPodSpec }}
+      {{- tpl . $ | nindent 6 }}
+      {{- end }}
       volumes:
         {{- if .Values.tls.enabled }}
         - name: cert
