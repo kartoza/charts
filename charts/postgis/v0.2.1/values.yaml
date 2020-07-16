@@ -21,6 +21,9 @@ extraPodEnv: |
 #  - name: KEY_2
 #    value: "VALUE_2"
 
+# This will be evaluated as pod spec
+extraPodSpec: |
+
 # Define this for extra secrets to be included
 extraSecret: |
 #  key_1: value_1
