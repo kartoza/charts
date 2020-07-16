@@ -1,0 +1,33 @@
+---
+qgisServerProjectDir: /opt/myqgisserver/project_dir
+qgisServerProjectFile: /opt/myqgisserver/project_dir/project.qgz
+
+extraContainers: |
+  - name: {{ template "qgisserver.fullname" . }}-rsync-server
+    image: docker.io/axiom/rsync-server
+    ports:
+      - name: tcp-ssh
+        containerPort: 22
+        protocol: TCP
+    env:
+      - name: USERNAME
+        value: "root"
+      - name: PASSWORD
+        value: "mysuperpassword"
+    volumeMounts:
+      - mountPath: {{ .Values.qgisServerProjectDir }}
+        name: qgisserver-project-dir
+        subPath: project_dir
+
+persistence:
+  qgisServerProjectDir:
+    mountPath: /opt/myqgisserver/project_dir
+
+ingress:
+  enabled: true
+  host: qgisserver.test
+  annotations:
+    cert-manager.io/cluster-issuer: selfsigned-issuer
+  tls:
+    enabled: true
+    secretName: qgisserver-tls

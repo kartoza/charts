@@ -1,0 +1,27 @@
+To access QGIS Server:
+
+{{- if not .Values.ingress.enabled }}
+1. You didn't enable ingress, so QGIS Server is exposed as Headless Service by default.
+
+   You can arrange access by exposing it to NodePort or external address manually using kubernetes.
+
+   Otherwise, you can access it via Kubernetes API-Server proxy:
+
+   http://[cluster master address]/api/v1/namespaces/{{ .Release.Namespace }}/services/{{ template "qgisserver.fullname" . }}:80/proxy/
+
+{{- end }}
+
+{{- if .Values.ingress.enabled }}
+1. You have enabled ingress, service will be available here:
+
+   http://{{ .Values.ingress.host }}/
+
+{{- end }}
+
+
+Additional notes:
+
+To add your QGIS Project file using kubectl, use this:
+
+   kubectl cp <qgis project file> <destination pod>:{{ .Values.qgisServerProjectFile }}
+

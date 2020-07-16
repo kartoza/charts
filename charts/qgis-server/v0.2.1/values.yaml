@@ -1,0 +1,132 @@
+image:
+  registry: docker.io
+  repository: camptocamp/qgis-server
+  tag: "3.14"
+  pullPolicy: IfNotPresent
+
+qgisServerProjectDir: /etc/qgisserver
+qgisServerProjectFile: /etc/qgisserver/project.qgz
+qgisServerLogLevel: 3
+qgisServerBaseOWSURL: /
+
+# Use this if you have predefined secrets
+existingSecret: |
+
+# Define this for extra QGIS Server environment variables
+extraPodEnv: |
+#  - name: KEY_1
+#    value: "VALUE_1"
+#  - name: KEY_2
+#    value: "VALUE_2"
+
+# This will be evaluated as pod spec
+extraPodSpec: |
+
+# You can add more containers to pod spec, for example to deploy other
+# sidekick service, like file transfer server
+extraContainers: |
+#  - name: {{ template "qgisserver.fullname" . }}-rsync-server
+#    image: docker.io/axiom/rsync-server
+#    ports:
+#      - name: tcp-ssh
+#        containerPort: 22
+#        protocol: TCP
+#    env:
+#      - name: USERNAME
+#        value: "root"
+#      - name: PASSWORD
+#        value: "secretpassword"
+#    volumeMounts:
+#      - mountPath: {{ .Values.qgisServerProjectDir }}
+#        name: qgisserver-project-dir
+#        subPath: project_dir
+
+
+# Define this for extra secrets to be included
+extraSecret: |
+#  key_1: value_1
+
+# Define this for extra config map
+extraConfigMap: |
+# file_1: conf content
+
+# Define this for extra volume mounts in the pod
+extraVolumeMounts: |
+# You may potentially mount a config map/secret
+#  - name: custom-config
+#    mountPath: /docker-entrypoint.sh
+#    subPath: docker-entrypoint.sh
+#    readOnly: true
+
+# Define this for extra volume (in pair with extraVolumeMounts)
+extraVolume: |
+# You may potentially mount a config map/secret
+#  - name: custom-config
+#    configMap:
+#      name: qgisserver-config
+
+service:
+  ## QGIS Server service type
+  type: ClusterIP
+  # clusterIP: ""
+  # externalIPs: ""
+  port: 80
+
+  # nodePort:
+
+  labels: |
+  annotations: |
+
+  # loadBalancerIP:
+
+  # loadBalancerSourceRanges:
+  # - 10.10.10.0/24
+
+ingress:
+  enabled: false
+  annotations: {}
+  labels: {}
+  host: qgis-server.hostname
+  tls:
+    enabled: false
+    ## Provide secret name if tls is enabled
+    secretName: qgisserver-tls
+
+# probe can be overridden
+probe: |
+
+persistence:
+  qgisServerProjectDir:
+    enabled: true
+    existingClaim: false
+    mountPath: /etc/qgisserver
+    subPath: "project_dir"
+    size: 512M
+    accessModes:
+      - ReadWriteOnce
+    annotations: {}
+
+networkPolicy:
+  ## Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
+  ##
+  enabled: false
+
+  ## The Policy model to apply. When set to false, only pods with the correct
+  ## client label will have network access to the port PostgreSQL is listening
+  ## on. When true, PostgreSQL will accept connections from any source
+  ## (with the correct destination port).
+  ##
+  allowExternal: true
+
+  ## if explicitNamespacesSelector is missing or set to {}, only client Pods that are in the networkPolicy's namespace
+  ## and that match other criteria, the ones that have the good label, can reach the DB.
+  ## But sometimes, we want the DB to be accessible to clients from other namespaces, in this case, we can use this
+  ## LabelSelector to select these namespaces, note that the networkPolicy's namespace should also be explicitly added.
+  ##
+  ## Example:
+  ## explicitNamespacesSelector:
+  ##   matchLabels:
+  ##     role: frontend
+  ##   matchExpressions:
+  ##    - {key: role, operator: In, values: [frontend]}
+  explicitNamespacesSelector: {}
