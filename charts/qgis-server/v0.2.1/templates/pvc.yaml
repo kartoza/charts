@@ -1,0 +1,23 @@
+
+{{- if and .Values.persistence.qgisServerProjectDir.enabled (not .Values.persistence.qgisServerProjectDir.existingClaim) }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "qgisserver.fullname" . }}-qgisserver-project-dir
+{{- with .Values.persistence.qgisServerProjectDir.annotations }}
+  annotations:
+  {{- range $key, $value := . }}
+    {{ $key }}: {{ $value }}
+  {{- end }}
+{{- end }}
+spec:
+  accessModes:
+  {{- range .Values.persistence.qgisServerProjectDir.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+  resources:
+    requests:
+        storage: {{ .Values.persistence.qgisServerProjectDir.size | quote }}
+...
+{{- end }}

@@ -1,0 +1,24 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "qgisserver.fullname" . }}
+  labels:
+    app: {{ template "qgisserver.fullname" . }}
+    chart: {{ template "qgisserver.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  {{- with .Values.labels }}
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+binaryData:
+  empty.qgz: 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
+{{- if .Values.extraConfigMap -}}
+data:
+  {{- with .Values.extraConfigMap }}
+  {{- tpl . $ | nindent 2 }}
+  {{- end }}
+{{- end -}}
