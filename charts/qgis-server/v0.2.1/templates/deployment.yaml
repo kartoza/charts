@@ -115,6 +115,9 @@ spec:
         {{- with .Values.extraContainers }}
         {{- tpl . $ | nindent 8 }}
         {{- end }}
+      {{- with .Values.extraPodSpec }}
+      {{- tpl . $ | nindent 6 }}
+      {{- end }}
       volumes:
         {{- with .Values.extraVolume }}
         {{- (tpl . $) | nindent 8 }}
@@ -123,9 +126,6 @@ spec:
           configMap:
             name: {{ template "qgisserver.fullname" . }}
             defaultMode: 0644
-      {{- with .Values.extraPodSpec }}
-      {{- tpl . $ | nindent 6 }}
-      {{- end }}
 {{- if and .Values.persistence.qgisServerProjectDir.enabled .Values.persistence.qgisServerProjectDir.existingClaim }}
         - name: qgisserver-project-dir
           persistentVolumeClaim:
