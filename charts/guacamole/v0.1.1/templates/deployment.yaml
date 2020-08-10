@@ -24,16 +24,16 @@ spec:
           image: "{{ .Values.guacamole.image.repository }}:{{ .Values.guacamole.image.tag }}"
           imagePullPolicy: {{ .Values.guacamole.image.pullPolicy }}
           env:
-            - name: POSTGRESQL_HOSTNAME
-              value: "{{ .Values.guacamole.postgres.POSTGRESQL_HOSTNAME }}"
-            - name: POSTGRESQL_DATABASE
-              value: "guacamole_db"
-            - name: POSTGRESQL_USER
-              value: "admin"
-            - name: POSTGRESQL_PASSWORD
-              value: "{{ .Values.postgis.postgresqlPassword }}"
-            - name: POSTGRESQL_PORT
-              value: "{{ .Values.guacamole.postgres.POSTGRESQL_PORT }}"
+            - name: POSTGRES_HOSTNAME
+              value: "{{ .Values.guacamole.postgres.POSTGRES_HOSTNAME }}"
+            - name: POSTGRES_DATABASE
+              value: "{{ .Values.guacamole.postgres.POSTGRES_DATABASE }}"
+            - name: POSTGRES_USER
+              value: "{{ .Values.guacamole.postgres.POSTGRES_USER }}"
+            - name: POSTGRES_PASSWORD
+              value: "{{ .Values.guacamole.postgres.POSTGRES_PASSWORD }}"
+            - name: POSTGRES_PORT
+              value: "{{ .Values.guacamole.postgres.POSTGRES_PORT }}"
             - name: GUACD_HOSTNAME
               value: "{{ .Values.guacd.nameOverride }}"
             - name: GUACD_PORT

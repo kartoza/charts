@@ -18,8 +18,14 @@ guacamole:
     port: 80
 
   postgres:
-    POSTGRESQL_HOSTNAME: guacamole-postgis-headless
-    POSTGRESQL_PORT: 5432
+    POSTGRES_HOSTNAME: guacamole-postgis-headless
+    POSTGRES_PORT: 5432
+    # POSTGRES_USER must be the same with whatever you set in postgis.postgresqlUser
+    POSTGRES_USER: guacamole_user
+    # POSTGRES_PASSWORD must be the same with whatever you set in postgis.postgresqlPassword
+    POSTGRES_PASSWORD: mysecretpassword
+    # Should be guacamole_db if you use default initdb creation scripts
+    POSTGRES_DATABASE: guacamole_db
 
   ingress:
     enabled: false
@@ -109,7 +115,9 @@ guacd:
 postgis:
   enabled: true
 
-  postgresqlDatabase: gis,guacamole_db
+  postgresqlUser: guacamole_user
+  postgresqlPassword: mysecretpassword
+  postgresqlDatabase: guacamole_db
 
   extraVolumeMounts: |
     - name: {{ template "guacamole.fullname" . }}-postgres-config
