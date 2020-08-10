@@ -1,0 +1,125 @@
+# Default values for guacamole.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+guacamole:
+  replicaCount: 1
+
+  image:
+    repository: guacamole/guacamole
+    tag: 1.2.0
+    pullPolicy: IfNotPresent
+
+  nameOverride: ""
+  fullnameOverride: ""
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  postgres:
+    POSTGRESQL_HOSTNAME: guacamole-postgis-headless
+    POSTGRESQL_PORT: 5432
+
+  ingress:
+    enabled: false
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-staging
+      nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    path: /
+    hosts:
+      - guacamole.example.com
+    tls:
+      - hosts:
+        - guacamole.example.com
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  persistence:
+    plugins:
+      enabled: true
+      accessMode: ReadWriteOnce
+      size: 8Gi
+      # existingClaim: existing-pvc
+
+  configurationFiles:
+    guacamole.properties: |-
+      enable-environment-properties: true
+      # # OIDC properties
+      # openid-authorization-endpoint:
+      # openid-jwks-endpoint:
+      # openid-issuer:
+      # openid-client-id: guacamole
+      # openid-redirect-uri:
+      # openid-username-claim-type: username
+      # openid-scope: openid email profile
+      # openid-allowed-clock-skew: 500
+
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+guacd:
+  replicaCount: 1
+
+  image:
+    repository: guacamole/guacd
+    tag: 1.2.0
+    pullPolicy: IfNotPresent
+
+  nameOverride: "guacd"
+  fullnameOverride: "guacd"
+
+  service:
+    type: ClusterIP
+    port: 4822
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+
+postgis:
+  enabled: true
+
+  postgresqlDatabase: gis,guacamole_db
+
+  extraVolumeMounts: |
+    - name: {{ template "guacamole.fullname" . }}-postgres-config
+      mountPath: /docker-entrypoint-initdb.d/001-create-schema.sql
+      subPath: 001-create-schema.sql
+    - name: {{ template "guacamole.fullname" . }}-postgres-config
+      mountPath: /docker-entrypoint-initdb.d/002-create-admin-user.sql
+      subPath: 002-create-admin-user.sql
+  
+  extraVolume: |
+    - name: postgres-config
+      configMap:
+        name: {{ template "guacamole.fullname" . }}-postgres-config
