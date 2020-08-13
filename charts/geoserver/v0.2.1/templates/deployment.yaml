@@ -115,6 +115,9 @@ spec:
             {{- with .Values.extraVolumeMounts }}
             {{- (tpl . $) | nindent 12 }}
             {{- end }}
+      {{- with .Values.extraPodSpec }}
+      {{- tpl . $ | nindent 6 }}
+      {{- end }}
       volumes:
         {{- with .Values.extraVolume }}
         {{- (tpl . $) | nindent 8 }}
