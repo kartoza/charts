@@ -2,6 +2,13 @@
 qgisServerProjectDir: /opt/myqgisserver/project_dir
 qgisServerProjectFile: /opt/myqgisserver/project_dir/project.qgz
 
+podLabels: |
+  extra.labels: ok
+
+extraPodSpec: |
+  nodeSelector:
+    label: value
+
 extraContainers: |
   - name: {{ template "qgisserver.fullname" . }}-rsync-server
     image: docker.io/axiom/rsync-server

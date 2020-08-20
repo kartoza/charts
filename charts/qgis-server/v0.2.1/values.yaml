@@ -21,6 +21,8 @@ extraPodEnv: |
 
 # This will be evaluated as pod spec
 extraPodSpec: |
+#  nodeSelector:
+#    a.label: value
 
 # You can add more containers to pod spec, for example to deploy other
 # sidekick service, like file transfer server

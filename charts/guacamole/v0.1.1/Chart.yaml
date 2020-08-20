@@ -1,0 +1,27 @@
+apiVersion: v2
+name: guacamole
+version: 0.1.1
+appVersion: 1.2.0
+description: Chart for guacamole
+keywords:
+  - Guacamole
+  - Remote Desktop
+  - VNC
+  - RDP
+home: https://guacamole.apache.org/
+sources:
+  - https://github.com/apache/guacamole-client
+  - https://github.com/apache/guacamole-server
+maintainers:
+  - name: Rizky Maulana Nugraha
+    email: rizky@kartoza.com
+icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/apache-guacamole.png
+engine: gotpl
+dependencies:
+  - name: postgis
+    version: 0.2.1
+    repository: "file://../../postgis/v0.2.1"
+    condition: postgis.enabled
+    tags:
+      - database-backend
+      - postgis

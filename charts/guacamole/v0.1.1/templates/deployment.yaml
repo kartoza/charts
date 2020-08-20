@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "guacamole.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "guacamole.name" . }}
+    helm.sh/chart: {{ include "guacamole.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "guacamole.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "guacamole.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.guacamole.image.repository }}:{{ .Values.guacamole.image.tag }}"
+          imagePullPolicy: {{ .Values.guacamole.image.pullPolicy }}
+          env:
+            - name: POSTGRES_HOSTNAME
+              value: "{{ .Values.guacamole.postgres.POSTGRES_HOSTNAME }}"
+            - name: POSTGRES_DATABASE
+              value: "{{ .Values.guacamole.postgres.POSTGRES_DATABASE }}"
+            - name: POSTGRES_USER
+              value: "{{ .Values.guacamole.postgres.POSTGRES_USER }}"
+            - name: POSTGRES_PASSWORD
+              value: "{{ .Values.guacamole.postgres.POSTGRES_PASSWORD }}"
+            - name: POSTGRES_PORT
+              value: "{{ .Values.guacamole.postgres.POSTGRES_PORT }}"
+            - name: GUACD_HOSTNAME
+              value: "{{ .Values.guacd.nameOverride }}"
+            - name: GUACD_PORT
+              value: "{{ .Values.guacd.service.port }}"
+            - name: GUACAMOLE_HOME
+              value: "/etc/guacamole"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          volumeMounts:
+            {{- if .Values.guacamole.configurationFiles }}
+            - name: configurations
+              mountPath: /etc/guacamole
+            {{- end }}
+            {{- if .Values.guacamole.persistence.plugins.enabled }}
+            - name: plugins
+              mountPath: /etc/guacamole/extensions
+            {{- end }}
+          resources:
+{{ toYaml .Values.guacamole.resources | indent 12 }}
+    {{- with .Values.guacamole.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.guacamole.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.guacamole.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+      {{- if .Values.guacamole.configurationFiles }}
+        - name: configurations
+          configMap:
+            name: {{ template "guacamole.fullname" . }}-configuration
+      {{- end }}
+      {{- if .Values.guacamole.persistence.plugins.enabled }}
+        - name: plugins
+          persistentVolumeClaim:
+            claimName: {{ .Values.guacamole.persistence.plugins.existingClaim | default (include "guacamole.fullname" .) }}
+      {{- end -}}
