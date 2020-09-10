@@ -4,4 +4,5 @@ chart-dirs:
   - charts/geonode
   - charts/guacamole
   - charts/qgis-server
+check-version-increment: no
 helm-extra-args: --timeout 600
