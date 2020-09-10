@@ -6,3 +6,4 @@ chart-dirs:
   - charts/qgis-server
 check-version-increment: no
 helm-extra-args: --timeout 600s
+namespace: kartoza
