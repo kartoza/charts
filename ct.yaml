@@ -1,0 +1,7 @@
+chart-dirs:
+  - charts/geoserver
+  - charts/postgis
+  - charts/geonode
+  - charts/guacamole
+  - charts/qgis-server
+helm-extra-args: --timeout 600
