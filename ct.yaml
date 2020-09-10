@@ -5,4 +5,4 @@ chart-dirs:
   - charts/guacamole
   - charts/qgis-server
 check-version-increment: no
-helm-extra-args: --timeout 600
+helm-extra-args: --timeout 600s
