@@ -1,0 +1,215 @@
+apiVersion: v1
+entries:
+  geonode:
+  - apiVersion: v2
+    appVersion: 3.0.0
+    created: "2020-09-11T11:25:21.680708837Z"
+    dependencies:
+    - condition: postgis.enabled
+      name: postgis
+      repository: file://../../postgis/v0.2.1
+      tags:
+      - database-backend
+      - postgis
+      version: 0.2.1
+    - condition: geoserver.enabled
+      name: geoserver
+      repository: file://../../geoserver/v0.2.1
+      tags:
+      - map-backend
+      - geoserver
+      version: 0.2.1
+    description: Chart for GeoNode
+    digest: 69528f37855ef35553da5e4e43192d061544d932625ba157599135ca0d4dae1d
+    home: http://geonode.org
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/geonode-logo_for_readme.gif
+    keywords:
+    - GeoNode
+    - GIS
+    - GeoServer
+    maintainers:
+    - email: rizky@kartoza.com
+      name: lucernae
+    - email: lana.pcfre@gmail.com
+      name: lucernae
+    name: geonode
+    sources:
+    - https://github.com/GeoNode/geonode
+    urls:
+    - https://github.com/kartoza/charts/releases/download/geonode-0.2.1/geonode-0.2.1.tgz
+    version: 0.2.1
+  - apiVersion: v1
+    appVersion: 3.0.0
+    created: "2020-09-11T11:25:21.552360421Z"
+    description: Chart for GeoNode
+    digest: 554d98e1b920cbe71bd421f118ea5c973bb4026aced54fb846e920845ed37276
+    keywords:
+    - GeoNode
+    - GIS
+    name: geonode
+    urls:
+    - https://github.com/kartoza/charts/releases/download/geonode-0.1.1/geonode-0.1.1.tgz
+    version: 0.1.1
+  geoserver:
+  - apiVersion: v2
+    appVersion: 2.17.0
+    created: "2020-09-11T11:25:21.914475941Z"
+    description: Chart for GeoServer
+    digest: ed702f1e79e07e1854aa21fc3b2848b0cfb8f20d6254ee9158c96fc9c09b87a1
+    home: http://geoserver.org
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/GeoServer_500.png
+    keywords:
+    - GeoServer
+    - GIS
+    maintainers:
+    - email: lana.pcfre@gmail.com
+      name: lucernae
+    name: geoserver
+    sources:
+    - https://github.com/geoserver/geoserver
+    urls:
+    - https://github.com/kartoza/charts/releases/download/geoserver-0.2.1/geoserver-0.2.1.tgz
+    version: 0.2.1
+  - apiVersion: v1
+    appVersion: 2.16.2
+    created: "2020-09-11T11:25:21.795701987Z"
+    description: Chart for GeoServer
+    digest: 3b667a5a32719588ce00a9524a5cdfe22d7140b16e7816f9d80333b513e76923
+    keywords:
+    - GeoServer
+    - GIS
+    name: geoserver
+    urls:
+    - https://github.com/kartoza/charts/releases/download/geoserver-0.1.1/geoserver-0.1.1.tgz
+    version: 0.1.1
+  guacamole:
+  - apiVersion: v2
+    appVersion: 1.2.0
+    created: "2020-09-11T11:25:22.021241864Z"
+    dependencies:
+    - condition: postgis.enabled
+      name: postgis
+      repository: file://../../postgis/v0.2.1
+      tags:
+      - database-backend
+      - postgis
+      version: 0.2.1
+    description: Chart for guacamole
+    digest: 91a69e7f778cdc36586fe091bd7ddb25b4159373a882a9a1b06bd2313f64be64
+    home: https://guacamole.apache.org/
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/apache-guacamole.png
+    keywords:
+    - Guacamole
+    - Remote Desktop
+    - VNC
+    - RDP
+    maintainers:
+    - email: lana.pcfre@gmail.com
+      name: lucernae
+    name: guacamole
+    sources:
+    - https://github.com/apache/guacamole-client
+    - https://github.com/apache/guacamole-server
+    urls:
+    - https://github.com/kartoza/charts/releases/download/guacamole-0.1.1/guacamole-0.1.1.tgz
+    version: 0.1.1
+  nextcloud:
+  - apiVersion: v1
+    appVersion: 17.0.0
+    created: "2020-09-11T11:25:22.141096962Z"
+    dependencies:
+    - condition: mariadb.enabled
+      name: mariadb
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: ~7.1.0
+    - condition: redis.enabled
+      name: redis
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: ~10.0.1
+    description: A file sharing server that puts the control and security of your
+      own data back into your hands.
+    digest: c5f16ed50b3027cc5e9c07c1f6e51890c1354fb891a90848a0b739859b40babc
+    home: https://nextcloud.com/
+    icon: https://cdn.rawgit.com/docker-library/docs/defa5ffc7123177acd60ddef6e16bddf694cc35f/nextcloud/logo.svg
+    keywords:
+    - nextcloud
+    - storage
+    - http
+    - web
+    - php
+    maintainers:
+    - email: christian.ingenhaag@googlemail.com
+      name: chrisingenhaag
+    - email: jeff@billimek.com
+      name: billimek
+    name: nextcloud
+    sources:
+    - https://github.com/nextcloud/docker
+    urls:
+    - https://github.com/kartoza/charts/releases/download/nextcloud-1.12.0/nextcloud-1.12.0.tgz
+    version: 1.12.0
+  postgis:
+  - apiVersion: v2
+    appVersion: 12.1-3
+    created: "2020-09-11T11:25:22.385189774Z"
+    description: Chart for postgis
+    digest: 67d39b5556ef81f31143c0d54aa2bd8648f7407e3566cb784270550baa324097
+    home: https://postgis.net/
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/postgis.png
+    keywords:
+    - postgis
+    - postgresql
+    - database
+    - postgres
+    - sql
+    - replication
+    - cluster
+    maintainers:
+    - email: lana.pcfre@gmail.com
+      name: lucernae
+    name: postgis
+    sources:
+    - https://github.com/kartoza/docker-postgis
+    urls:
+    - https://github.com/kartoza/charts/releases/download/postgis-0.2.1/postgis-0.2.1.tgz
+    version: 0.2.1
+  - apiVersion: v1
+    appVersion: 12.0-2.5
+    created: "2020-09-11T11:25:22.252780142Z"
+    description: Chart for postgis
+    digest: 363bb5a8b535a78802f57d9c518de571c3859cca67983bd60b4189005b204441
+    home: https://www.postgresql.org/
+    keywords:
+    - postgis
+    - postgresql
+    - database
+    - postgres
+    - sql
+    - replication
+    - cluster
+    name: postgis
+    urls:
+    - https://github.com/kartoza/charts/releases/download/postgis-0.1.1/postgis-0.1.1.tgz
+    version: 0.1.1
+  qgis-server:
+  - apiVersion: v2
+    appVersion: "3.14"
+    created: "2020-09-11T11:25:22.512246965Z"
+    description: Chart for QGIS-Server
+    digest: 840bd162b6b669e895392201be0eb9f01c1fcca19a7884de02481b59fd3f29a8
+    home: https://qgis.org
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/qgis-server.png
+    keywords:
+    - QGIS
+    - QGIS Server
+    - GIS
+    maintainers:
+    - email: lana.pcfre@gmail.com
+      name: lucernae
+    name: qgis-server
+    sources:
+    - https://github.com/qgis/QGIS
+    urls:
+    - https://github.com/kartoza/charts/releases/download/qgis-server-0.2.1/qgis-server-0.2.1.tgz
+    version: 0.2.1
+generated: "2020-09-11T11:25:21.406490125Z"
