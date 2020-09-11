@@ -1,0 +1,9 @@
+dependencies:
+- name: mariadb
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 7.1.0
+- name: redis
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 10.0.2
+digest: sha256:037ca236b1bc6061b5aedb4330509796d17648a714ecb091276983293d956766
+generated: "2020-08-26T17:44:45.295230637+07:00"
