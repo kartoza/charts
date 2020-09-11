@@ -15,7 +15,7 @@ home: https://postgis.net/
 sources:
   - https://github.com/kartoza/docker-postgis
 maintainers:
-  - name: Rizky Maulana Nugraha
-    email: rizky@kartoza.com
+  - name: lucernae
+    email: lana.pcfre@gmail.com
 engine: gotpl
 icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/postgis.png

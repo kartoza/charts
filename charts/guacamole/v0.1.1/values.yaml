@@ -126,7 +126,7 @@ postgis:
     - name: {{ template "guacamole.fullname" . }}-postgres-config
       mountPath: /docker-entrypoint-initdb.d/002-create-admin-user.sql
       subPath: 002-create-admin-user.sql
-  
+
   extraVolume: |
     - name: postgres-config
       configMap:
