@@ -13,8 +13,8 @@ sources:
   - https://github.com/apache/guacamole-client
   - https://github.com/apache/guacamole-server
 maintainers:
-  - name: Rizky Maulana Nugraha
-    email: rizky@kartoza.com
+  - name: lucernae
+    email: lana.pcfre@gmail.com
 icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/apache-guacamole.png
 engine: gotpl
 dependencies:
