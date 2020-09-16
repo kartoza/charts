@@ -3,6 +3,51 @@ entries:
   geonode:
   - apiVersion: v2
     appVersion: 3.0.0
+    created: "2020-09-16T19:21:48.381410326Z"
+    dependencies:
+    - condition: postgis.enabled
+      name: postgis
+      repository: file://../../postgis/v0.2.1
+      tags:
+      - database-backend
+      - postgis
+      version: 0.2.1
+    - condition: geoserver.enabled
+      name: geoserver
+      repository: file://../../geoserver/v0.2.1
+      tags:
+      - map-backend
+      - geoserver
+      version: 0.2.1
+    - condition: rabbitmq.enabled
+      name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - broker
+      - rabbitmq
+      - amqp
+      version: 7.6.6
+    description: Chart for GeoNode
+    digest: 68b9dad65823f1336c6ffd2cc1c3a70fef33527a8180478d4bb5dab2c58811d0
+    home: http://geonode.org
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/geonode-logo_for_readme.gif
+    keywords:
+    - GeoNode
+    - GIS
+    - GeoServer
+    maintainers:
+    - email: rizky@kartoza.com
+      name: lucernae
+    - email: lana.pcfre@gmail.com
+      name: lucernae
+    name: geonode
+    sources:
+    - https://github.com/GeoNode/geonode
+    urls:
+    - https://github.com/kartoza/charts/releases/download/geonode-0.3.0/geonode-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 3.0.0
     created: "2020-09-11T11:25:21.680708837Z"
     dependencies:
     - condition: postgis.enabled
