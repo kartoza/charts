@@ -1,0 +1,165 @@
+{{- if .Values.global.celeryAsync.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "geonode.fullname" . }}-celery
+  labels:
+    app: {{ template "geonode.fullname" . }}
+    chart: {{ template "geonode.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  {{- with .Values.labels }}
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: celery
+      app: {{ template "geonode.fullname" . }}
+      release: {{ .Release.Name | quote }}
+  template:
+    metadata:
+      name: {{ template "geonode.fullname" . }}-celery
+      labels:
+        component: celery
+        app: {{ template "geonode.fullname" . }}
+        chart: {{ template "geonode.chart" . }}
+        release: {{ .Release.Name | quote }}
+        heritage: {{ .Release.Service | quote }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | indent 8 }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- (tpl . $) | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+        - name: {{ template "geonode.fullname" . }}-celery
+          image: {{ template "geonode.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: {{ tpl .Values.global.celeryAsync.commandSpec.celery.command $ }}
+          args: {{ tpl .Values.global.celeryAsync.commandSpec.celery.args $ }}
+          {{- include "geonode.sharedContainerSpec" . | nindent 10 }}
+      {{- with .Values.extraPodSpec }}
+      {{- tpl . $ | nindent 6 }}
+      {{- end }}
+      {{- include "geonode.sharedVolumeSpec" . | nindent 6 }}
+
+...
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "geonode.fullname" . }}-celerybeat
+  labels:
+    app: {{ template "geonode.fullname" . }}
+    chart: {{ template "geonode.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  {{- with .Values.labels }}
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: celerybeat
+      app: {{ template "geonode.fullname" . }}
+      release: {{ .Release.Name | quote }}
+  template:
+    metadata:
+      name: {{ template "geonode.fullname" . }}-celerybeat
+      labels:
+        component: celerybeat
+        app: {{ template "geonode.fullname" . }}
+        chart: {{ template "geonode.chart" . }}
+        release: {{ .Release.Name | quote }}
+        heritage: {{ .Release.Service | quote }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | indent 8 }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- (tpl . $) | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+        - name: {{ template "geonode.fullname" . }}-celerybeat
+          image: {{ template "geonode.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: {{ tpl .Values.global.celeryAsync.commandSpec.celerybeat.command $ }}
+          args: {{ tpl .Values.global.celeryAsync.commandSpec.celerybeat.args $ }}
+          {{- include "geonode.sharedContainerSpec" . | nindent 10 }}
+      {{- with .Values.extraPodSpec }}
+      {{- tpl . $ | nindent 6 }}
+      {{- end }}
+      {{- include "geonode.sharedVolumeSpec" . | nindent 6 }}
+...
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "geonode.fullname" . }}-celerycam
+  labels:
+    app: {{ template "geonode.fullname" . }}
+    chart: {{ template "geonode.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  {{- with .Values.labels }}
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: celerycam
+      app: {{ template "geonode.fullname" . }}
+      release: {{ .Release.Name | quote }}
+  template:
+    metadata:
+      name: {{ template "geonode.fullname" . }}-celerycam
+      labels:
+        component: celerycam
+        app: {{ template "geonode.fullname" . }}
+        chart: {{ template "geonode.chart" . }}
+        release: {{ .Release.Name | quote }}
+        heritage: {{ .Release.Service | quote }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | indent 8 }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- (tpl . $) | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+        - name: {{ template "geonode.fullname" . }}-celerycam
+          image: {{ template "geonode.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: {{ tpl .Values.global.celeryAsync.commandSpec.celerycam.command $ }}
+          args: {{ tpl .Values.global.celeryAsync.commandSpec.celerycam.args $ }}
+          {{- include "geonode.sharedContainerSpec" . | nindent 10 }}
+      {{- with .Values.extraPodSpec }}
+      {{- tpl . $ | nindent 6 }}
+      {{- end }}
+      {{- include "geonode.sharedVolumeSpec" . | nindent 6 }}
+...
+{{- end -}}

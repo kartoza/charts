@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "geonode.fullname" . }}
+  labels:
+    app: {{ template "geonode.fullname" . }}
+    chart: {{ template "geonode.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  {{- with .Values.labels }}
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: {{ template "geonode.fullname" . }}
+      release: {{ .Release.Name | quote }}
+  template:
+    metadata:
+      name: {{ template "geonode.fullname" . }}
+      labels:
+        app: {{ template "geonode.fullname" . }}
+        chart: {{ template "geonode.chart" . }}
+        release: {{ .Release.Name | quote }}
+        heritage: {{ .Release.Service | quote }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | indent 8 }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- (tpl . $) | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+        - name: {{ template "geonode.fullname" . }}-uwsgi
+          image: {{ template "geonode.image" . }}
+          {{- if .Values.resources }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+          command: {{ tpl .Values.global.geonodeCommand $ }}
+          args: {{ tpl .Values.global.geonodeArgs $ }}
+          {{- include "geonode.sharedContainerSpec" . | nindent 10 }}
+          {{- if .Values.probe }}
+            {{- with .Values.probe }}
+            {{- tpl . $ | nindent 10 }}
+            {{- end }}
+          {{- else }}
+          startupProbe:
+            httpGet:
+              httpHeaders:
+                - name: Host
+                  value: {{ .Values.global.geonodeSiteName }}
+              path: /
+              port: http-geonode
+              scheme: HTTP
+            failureThreshold: 60
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              httpHeaders:
+                - name: Host
+                  value: {{ .Values.global.geonodeSiteName }}
+              path: /
+              port: http-geonode
+              scheme: HTTP
+            periodSeconds: 10
+            failureThreshold: 3
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              httpHeaders:
+                  - name: Host
+                    value: {{ .Values.global.geonodeSiteName }}
+              path: /
+              port: http-geonode
+              scheme: HTTP
+            periodSeconds: 10
+            failureThreshold: 3
+            successThreshold: 1
+          {{- end }}
+
+        - name: {{ template "geonode.fullname" . }}-nginx
+          image: nginx:1.17.2-alpine
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.resources }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: nginx-geonode
+              containerPort: 80
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+            - name: config-volume
+              mountPath: /etc/nginx/geonode.conf
+              subPath: geonode.conf
+            {{- if .Values.persistence.staticDir.enabled }}
+            - name: static-dir
+              mountPath: {{ .Values.persistence.staticDir.mountPath }}
+              subPath: {{ .Values.persistence.staticDir.subPath }}
+            {{- end }}
+            {{- if .Values.persistence.mediaDir.enabled }}
+            - name: media-dir
+              mountPath: {{ .Values.persistence.mediaDir.mountPath }}
+              subPath: {{ .Values.persistence.mediaDir.subPath }}
+            {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- (tpl . $) | nindent 12 }}
+            {{- end }}
+
+      {{- with .Values.extraPodSpec }}
+      {{- tpl . $ | nindent 6 }}
+      {{- end }}
+      {{- include "geonode.sharedVolumeSpec" . | nindent 6 }}
