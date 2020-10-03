@@ -105,9 +105,9 @@ Return GeoServer Base URL to be used
 {{- if not .Values.geoserver.enabled -}}
 	{{- (tpl .Values.global.geoserverURL $) -}}
 {{- else if (and .Values.ingress.enabled .Values.ingress.tls.enabled) -}}
-	{{- printf "https://%s/geoserver" .Values.global.geonodeSiteName -}}
+	{{- printf "https://%s/geoserver/" .Values.global.geonodeSiteName -}}
 {{- else if .Values.ingress.enabled -}}
-	{{- printf "http://%s/geoserver" .Values.global.geonodeSiteName -}}
+	{{- printf "http://%s/geoserver/" .Values.global.geonodeSiteName -}}
 {{- else if (tpl .Values.global.geoserverURL $) -}}
 	{{- (tpl .Values.global.geoserverURL $) -}}
 {{- else -}}
@@ -119,7 +119,9 @@ Return GeoServer Base URL to be used
 Return Internal GeoServer Base URL to be used
 */}}
 {{- define "geonode.internalGeoserverURL" -}}
-{{- if not .Values.geoserver.enabled -}}
+{{- if (tpl .Values.global.internalGeoserverURL $) -}}
+	{{- (tpl .Values.global.internalGeoserverURL $) -}}
+{{- else if not .Values.geoserver.enabled -}}
 	{{- (tpl .Values.global.geoserverURL $) -}}
 {{- else -}}
 	{{- printf "http://%s-geoserver/geoserver/" (include "geonode.fullname" .) -}}
