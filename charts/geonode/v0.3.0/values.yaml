@@ -47,6 +47,7 @@ global:
   mediaRoot: /opt/geonode/media
   # geoserverURL must end with slash
   geoserverURL: |
+  internalGeoserverURL: |
   # geoserver specific values
   geoserverAdminUser: admin
   geoserverAdminPassword:
