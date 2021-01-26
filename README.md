@@ -1,2 +1,2 @@
-# charts
-Kartoza Helm charts for Kubernetes
+# Kartoza Helm charts
+Kartoza Helm/Rancher charts for Kubernetes
