@@ -2,6 +2,51 @@ apiVersion: v1
 entries:
   geonode:
   - apiVersion: v2
+    appVersion: 3.1.0
+    created: "2021-01-26T16:04:48.043340759Z"
+    dependencies:
+    - condition: postgis.enabled
+      name: postgis
+      repository: file://../../postgis/v0.2.1
+      tags:
+      - database-backend
+      - postgis
+      version: 0.2.1
+    - condition: geoserver.enabled
+      name: geoserver
+      repository: file://../../geoserver/v0.3.1
+      tags:
+      - map-backend
+      - geoserver
+      version: 0.3.1
+    - condition: rabbitmq.enabled
+      name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - broker
+      - rabbitmq
+      - amqp
+      version: 7.6.6
+    description: Chart for GeoNode
+    digest: 6f55012a965d68345f564af08d64b72e01a7f441aa0d8eba890cdbd5afb14f90
+    home: http://geonode.org
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/geonode-logo_for_readme.gif
+    keywords:
+    - GeoNode
+    - GIS
+    - GeoServer
+    maintainers:
+    - email: rizky@kartoza.com
+      name: lucernae
+    - email: lana.pcfre@gmail.com
+      name: lucernae
+    name: geonode
+    sources:
+    - https://github.com/GeoNode/geonode
+    urls:
+    - https://github.com/kartoza/charts/releases/download/geonode-0.4.0/geonode-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
     appVersion: 3.0.0
     created: "2020-09-16T19:21:48.381410326Z"
     dependencies:
@@ -96,6 +141,25 @@ entries:
     - https://github.com/kartoza/charts/releases/download/geonode-0.1.1/geonode-0.1.1.tgz
     version: 0.1.1
   geoserver:
+  - apiVersion: v2
+    appVersion: 2.17.0
+    created: "2021-01-26T16:04:48.315262581Z"
+    description: Chart for GeoServer
+    digest: fde1cc0dced58cc9fc04094689936a8bf45d510144846f2c380c90d08083bce3
+    home: http://geoserver.org
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/GeoServer_500.png
+    keywords:
+    - GeoServer
+    - GIS
+    maintainers:
+    - email: lana.pcfre@gmail.com
+      name: lucernae
+    name: geoserver
+    sources:
+    - https://github.com/geoserver/geoserver
+    urls:
+    - https://github.com/kartoza/charts/releases/download/geoserver-0.3.1/geoserver-0.3.1.tgz
+    version: 0.3.1
   - apiVersion: v2
     appVersion: 2.17.0
     created: "2020-09-11T11:25:21.914475941Z"
