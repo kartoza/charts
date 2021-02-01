@@ -11,7 +11,7 @@ sources:
   - https://github.com/django/django
 maintainers:
   - name: Rizky Maulana Nugraha
-    email: rizky@kartoza.com
+    email: rizky@kartoza.com,lana.pcfre@gmail.com
 icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/django.png
 engine: gotpl
 dependencies:

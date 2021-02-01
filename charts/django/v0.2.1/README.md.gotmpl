@@ -66,7 +66,46 @@ Optional customizations:
 | image.pullPolicy | Docker image pull policy |
 
 
+{{ define "chart.valueDefaultColumnRender" }}
+{{- $defaultValue := (default .Default .AutoDefault)  -}}
+{{- $notationType := .NotationType }}
+{{- if (and (hasPrefix "`" $defaultValue) (hasSuffix "`" $defaultValue) ) -}}
+{{- $defaultValue = (trimAll "`" (default .Default .AutoDefault) )  -}}
+{{- $notationType = "json" }}
+{{- end -}}
+<pre lang="{{ $notationType }}">
+{{ $defaultValue }}
+</pre>
+{{ end }}
 
-{{ template "chart.valuesSection" . }}
+{{ define "chart.valuesTableHtml" }}
+<table height="400px">
+	<thead>
+		<th>Key</th>
+		<th>Type</th>
+		<th>Default</th>
+		<th>Description</th>
+	</thead>
+	<tbody>
+	{{- range .Values }}
+		<tr>
+			<td>{{ .Key }}</td>
+			<td>{{ .Type }}</td>
+			<td>{{ template "chart.valueDefaultColumnRender" . }}</td>
+			<td>{{ if .Description }}{{ .Description }}{{ else }}{{ .AutoDescription }}{{ end }}</td>
+		</tr>
+	{{- end }}
+	</tbody>
+</table>
+{{ end }}
+
+{{ define "chart.valuesSectionHtml" }}
+{{ if .Values }}
+{{ template "chart.valuesHeader" . }}
+{{ template "chart.valuesTableHtml" . }}
+{{ end }}
+{{ end }}
+
+{{ template "chart.valuesSectionHtml" . }}
 
 {{ template "helm-docs.versionFooter" . }}
