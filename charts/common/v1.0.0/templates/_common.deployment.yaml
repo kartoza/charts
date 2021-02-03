@@ -1,7 +1,7 @@
 {{- define "common.deployment.tpl" -}}
 apiVersion: apps/v1
 kind: Deployment
-{{- include "common.metadata.tpl" . -}}
+{{ include "common.metadata.tpl" . }}
 spec:
   selector:
     matchLabels:

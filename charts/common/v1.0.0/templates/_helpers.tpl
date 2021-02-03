@@ -49,6 +49,15 @@ Must only depends on global values
 {{- end -}}
 
 {{/*
+Derive shared config name for this release
+Must only depends on global values
+*/}}
+{{- define "common.sharedConfigName" -}}
+	{{- $configName := default (tpl .Values.global.sharedConfigName $) (tpl .Values.global.existingConfig $) -}}
+	{{- default .Release.Name $configName -}}
+{{- end -}}
+
+{{/*
 Get the secret from declared source
 */}}
 {{- define "common.secretFrom" -}}

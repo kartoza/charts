@@ -20,8 +20,8 @@ version: 1.0.0
 # incremented each time you make changes to the application.
 appVersion: 1.0.0
 sources:
-  - https://github.com/kartoza/charts/tree/master/charts/common
+  - https://github.com/kartoza/charts/tree/main/charts/common
 maintainers:
   - name: Rizky Maulana Nugraha
-    email: rizky@kartoza.com,lana.pcfre@gmail.com
+    email: lana.pcfre@gmail.com
 engine: gotpl

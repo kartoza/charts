@@ -1,7 +1,7 @@
 {{- define "common.statefulset.tpl" -}}
 apiVersion: apps/v1
 kind: StatefulSet
-{{- include "common.metadata.tpl" . -}}
+{{ include "common.metadata.tpl" . }}
 spec:
   serviceName: {{ template "common.fullname" }}
   selector:

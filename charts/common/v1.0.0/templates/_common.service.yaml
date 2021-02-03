@@ -1,7 +1,7 @@
 {{- define "common.service.tpl" -}}
 apiVersion: v1
 kind: Service
-{{- include "common.metadata.tpl" . -}}
+{{ include "common.metadata.tpl" . }}
 spec:
   selector:
     app: {{ template "common.fullname" . }}
