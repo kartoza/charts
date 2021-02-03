@@ -1,5 +1,5 @@
 {{- define "django.ingress" -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 metadata:
   annotations:
     {{- with .Values.ingress.annotations }}
@@ -14,9 +14,12 @@ spec:
   - host: {{ .Values.ingress.host }}
     http:
       paths:
-      - backend:
-          serviceName: {{ template "common.fullname" . }}
-          servicePort: nginx-django
+      - pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ template "common.fullname" . }}
+            port:
+              name: nginx-django
   {{- if .Values.ingress.tls.enabled }}
   tls:
     - hosts:
