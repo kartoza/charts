@@ -22,6 +22,6 @@ appVersion: 1.0.0
 sources:
   - https://github.com/kartoza/charts/tree/main/charts/common
 maintainers:
-  - name: Rizky Maulana Nugraha
+  - name: lucernae
     email: lana.pcfre@gmail.com
 engine: gotpl

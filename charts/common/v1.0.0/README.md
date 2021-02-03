@@ -10,7 +10,7 @@ Common library for ops
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Rizky Maulana Nugraha | lana.pcfre@gmail.com |  |
+| lucernae | lana.pcfre@gmail.com |  |
 
 ## Source Code
 
