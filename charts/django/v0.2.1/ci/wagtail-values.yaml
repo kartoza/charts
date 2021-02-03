@@ -1,4 +1,3 @@
-
 image:
   repository: wagtail/bakerydemo
   tag: "release-624f441"
@@ -22,7 +21,6 @@ global:
   databaseUsername: app_user
   databasePassword:
     value: changemypassword
-
 
 extraPodEnv: |
   - name: DATABASE_URL
@@ -155,7 +153,6 @@ extraVolumeMounts: |
   - name: config-volume
     mountPath: /code/bakerydemo/settings/production_settings.py
     subPath: production_settings.py
-
 
 extraPodSpec: |
   # For UWSGI process so it can have volume access
