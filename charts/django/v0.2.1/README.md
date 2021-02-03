@@ -12,7 +12,7 @@ Generic chart for basic Django-based web app
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Rizky Maulana Nugraha | rizky@kartoza.com,lana.pcfre@gmail.com |  |
+| lucernae | lana.pcfre@gmail.com |  |
 
 ## Source Code
 
@@ -67,8 +67,7 @@ Optional customizations:
 - Toggle Debug mode
 
 ## Values
-
-<table height="400px" >
+<table height="400px">
 	<thead>
 		<th>Key</th>
 		<th>Type</th>
@@ -180,7 +179,7 @@ null
 			<td><a id=global--databaseHost">global.databaseHost</a></td>
 			<td>string</td>
 			<td><pre lang=json">
-"postgis"
+null
 </pre></td>
 			<td>Django database host location. By default this chart can generate standard postgres chart. So you can leave it as default. If you use external backend,  you must provide the value</td>
 		</tr>
@@ -289,6 +288,15 @@ null
 			<td>Django settings module to be used</td>
 		</tr>
 		<tr>
+			<td><a id=global--existingConfig">global.existingConfig</a></td>
+			<td>tpl/string</td>
+			<td><pre lang="gotpl">
+global.existingConfig: |
+ 
+</pre></td>
+			<td>Name of existing config</td>
+		</tr>
+		<tr>
 			<td><a id=global--existingSecret">global.existingSecret</a></td>
 			<td>tpl/string</td>
 			<td><pre lang="gotpl">
@@ -330,6 +338,14 @@ global.existingSecret: |
 			<td>Django root URL conf to be used</td>
 		</tr>
 		<tr>
+			<td><a id=global--sharedConfigName">global.sharedConfigName</a></td>
+			<td>string</td>
+			<td><pre lang=json">
+"django-shared-config"
+</pre></td>
+			<td>Name of shared config store that will be generated</td>
+		</tr>
+		<tr>
 			<td><a id=global--sharedSecretName">global.sharedSecretName</a></td>
 			<td>string</td>
 			<td><pre lang=json">
@@ -352,6 +368,14 @@ global.existingSecret: |
 "/opt/django/static"
 </pre></td>
 			<td>Location to the static directory</td>
+		</tr>
+		<tr>
+			<td><a id=global--storageClassName">global.storageClassName</a></td>
+			<td>string</td>
+			<td><pre lang=json">
+null
+</pre></td>
+			<td>Storage class name used to provision PV</td>
 		</tr>
 		<tr>
 			<td><a id=image">image</a></td>
@@ -476,19 +500,19 @@ true
 		</tr>
 		<tr>
 			<td><a id=persistence--mediaDir--existingClaim">persistence.mediaDir.existingClaim</a></td>
-			<td>bool</td>
+			<td>string</td>
 			<td><pre lang=json">
 false
 </pre></td>
-			<td></td>
+			<td>Set to an existing claim if you have it</td>
 		</tr>
 		<tr>
 			<td><a id=persistence--mediaDir--mountPath">persistence.mediaDir.mountPath</a></td>
-			<td>string</td>
+			<td>path</td>
 			<td><pre lang=json">
 "/opt/django/media"
 </pre></td>
-			<td></td>
+			<td>This has to be the same with [global.mediaRoot](#global--mediaroot)</td>
 		</tr>
 		<tr>
 			<td><a id=persistence--mediaDir--size">persistence.mediaDir.size</a></td>
@@ -526,25 +550,25 @@ false
 			<td><a id=persistence--staticDir--enabled">persistence.staticDir.enabled</a></td>
 			<td>bool</td>
 			<td><pre lang=json">
-true
+false
 </pre></td>
 			<td>Allow persistence</td>
 		</tr>
 		<tr>
 			<td><a id=persistence--staticDir--existingClaim">persistence.staticDir.existingClaim</a></td>
-			<td>bool</td>
+			<td>string</td>
 			<td><pre lang=json">
 false
 </pre></td>
-			<td></td>
+			<td>Set to an existing claim if you have it</td>
 		</tr>
 		<tr>
 			<td><a id=persistence--staticDir--mountPath">persistence.staticDir.mountPath</a></td>
-			<td>string</td>
+			<td>path</td>
 			<td><pre lang=json">
 "/opt/django/static"
 </pre></td>
-			<td></td>
+			<td>This has to be the same with [global.staticRoot](#global--staticroot)</td>
 		</tr>
 		<tr>
 			<td><a id=persistence--staticDir--size">persistence.staticDir.size</a></td>
@@ -575,10 +599,82 @@ true
 			<td>tpl/string</td>
 			<td><pre lang="gotpl">
 postgis.existingSecret: |
-  {{ include "common.sharedSecretName" . | quote -}}
  
 </pre></td>
 			<td>Existing secret to be used</td>
+		</tr>
+		<tr>
+			<td><a id=postgis--extraConfigMap">postgis.extraConfigMap</a></td>
+			<td>tpl/object</td>
+			<td><pre lang="gotpl">
+postgis.extraConfigMap: |
+  django-db.sh: |
+    #!/usr/bin/env bash
+    DATABASE="{{ .Values.global.databaseName }}"
+    # password comes from environment variables, so it can be retrieved from secret
+    DATABASE_USER="{{ .Values.global.databaseUsername }}"
+    # create database
+    su postgres -c "createdb ${DATABASE}"
+    # create role
+    cat << EOF | su postgres -c "psql"
+    CREATE ROLE ${DATABASE_USER};
+    EOF
+    # modify permissions
+    cat << EOF | su postgres -c "psql -d ${DATABASE}"
+    -- Create role
+    ALTER ROLE ${DATABASE_USER} LOGIN PASSWORD '${DATABASE_PASSWORD}';
+    ALTER DATABASE ${DATABASE} OWNER TO ${DATABASE_USER};
+    EOF
+ 
+</pre></td>
+			<td>Extra config map for postgis to be included Can be used to pregenerate Django database for first setup</td>
+		</tr>
+		<tr>
+			<td><a id=postgis--extraPodEnv">postgis.extraPodEnv</a></td>
+			<td>tpl/array</td>
+			<td><pre lang="gotpl">
+postgis.extraPodEnv: |
+  - name: DATABASE_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: {{ include "common.sharedSecretName" . | quote }}
+        key: {{ .Values.global.databasePassword.valueFrom.secretKeyRef.key }}
+ 
+</pre></td>
+			<td>Extra pod env for postgis We expose Django database password in case we need to pregenerate it</td>
+		</tr>
+		<tr>
+			<td><a id=postgis--extraVolume">postgis.extraVolume</a></td>
+			<td>tpl/array</td>
+			<td><pre lang="gotpl">
+postgis.extraVolume: |
+  - name: config-volume
+    configMap:
+      name: {{ template "postgis.fullname" . }}
+      defaultMode: 0755
+ 
+</pre></td>
+			<td>Extra volume declaration for postgis We use extra volume to mount postgis configmap to pregenerate database</td>
+		</tr>
+		<tr>
+			<td><a id=postgis--extraVolumeMounts">postgis.extraVolumeMounts</a></td>
+			<td>tpl/array</td>
+			<td><pre lang="gotpl">
+postgis.extraVolumeMounts: |
+  - mountPath: /docker-entrypoint-initdb.d/django-db.sh
+    subPath: django-db.sh
+    name: config-volume
+ 
+</pre></td>
+			<td>Extra volume mounts for postgis We use extra volume mounts postgis configmap to pregenerate database</td>
+		</tr>
+		<tr>
+			<td><a id=postgis--postgresqlUsername">postgis.postgresqlUsername</a></td>
+			<td>string</td>
+			<td><pre lang=json">
+"superuser"
+</pre></td>
+			<td></td>
 		</tr>
 		<tr>
 			<td><a id=probe">probe</a></td>

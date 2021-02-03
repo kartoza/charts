@@ -180,6 +180,9 @@ postgis:
   # @notationType -- tpl
   existingSecret: |
 
+  # -- (tpl/object) Extra config map for postgis to be included
+  # Can be used to pregenerate Django database for first setup
+  # @notationType -- tpl
   extraConfigMap: |
     django-db.sh: |
       #!/usr/bin/env bash
@@ -199,6 +202,9 @@ postgis:
       ALTER DATABASE ${DATABASE} OWNER TO ${DATABASE_USER};
       EOF
 
+  # -- (tpl/array) Extra pod env for postgis
+  # We expose Django database password in case we need to pregenerate it
+  # @notationType -- tpl
   extraPodEnv: |
     - name: DATABASE_PASSWORD
       valueFrom:
@@ -206,12 +212,18 @@ postgis:
           name: {{ include "common.sharedSecretName" . | quote }}
           key: {{ .Values.global.databasePassword.valueFrom.secretKeyRef.key }}
 
+  # -- (tpl/array) Extra volume declaration for postgis
+  # We use extra volume to mount postgis configmap to pregenerate database
+  # @notationType -- tpl
   extraVolume: |
     - name: config-volume
       configMap:
         name: {{ template "postgis.fullname" . }}
         defaultMode: 0755
 
+  # -- (tpl/array) Extra volume mounts for postgis
+  # We use extra volume mounts postgis configmap to pregenerate database
+  # @notationType -- tpl
   extraVolumeMounts: |
     - mountPath: /docker-entrypoint-initdb.d/django-db.sh
       subPath: django-db.sh
@@ -222,7 +234,9 @@ persistence:
   staticDir:
     # -- (bool) Allow persistence
     enabled: false
+    # -- (string) Set to an existing claim if you have it
     existingClaim: false
+    # -- (path) This has to be the same with [global.staticRoot](#global--staticroot)
     mountPath: /opt/django/static
     subPath: "static"
     size: 8Gi
@@ -232,7 +246,9 @@ persistence:
   mediaDir:
     # -- (bool) Allow persistence
     enabled: true
+    # -- (string) Set to an existing claim if you have it
     existingClaim: false
+    # -- (path) This has to be the same with [global.mediaRoot](#global--mediaroot)
     mountPath: /opt/django/media
     subPath: "media"
     size: 8Gi
