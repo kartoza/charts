@@ -5,5 +5,5 @@ kind: ConfigMap
 data: {}
 {{- end -}}
 {{- define "common.configmap" -}}
-{{- include "common.util.merge" (append . "common.configmap.tpl") -}}
+{{ include "common.util.merge" (append . "common.configmap.tpl") }}
 {{- end -}}

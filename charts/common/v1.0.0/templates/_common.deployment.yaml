@@ -11,5 +11,5 @@ spec:
     {{- include "common.metadata.tpl" . | nindent 4 }}
 {{- end -}}
 {{- define "common.deployment" -}}
-{{- include "common.util.merge" (append . "common.deployment.tpl") -}}
+{{ include "common.util.merge" (append . "common.deployment.tpl") }}
 {{- end -}}

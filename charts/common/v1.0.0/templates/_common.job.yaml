@@ -7,5 +7,5 @@ spec:
     {{- include "common.metadata.tpl" . | nindent 4 }}
 {{- end -}}
 {{- define "common.job" -}}
-{{- include "common.util.merge" (append . "common.job.tpl") -}}
+{{ include "common.util.merge" (append . "common.job.tpl") }}
 {{- end -}}

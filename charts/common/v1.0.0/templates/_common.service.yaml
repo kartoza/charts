@@ -8,5 +8,5 @@ spec:
     release: {{ .Release.Name | quote }}
 {{- end -}}
 {{- define "common.service" -}}
-{{- include "common.util.merge" (append . "common.service.tpl") -}}
+{{ include "common.util.merge" (append . "common.service.tpl") }}
 {{- end -}}

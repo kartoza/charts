@@ -12,5 +12,5 @@ spec:
     {{- include "common.metadata.tpl" . | nindent 4 }}
 {{- end -}}
 {{- define "common.statefulset" -}}
-{{- include "common.util.merge" (append . "common.statefulset.tpl") -}}
+{{ include "common.util.merge" (append . "common.statefulset.tpl") }}
 {{- end -}}
