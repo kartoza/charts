@@ -1,4 +1,6 @@
 chart-dirs:
+  - charts/common
+  - charts/django
   - charts/geoserver
   - charts/postgis
   - charts/geonode
