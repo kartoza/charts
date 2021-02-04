@@ -1,0 +1,178 @@
+{{- include "common.deployment" (list . "django.deployment") -}}
+{{- define "django.deployment" -}}
+metadata:
+  labels:
+  {{- with .Values.labels }}
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  template:
+    metadata:
+      labels:
+        {{- with .Values.podLabels }}
+        {{- toYaml . | indent 8 }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- (tpl . $) | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+        - name: {{ template "common.fullname" . }}-django
+          image: {{ template "common.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: {{ tpl .Values.global.djangoCommand $ }}
+          args: {{ tpl .Values.global.djangoArgs $ }}
+          env:
+            - name: ADMIN_USERNAME
+              value: {{ .Values.global.adminUser | quote }}
+            - name: ADMIN_PASSWORD
+              {{- $param := dict "Value" .Values.global.adminPassword "Context" . -}}
+              {{ include "common.secretFrom" $param | nindent 14 }}
+            - name: ADMIN_EMAIL
+              value: {{ .Values.global.adminEmail | quote }}
+            - name: DATABASE_USER
+              value: {{ .Values.global.databaseUsername  | quote }}
+            - name: DATABASE_HOST
+              value: {{ .Values.global.databaseHost  | quote }}
+            - name: DATABASE_PORT
+              value: {{ .Values.global.databasePort  | quote }}
+            - name: DATABASE_PASSWORD
+              {{- $param := dict "Value" .Values.global.databasePassword "Context" . -}}
+              {{ include "common.secretFrom" $param | nindent 14 }}
+            - name: DEBUG
+              value: {{ .Values.global.debug | quote }}
+            - name: DJANGO_SETTINGS_MODULE
+              value: {{ .Values.global.djangoSettingsModule | quote }}
+            - name: DJANGO_SECRET_KEY
+              {{- $param := dict "Value" .Values.global.djangoSecretKey "Context" . -}}
+              {{ include "common.secretFrom" $param | nindent 14 }}
+            - name: STATIC_ROOT
+              value: {{ .Values.global.staticRoot | quote }}
+            - name: MEDIA_ROOT
+              value: {{ .Values.global.mediaRoot | quote }}
+            - name: STATIC_URL
+              value: "/static/"
+            - name: MEDIA_URL
+              value: "/uploaded/"
+            {{- with .Values.extraPodEnv }}
+            {{- tpl . $ | nindent 12 }}
+            {{- end }}
+          ports:
+            - name: http-django
+              containerPort: 8080
+          volumeMounts:
+            {{- if .Values.persistence.staticDir.enabled }}
+            - name: static-dir
+              mountPath: {{ .Values.persistence.staticDir.mountPath }}
+              subPath: {{ .Values.persistence.staticDir.subPath }}
+            {{- end }}
+            {{- if .Values.persistence.mediaDir.enabled }}
+            - name: media-dir
+              mountPath: {{ .Values.persistence.mediaDir.mountPath }}
+              subPath: {{ .Values.persistence.mediaDir.subPath }}
+            {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- (tpl . $) | nindent 12 }}
+            {{- end }}
+          {{- if .Values.probe }}
+            {{- with .Values.probe }}
+            {{- tpl . $ | nindent 10 }}
+            {{- end }}
+          {{- else }}
+          startupProbe:
+            httpGet:
+              httpHeaders:
+                - name: Host
+                  value: {{ .Values.global.siteName }}
+              path: /
+              port: http-django
+              scheme: HTTP
+            failureThreshold: 60
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              httpHeaders:
+                - name: Host
+                  value: {{ .Values.global.siteName }}
+              path: /
+              port: http-django
+              scheme: HTTP
+            periodSeconds: 10
+            failureThreshold: 3
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              httpHeaders:
+                  - name: Host
+                    value: {{ .Values.global.siteName }}
+              path: /
+              port: http-django
+              scheme: HTTP
+            periodSeconds: 10
+            failureThreshold: 3
+            successThreshold: 1
+          {{- end }}
+
+        - name: {{ template "common.fullname" . }}-nginx
+          image: nginx:1.17.2-alpine
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: nginx-django
+              containerPort: 80
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+            {{- if .Values.persistence.staticDir.enabled }}
+            - name: static-dir
+              mountPath: {{ .Values.persistence.staticDir.mountPath }}
+              subPath: {{ .Values.persistence.staticDir.subPath }}
+            {{- end }}
+            {{- if .Values.persistence.mediaDir.enabled }}
+            - name: media-dir
+              mountPath: {{ .Values.persistence.mediaDir.mountPath }}
+              subPath: {{ .Values.persistence.mediaDir.subPath }}
+            {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- (tpl . $) | nindent 12 }}
+            {{- end }}
+      {{- with .Values.extraPodSpec }}
+      {{- tpl . $ | nindent 6 }}
+      {{- end }}
+      volumes:
+        {{- with .Values.extraVolume }}
+        {{- (tpl . $) | nindent 8 }}
+        {{- end }}
+        - name: config-volume
+          configMap:
+            name: {{ template "common.sharedConfigName" . }}
+            defaultMode: 0755
+{{- if and .Values.persistence.staticDir.enabled .Values.persistence.staticDir.existingClaim }}
+        - name: static-dir
+          persistentVolumeClaim:
+{{- with .Values.persistence.staticDir.existingClaim }}
+            claimName: {{ tpl . $ }}
+{{- end }}
+{{- else if .Values.persistence.staticDir.enabled }}
+        - name: static-dir
+          persistentVolumeClaim:
+            claimName: static-dir
+{{- end }}
+{{- if and .Values.persistence.mediaDir.enabled .Values.persistence.mediaDir.existingClaim }}
+        - name: media-dir
+          persistentVolumeClaim:
+{{- with .Values.persistence.mediaDir.existingClaim }}
+            claimName: {{ tpl . $ }}
+{{- end }}
+{{- else if .Values.persistence.mediaDir.enabled }}
+        - name: media-dir
+          persistentVolumeClaim:
+            claimName: media-dir
+{{- end }}
+{{- end }}

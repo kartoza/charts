@@ -1,0 +1,33 @@
+{{- define "django.ingress" -}}
+apiVersion: networking.k8s.io/v1
+metadata:
+  annotations:
+    {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  labels:
+    {{- with .Values.ingress.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  rules:
+  - host: {{ .Values.ingress.host }}
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ template "common.fullname" . }}
+            port:
+              name: nginx-django
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: {{ .Values.ingress.tls.secretName }}
+  {{- end }}
+{{- end -}}
+
+{{- if .Values.ingress.enabled }}
+{{ include "common.ingress" (list . "django.ingress") }}
+{{- end }}

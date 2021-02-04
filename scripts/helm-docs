@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+~/go/bin/helm-docs -t _templates.gotmpl -t README.md.gotmpl "$@"
