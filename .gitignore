@@ -2,3 +2,4 @@
 .idea
 .python-version
 Chart.lock
+.direnv
