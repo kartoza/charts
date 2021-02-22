@@ -3,3 +3,6 @@
 .python-version
 Chart.lock
 .direnv
+
+.local.envrc
+.local.env
