@@ -1,5 +1,4 @@
 chart-dirs:
-  - charts/common
   - charts/django
   - charts/geoserver
   - charts/postgis
@@ -10,4 +9,4 @@ target-branch: main
 chart-repos:
   - bitnami=https://charts.bitnami.com/bitnami
 check-version-increment: no
-helm-extra-args: --timeout 600s
+helm-extra-args: --timeout 3600s

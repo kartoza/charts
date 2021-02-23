@@ -6,3 +6,6 @@ Chart.lock
 
 .local.envrc
 .local.env
+result
+
+kubeconfig.yaml

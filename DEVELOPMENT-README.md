@@ -9,9 +9,16 @@ same, we use Nix to pin the exact dependencies. We use Direnv to provide the
 local settings hooks
 
 - Install [Docker](https://docs.docker.com/get-docker/)
-- Install [Direnv](https://direnv.net/)
 - Install [Nix](https://nixos.org/manual/nix/stable/#sect-multi-user-installation) using multi-user installation if possible
-- Install nix-direnv
+- Install [Direnv](https://direnv.net/)
+  
+Or use Nix to install direnv
+
+```bash
+nix-env -f '<nixpkgs>' -iA direnv
+```
+
+- Install nix-direnv (Nix optimized plugin for direnv)
 
 ```bash
 nix-env -f '<nixpkgs>' -iA nix-direnv
@@ -64,3 +71,13 @@ ct lint
 Will do a lint by comparing the current branch with the current `main` branch 
 in local repo. To override this behaviour, refer to the chart-testing docs and 
 do override necessary in the `.envrc` or `.env` directory
+
+# Generating chart documentations
+
+Chart is autodocumented using default `values.yaml` and helm-docs.
+
+Execute `helm-docs` in chart subdirectory to generate the docs.
+
+Modification can be done in respective `README.md.gotmpl` file.
+
+# Chart testing
