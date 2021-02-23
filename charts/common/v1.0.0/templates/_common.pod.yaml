@@ -1,0 +1,9 @@
+{{- define "common.pod.tpl" -}}
+apiVersion: v1
+kind: Pod
+{{ include "common.metadata.tpl" . }}
+{{- end -}}
+
+{{- define "common.pod" -}}
+{{ include "common.util.merge" (append . "common.pod.tpl") }}
+{{- end -}}
