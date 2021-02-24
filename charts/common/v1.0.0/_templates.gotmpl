@@ -20,7 +20,7 @@ Input: list
 {{- define "chart.valueDefaultColumnRender.default" -}}
 {{- $defaultValue := index . 1 -}}
 {{- $notationType := index . 2 -}}
-<pre lang={{ $notationType }}">
+<pre lang="{{ $notationType }}">
 {{ $defaultValue }}
 </pre>
 {{- end -}}
