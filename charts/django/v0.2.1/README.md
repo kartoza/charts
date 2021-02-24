@@ -761,3 +761,5 @@ null
 	</tbody>
 </table>
 
+# Helm-Docs Chart Template Version
+common-v1.0.0

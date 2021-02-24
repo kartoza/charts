@@ -3,6 +3,14 @@ Template collections for autodoc using helm-docs
 */}}
 
 {{/*
+Helm-chart docs template version
+*/}}
+{{- define "chart.templates.version" -}}
+# Helm-Docs Chart Template Version
+common-v1.0.0
+{{- end -}}
+
+{{/*
 Default Value Column Render
 Input: list
  - the context
