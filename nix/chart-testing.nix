@@ -15,7 +15,7 @@ pkgs.buildGoModule rec {
 	runVend = true;
 	vendorSha256 = "sha256:1m3sqpmqgglr9blpgvgzg4bysvxdzsqp9znlgn12x48cc7a7n492";
 	postFixup = ''
-		wrapProgram $out/bin/ct --add-flags '--config $PROJECT_ROOT/ct.yaml'
+		wrapProgram $out/bin/ct --add-flags '--config $CT_CONFIG'
 	'';
 	/*
 	# This part is when you need to install chart-testing binary from official
