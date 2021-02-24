@@ -3,13 +3,15 @@
 set -eux
 
 # Make sure environment are set
-[ -d "${ROOT_DIR}" ]
+[ -d "${PROJECT_ROOT}" ]
 
-docker run --rm -it -v "${ROOT_DIR}":/charts --workdir=/charts --entrypoint=ct \
-  quay.io/helmpack/chart-testing "$@"
+docker run --rm -it -v "${PROJECT_ROOT}":"${PROJECT_ROOT}" --workdir="${PWD}" --entrypoint=ct \
+  -e KUBECONFIG="${KUBECONFIG}" \
+  quay.io/helmpack/chart-testing --config "${PROJECT_ROOT}/ct.yaml" "$@"
 
 # The docker based chart-testing tend to write files as root.
 # We don't want that
 USER_GROUP="$(id -u):$(id -g)"
-docker run --rm -it -v "${ROOT_DIR}":/charts --workdir=/charts --entrypoint=/bin/sh \
+docker run --rm -it -v "${PROJECT_ROOT}":"${PROJECT_ROOT}" --workdir="${PWD}" --entrypoint=/bin/sh \
+  -e KUBECONFIG="${KUBECONFIG}" \
   quay.io/helmpack/chart-testing -c "chown -R ${USER_GROUP} ."

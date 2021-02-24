@@ -90,6 +90,15 @@ global:
   # -- (string) Storage class name used to provision PV
   storageClassName:
 
+  # -- (string) Use this if you want to specify the full
+  # Database URL connection
+  databaseURL:
+    value:
+    valueFrom:
+      secretKeyRef:
+        name:
+        key: database-url
+
 # -- (tpl/array) Define this for extra Django environment variables
 # @notationType -- tpl
 extraPodEnv: |
@@ -255,3 +264,9 @@ persistence:
     accessModes:
       - ReadWriteOnce
     annotations: {}
+
+test:
+  django:
+    # -- (tpl/array) List of containers override for testing
+    # @notationType -- (tpl)
+    containers: |

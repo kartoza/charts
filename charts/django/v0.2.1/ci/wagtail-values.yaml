@@ -121,6 +121,8 @@ extraConfigMap: |
         # We do manual copy because they put /code/bakerydemo/media/images as volumes
         # So it overshadows our volumes
         cp -rf /code/bakerydemo/media/* {{ .Values.global.mediaRoot }}
+        cp -rf {{ .Values.global.mediaRoot }}/original_images/* {{ .Values.global.mediaRoot }}/images
+        chown -R 1000:2000 {{ .Values.global.mediaRoot }}
     fi
 
     # Doing collectstatic
@@ -179,3 +181,22 @@ extraPodSpec: |
         - name: static-dir
           mountPath: {{ .Values.global.staticRoot }}
           subPath: {{ .Values.persistence.staticDir.subPath }}
+
+test:
+  django:
+    containers: |
+      - name: {{ .Release.Name }}-test
+        image: curlimages/curl
+        command:
+          - /bin/sh
+          - -ec
+          - |
+            set -eux
+            # check basic url
+            curl -v -H 'Host: {{ .Values.global.siteName }}' {{ template "common.fullname" . }}
+            # check about page
+            curl -v -H 'Host: {{ .Values.global.siteName }}' {{ template "common.fullname" . }}/about/
+            # check breads page
+            curl -v -H 'Host: {{ .Values.global.siteName }}' {{ template "common.fullname" . }}/breads/
+            # check admin page
+            curl -v -H 'Host: {{ .Values.global.siteName }}' {{ template "common.fullname" . }}/admin/
