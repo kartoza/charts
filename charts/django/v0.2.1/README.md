@@ -60,7 +60,7 @@ Optional customizations:
 - Override entrypoint script of Django
 - Override python module requirements
 - Override Nginx config (if you want to use different staticfiles mapping or protocols)
-- Add extra configuration file
+- Add [extra configuration file](#extraConfigMap)
 - Add custom settings.py
 - Add custom urls.py
 - Override DJANGO_SETTINGS_MODULE
