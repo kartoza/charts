@@ -78,7 +78,7 @@ Input: map
   .AutoDefault
 */}}
 {{- define  "chart.keyColumnRender" -}}
-<a id={{ .Key | replace "." "--" }}">{{ .Key }}</a>
+<a id="{{ .Key | replace "." "--" }}">{{ .Key }}</a>
 {{- end -}}
 
 {{/*

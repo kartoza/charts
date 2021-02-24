@@ -23,5 +23,6 @@ jobs:
         uses: lucernae/chart-releaser-action@rancher-1.0
         with:
           level: 3
+          force: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
