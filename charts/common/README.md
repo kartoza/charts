@@ -1,1 +1,1 @@
-charts/common/v1.0.1/README.md
+v1.0.1/README.md

@@ -1,1 +1,1 @@
-nextcloud/v1.12.0/README.md
+v1.12.0/README.md

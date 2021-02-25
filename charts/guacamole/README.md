@@ -1,1 +1,1 @@
-guacamole/v0.1.1/README.md
+v0.1.1/README.md

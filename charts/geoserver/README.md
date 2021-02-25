@@ -1,1 +1,1 @@
-geoserver/v0.3.1/README.md
+v0.3.1/README.md
