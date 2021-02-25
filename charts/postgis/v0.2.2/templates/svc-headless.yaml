@@ -1,0 +1,60 @@
+{{- if (eq "ClusterIP" .Values.service.type)  -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "postgis.fullname" . }}-headless
+  labels:
+    app: {{ template "postgis.fullname" . }}
+    chart: {{ template "postgis.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    {{- with .Values.service.labels }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.service.annotations }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: tcp-postgis
+      port: 5432
+      targetPort: tcp-postgis
+      protocol: TCP
+  selector:
+    app: {{ template "postgis.fullname" . }}
+    release: {{ .Release.Name | quote }}
+{{- else if (eq "LoadBalancer" .Values.service.type) -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "postgis.fullname" . }}-lb
+  labels:
+    app: {{ template "postgis.fullname" . }}
+    chart: {{ template "postgis.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    {{- with .Values.service.labels }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.service.annotations }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+spec:
+  type: LoadBalancer
+  externalIPs:
+    {{- with .Values.service.externalIPs }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  ports:
+    - name: tcp-postgis
+      port: {{ .Values.service.port }}
+      targetPort: tcp-postgis
+      protocol: TCP
+  selector:
+    app: {{ template "postgis.fullname" . }}
+    release: {{ .Release.Name | quote }}
+{{- end -}}
