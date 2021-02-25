@@ -2,6 +2,21 @@ apiVersion: v1
 entries:
   common:
   - apiVersion: v2
+    appVersion: 1.0.1
+    created: "2021-02-25T17:00:45.694089483Z"
+    description: Common library for ops
+    digest: 9827d8a2024f8ad884312e6323af9532e165cb0b4ba296c9c133c4b39e8fb278
+    maintainers:
+    - email: lana.pcfre@gmail.com
+      name: lucernae
+    name: common
+    sources:
+    - https://github.com/kartoza/charts/tree/main/charts/common
+    type: library
+    urls:
+    - https://github.com/kartoza/charts/releases/download/common-1.0.1/common-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
     appVersion: 1.0.0
     created: "2021-02-24T03:39:23.57439384Z"
     description: Common library for ops
@@ -17,6 +32,36 @@ entries:
     - https://github.com/kartoza/charts/releases/download/common-1.0.0/common-1.0.0.tgz
     version: 1.0.0
   django:
+  - apiVersion: v2
+    appVersion: "3.1"
+    created: "2021-02-25T17:00:45.805505006Z"
+    dependencies:
+    - condition: postgis.enabled
+      name: postgis
+      repository: file://../../postgis/v0.2.2
+      tags:
+      - database-backend
+      - postgis
+      version: 0.2.2
+    - name: common
+      repository: file://../../common/v1.0.1
+      version: 1.0.1
+    description: Generic chart for basic Django-based web app
+    digest: 368fdf033ad9cb5597efe81c45b21bcd6abf79d682273b49166ff420e22744c0
+    home: https://www.djangoproject.com/
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/django.png
+    keywords:
+    - Django
+    - Web
+    maintainers:
+    - email: lana.pcfre@gmail.com
+      name: lucernae
+    name: django
+    sources:
+    - https://github.com/django/django
+    urls:
+    - https://github.com/kartoza/charts/releases/download/django-0.2.2/django-0.2.2.tgz
+    version: 0.2.2
   - apiVersion: v2
     appVersion: "3.1"
     created: "2021-02-24T03:39:23.665896126Z"
@@ -306,6 +351,34 @@ entries:
     version: 1.12.0
   postgis:
   - apiVersion: v2
+    appVersion: 13-3
+    created: "2021-02-25T17:00:45.916077825Z"
+    dependencies:
+    - name: common
+      repository: file://../../common/v1.0.1
+      version: 1.0.1
+    description: Chart for postgis
+    digest: 272934da88339e9e843813898e1b815b8d2e2209121a3f38d8cd5251036bce9b
+    home: https://postgis.net/
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/postgis.png
+    keywords:
+    - postgis
+    - postgresql
+    - database
+    - postgres
+    - sql
+    - replication
+    - cluster
+    maintainers:
+    - email: lana.pcfre@gmail.com
+      name: lucernae
+    name: postgis
+    sources:
+    - https://github.com/kartoza/docker-postgis
+    urls:
+    - https://github.com/kartoza/charts/releases/download/postgis-0.2.2/postgis-0.2.2.tgz
+    version: 0.2.2
+  - apiVersion: v2
     appVersion: 12.1-3
     created: "2020-09-11T11:25:22.385189774Z"
     description: Chart for postgis
@@ -368,4 +441,4 @@ entries:
     urls:
     - https://github.com/kartoza/charts/releases/download/qgis-server-0.2.1/qgis-server-0.2.1.tgz
     version: 0.2.1
-generated: "2020-09-11T11:25:21.406490125Z"
+generated: "2021-02-25T17:00:45.916108725Z"
