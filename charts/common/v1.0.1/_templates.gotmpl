@@ -20,9 +20,9 @@ Input: list
 {{- define "chart.valueDefaultColumnRender.default" -}}
 {{- $defaultValue := index . 1 -}}
 {{- $notationType := index . 2 -}}
-<pre lang="{{ $notationType }}">
-{{ $defaultValue }}
-</pre>
+```{{ $notationType }}
+{{ $defaultValue | trim }}
+```
 {{- end -}}
 
 {{/*
@@ -35,10 +35,14 @@ Input: list
 {{- $context := index . 0 -}}
 {{- $defaultValue := index . 1 -}}
 {{- $notationType := index . 2 -}}
-<pre lang="gotpl">
+```yaml
 {{ $context.Key }}: |
-{{- $defaultValue | nindent 2 }}
-</pre>
+{{- if $defaultValue -}}
+{{- $defaultValue | trim | nindent 2 -}}
+{{- else -}}
+{{- end -}}
+{{ "" }}
+```
 {{- end -}}
 
 {{/*
@@ -86,7 +90,7 @@ Input: map
   .AutoDefault
 */}}
 {{- define  "chart.keyColumnRender" -}}
-<a id="{{ .Key | replace "." "--" }}">{{ .Key }}</a>
+<a id="{{.Key}}" class="anchor">{{.Key}}</a>
 {{- end -}}
 
 {{/*
@@ -105,7 +109,7 @@ Input: map
 Chart value Table HTML Section overrides
 */}}
 {{- define "chart.valuesTableHtml" -}}
-<table height="400px">
+<table height="800px">
 	<thead>
 		<th>Key</th>
 		<th>Type</th>
@@ -115,11 +119,27 @@ Chart value Table HTML Section overrides
 	<tbody>
 	{{- range .Values }}
 		<tr>
-			<td>{{- template "chart.keyColumnRender" . -}}</td>
-			<td>{{- template "chart.typeColumnRender" . -}}</td>
-			<td>{{ template "chart.valueDefaultColumnRender" . }}</td>
-			<td>{{ template "chart.descriptionColumnRender" . }}</td>
-		</tr>
+<td>
+
+{{ template "chart.keyColumnRender" . }}
+
+</td>
+<td>
+
+{{ template "chart.typeColumnRender" . }}
+
+</td>
+<td>
+
+{{ template "chart.valueDefaultColumnRender" . }}
+
+</td>
+<td>
+
+{{ template "chart.descriptionColumnRender" . }}
+
+</td>
+</tr>
 	{{- end }}
 	</tbody>
 </table>

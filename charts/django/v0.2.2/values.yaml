@@ -95,6 +95,7 @@ global:
 
   # -- (string) Use this if you want to specify the full
   # Database URL connection
+  # @notationType -- yaml
   databaseURL:
     value:
     valueFrom:
@@ -117,35 +118,35 @@ extraPodEnv: |
 # -- (tpl/object) This will be evaluated as pod spec
 # @notationType -- tpl
 extraPodSpec: |
-#  nodeSelector:
-#    a.label: value
+  #  nodeSelector:
+  #    a.label: value
 
 # -- (tpl/map) Define this for extra secrets to be included in django-shared-secret secret
 # @notationType -- tpl
 extraSecret: |
-#  key_1: value_1
+  #  key_1: value_1
 
 # -- (tpl/map) Define this for extra config map to be included in django-shared-config
 # @notationType -- tpl
 extraConfigMap: |
-# file_1: conf content
+  # file_1: conf content
 
 # -- (tpl/list) Define this for extra volume mounts in the pod
 # @notationType -- tpl
 extraVolumeMounts: |
-# You may potentially mount a config map/secret
-#  - name: custom-config
-#    mountPath: /docker-entrypoint.sh
-#    subPath: docker-entrypoint.sh
-#    readOnly: true
+  # You may potentially mount a config map/secret
+  #  - name: custom-config
+  #    mountPath: /docker-entrypoint.sh
+  #    subPath: docker-entrypoint.sh
+  #    readOnly: true
 
 # -- (tpl/list) Define this for extra volume (in pair with extraVolumeMounts)
 # @notationType -- tpl
 extraVolume: |
-# You may potentially mount a config map/secret
-#  - name: custom-config
-#    configMap:
-#      name: geonode-config
+  # You may potentially mount a config map/secret
+  #  - name: custom-config
+  #    configMap:
+  #      name: geonode-config
 
 service:
   # -- (string) Define k8s service for Django.
@@ -195,6 +196,7 @@ postgis:
   postgresqlUsername: superuser
   # -- (object/common.secret) Postgres super user password. It can be different than
   # [global.databasePassword](#global--databasePassword)
+  # @notationType -- yaml
   postgresqlPassword:
     value:
   # -- (tpl/string) Existing secret to be used

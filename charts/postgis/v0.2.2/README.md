@@ -110,7 +110,7 @@ implementations.
 TODO: Describe how replication works with stateful set pods.
 
 ## Values
-<table height="400px">
+<table height="800px">
 	<thead>
 		<th>Key</th>
 		<th>Type</th>
@@ -119,28 +119,68 @@ TODO: Describe how replication works with stateful set pods.
 	</thead>
 	<tbody>
 		<tr>
-			<td><a id="existingSecret">existingSecret</a></td>
-			<td>tpl/string</td>
-			<td><pre lang="gotpl">
+<td>
+
+<a id="existingSecret" class="anchor">existingSecret</a>
+
+</td>
+<td>
+
+tpl/string
+
+</td>
+<td>
+
+```yaml
 existingSecret: |
- 
-</pre></td>
-			<td>Use this if you have predefined secrets object</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Use this if you have predefined secrets object
+
+</td>
+</tr>
 		<tr>
-			<td><a id="extraConfigMap">extraConfigMap</a></td>
-			<td>tpl/map</td>
-			<td><pre lang="gotpl">
+<td>
+
+<a id="extraConfigMap" class="anchor">extraConfigMap</a>
+
+</td>
+<td>
+
+tpl/map
+
+</td>
+<td>
+
+```yaml
 extraConfigMap: |
   #file_1: "conf content"
- 
-</pre></td>
-			<td>Define this for extra config map</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Define this for extra config map
+
+</td>
+</tr>
 		<tr>
-			<td><a id="extraPodEnv">extraPodEnv</a></td>
-			<td>tpl/list</td>
-			<td><pre lang="gotpl">
+<td>
+
+<a id="extraPodEnv" class="anchor">extraPodEnv</a>
+
+</td>
+<td>
+
+tpl/list
+
+</td>
+<td>
+
+```yaml
 extraPodEnv: |
   #- name: KEY_1
   #  value: "VALUE_1"
@@ -148,72 +188,163 @@ extraPodEnv: |
   #  value: "VALUE_2"
   - name: PASSWORD_AUTHENTICATION
     value: "md5"
- 
-</pre></td>
-			<td>Define this for extra pod environment variables</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Define this for extra pod environment variables
+
+</td>
+</tr>
 		<tr>
-			<td><a id="extraPodSpec">extraPodSpec</a></td>
-			<td>tpl/map</td>
-			<td><pre lang="gotpl">
+<td>
+
+<a id="extraPodSpec" class="anchor">extraPodSpec</a>
+
+</td>
+<td>
+
+tpl/map
+
+</td>
+<td>
+
+```yaml
 extraPodSpec: |
   ##You can set pod attribute if needed
   #ports:
   #  - containerPort: 5432
   #    name: tcp-port
- 
-</pre></td>
-			<td>This will be evaluated as pod spec</td>
-		</tr>
+```
+
+</td>
+<td>
+
+This will be evaluated as pod spec
+
+</td>
+</tr>
 		<tr>
-			<td><a id="extraSecret">extraSecret</a></td>
-			<td>tpl/map</td>
-			<td><pre lang="gotpl">
+<td>
+
+<a id="extraSecret" class="anchor">extraSecret</a>
+
+</td>
+<td>
+
+tpl/map
+
+</td>
+<td>
+
+```yaml
 extraSecret: |
   #key_1: value_1
- 
-</pre></td>
-			<td>Define this for extra secrets to be included</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Define this for extra secrets to be included
+
+</td>
+</tr>
 		<tr>
-			<td><a id="extraVolume">extraVolume</a></td>
-			<td>tpl/list</td>
-			<td><pre lang="gotpl">
+<td>
+
+<a id="extraVolume" class="anchor">extraVolume</a>
+
+</td>
+<td>
+
+tpl/list
+
+</td>
+<td>
+
+```yaml
 extraVolume: |
   ##You may potentially mount a config map/secret
   #- name: custom-config
   #  configMap:
   #    name: geoserver-config
- 
-</pre></td>
-			<td>Define this for extra volume (in pair with extraVolumeMounts)</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Define this for extra volume (in pair with extraVolumeMounts)
+
+</td>
+</tr>
 		<tr>
-			<td><a id="extraVolumeMounts">extraVolumeMounts</a></td>
-			<td>tpl/list</td>
-			<td><pre lang="gotpl">
+<td>
+
+<a id="extraVolumeMounts" class="anchor">extraVolumeMounts</a>
+
+</td>
+<td>
+
+tpl/list
+
+</td>
+<td>
+
+```yaml
 extraVolumeMounts: |
   ##You may potentially mount a config map/secret
   #- name: custom-config
   #  mountPath: /docker-entrypoint.sh
   #  subPath: docker-entrypoint.sh
   #  readOnly: true
- 
-</pre></td>
-			<td>Define this for extra volume mounts in the pod</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Define this for extra volume mounts in the pod
+
+</td>
+</tr>
 		<tr>
-			<td><a id="global--storageClass">global.storageClass</a></td>
-			<td>string</td>
-			<td><pre lang="json">
+<td>
+
+<a id="global.storageClass" class="anchor">global.storageClass</a>
+
+</td>
+<td>
+
+string
+
+</td>
+<td>
+
+```json
 null
-</pre></td>
-			<td>Storage class name used to provision PV</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Storage class name used to provision PV
+
+</td>
+</tr>
 		<tr>
-			<td><a id="image">image</a></td>
-			<td>object/container-image</td>
-			<td><pre lang="yaml">
+<td>
+
+<a id="image" class="anchor">image</a>
+
+</td>
+<td>
+
+object/container-image
+
+</td>
+<td>
+
+```yaml
 # -- Image registry
 registry: docker.io
 # -- Image repository
@@ -222,129 +353,367 @@ repository: kartoza/postgis
 tag: "13-3"
 # -- (k8s/containers/image/imagePullPolicy) Image pullPolicy
 pullPolicy: IfNotPresent
+```
 
-</pre></td>
-			<td>Image map</td>
-		</tr>
+</td>
+<td>
+
+Image map
+
+</td>
+</tr>
 		<tr>
-			<td><a id="image--pullPolicy">image.pullPolicy</a></td>
-			<td>k8s/containers/image/imagePullPolicy</td>
-			<td><pre lang="json">
+<td>
+
+<a id="image.pullPolicy" class="anchor">image.pullPolicy</a>
+
+</td>
+<td>
+
+k8s/containers/image/imagePullPolicy
+
+</td>
+<td>
+
+```json
 "IfNotPresent"
-</pre></td>
-			<td>Image pullPolicy</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Image pullPolicy
+
+</td>
+</tr>
 		<tr>
-			<td><a id="image--registry">image.registry</a></td>
-			<td>string</td>
-			<td><pre lang="json">
+<td>
+
+<a id="image.registry" class="anchor">image.registry</a>
+
+</td>
+<td>
+
+string
+
+</td>
+<td>
+
+```json
 "docker.io"
-</pre></td>
-			<td>Image registry</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Image registry
+
+</td>
+</tr>
 		<tr>
-			<td><a id="image--repository">image.repository</a></td>
-			<td>string</td>
-			<td><pre lang="json">
+<td>
+
+<a id="image.repository" class="anchor">image.repository</a>
+
+</td>
+<td>
+
+string
+
+</td>
+<td>
+
+```json
 "kartoza/postgis"
-</pre></td>
-			<td>Image repository</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Image repository
+
+</td>
+</tr>
 		<tr>
-			<td><a id="image--tag">image.tag</a></td>
-			<td>string</td>
-			<td><pre lang="json">
+<td>
+
+<a id="image.tag" class="anchor">image.tag</a>
+
+</td>
+<td>
+
+string
+
+</td>
+<td>
+
+```json
 "13-3"
-</pre></td>
-			<td>Image tag</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Image tag
+
+</td>
+</tr>
 		<tr>
-			<td><a id="persistence--accessModes">persistence.accessModes</a></td>
-			<td>list</td>
-			<td><pre lang="json">
+<td>
+
+<a id="persistence.accessModes" class="anchor">persistence.accessModes</a>
+
+</td>
+<td>
+
+list
+
+</td>
+<td>
+
+```json
 [
   "ReadWriteOnce"
 ]
-</pre></td>
-			<td>Default Access Modes</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Default Access Modes
+
+</td>
+</tr>
 		<tr>
-			<td><a id="persistence--annotations">persistence.annotations</a></td>
-			<td>map</td>
-			<td><pre lang="json">
+<td>
+
+<a id="persistence.annotations" class="anchor">persistence.annotations</a>
+
+</td>
+<td>
+
+map
+
+</td>
+<td>
+
+```json
 {}
-</pre></td>
-			<td>You can specify extra annotations here</td>
-		</tr>
+```
+
+</td>
+<td>
+
+You can specify extra annotations here
+
+</td>
+</tr>
 		<tr>
-			<td><a id="persistence--enabled">persistence.enabled</a></td>
-			<td>bool</td>
-			<td><pre lang="json">
+<td>
+
+<a id="persistence.enabled" class="anchor">persistence.enabled</a>
+
+</td>
+<td>
+
+bool
+
+</td>
+<td>
+
+```json
 true
-</pre></td>
-			<td>Enable persistence. If set to false, the data directory will use ephemeral volume</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Enable persistence. If set to false, the data directory will use ephemeral volume
+
+</td>
+</tr>
 		<tr>
-			<td><a id="persistence--existingClaim">persistence.existingClaim</a></td>
-			<td>string</td>
-			<td><pre lang="gotpl">
+<td>
+
+<a id="persistence.existingClaim" class="anchor">persistence.existingClaim</a>
+
+</td>
+<td>
+
+string
+
+</td>
+<td>
+
+```yaml
 persistence.existingClaim: |
- 
-</pre></td>
-			<td>A manually managed Persistent Volume and Claim If defined, PVC must be created manually before volume will be bound The value is evaluated as a template, so, for example, the name can depend on .Release or .Chart</td>
-		</tr>
+```
+
+</td>
+<td>
+
+A manually managed Persistent Volume and Claim If defined, PVC must be created manually before volume will be bound The value is evaluated as a template, so, for example, the name can depend on .Release or .Chart
+
+</td>
+</tr>
 		<tr>
-			<td><a id="persistence--mountPath">persistence.mountPath</a></td>
-			<td>path</td>
-			<td><pre lang="json">
+<td>
+
+<a id="persistence.mountPath" class="anchor">persistence.mountPath</a>
+
+</td>
+<td>
+
+path
+
+</td>
+<td>
+
+```json
 "/opt/kartoza/postgis/data"
-</pre></td>
-			<td>The path the volume will be mounted at, useful when using different PostgreSQL images.</td>
-		</tr>
+```
+
+</td>
+<td>
+
+The path the volume will be mounted at, useful when using different PostgreSQL images.
+
+</td>
+</tr>
 		<tr>
-			<td><a id="persistence--size">persistence.size</a></td>
-			<td>string/size</td>
-			<td><pre lang="json">
+<td>
+
+<a id="persistence.size" class="anchor">persistence.size</a>
+
+</td>
+<td>
+
+string/size
+
+</td>
+<td>
+
+```json
 "8Gi"
-</pre></td>
-			<td>Size of the PV</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Size of the PV
+
+</td>
+</tr>
 		<tr>
-			<td><a id="persistence--storageClass">persistence.storageClass</a></td>
-			<td>string</td>
-			<td><pre lang="json">
+<td>
+
+<a id="persistence.storageClass" class="anchor">persistence.storageClass</a>
+
+</td>
+<td>
+
+string
+
+</td>
+<td>
+
+```json
 null
-</pre></td>
-			<td>Storage class name used to provision PV</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Storage class name used to provision PV
+
+</td>
+</tr>
 		<tr>
-			<td><a id="persistence--subPath">persistence.subPath</a></td>
-			<td>string</td>
-			<td><pre lang="json">
+<td>
+
+<a id="persistence.subPath" class="anchor">persistence.subPath</a>
+
+</td>
+<td>
+
+string
+
+</td>
+<td>
+
+```json
 "data"
-</pre></td>
-			<td>The subdirectory of the volume to mount to, useful in dev environments and one PV for multiple services. Default provisioner usually have .lost+found directory, so you might want to use this so the container can have empty volume</td>
-		</tr>
+```
+
+</td>
+<td>
+
+The subdirectory of the volume to mount to, useful in dev environments and one PV for multiple services. Default provisioner usually have .lost+found directory, so you might want to use this so the container can have empty volume
+
+</td>
+</tr>
 		<tr>
-			<td><a id="postgresqlDataDir">postgresqlDataDir</a></td>
-			<td>path</td>
-			<td><pre lang="json">
+<td>
+
+<a id="postgresqlDataDir" class="anchor">postgresqlDataDir</a>
+
+</td>
+<td>
+
+path
+
+</td>
+<td>
+
+```json
 "/opt/kartoza/postgis/data"
-</pre></td>
-			<td>PostgreSQL data dir. Location where you want to store the stateful data</td>
-		</tr>
+```
+
+</td>
+<td>
+
+PostgreSQL data dir. Location where you want to store the stateful data
+
+</td>
+</tr>
 		<tr>
-			<td><a id="postgresqlDatabase">postgresqlDatabase</a></td>
-			<td>string</td>
-			<td><pre lang="json">
+<td>
+
+<a id="postgresqlDatabase" class="anchor">postgresqlDatabase</a>
+
+</td>
+<td>
+
+string
+
+</td>
+<td>
+
+```json
 "gis"
-</pre></td>
-			<td>default generated database name if the image support it, pass a comma-separated list of database name, and it will be exposed in environment variable POSTGRES_DBNAME. The first database will be used to check connection in the probe.</td>
-		</tr>
+```
+
+</td>
+<td>
+
+default generated database name if the image support it, pass a comma-separated list of database name, and it will be exposed in environment variable POSTGRES_DBNAME. The first database will be used to check connection in the probe.
+
+</td>
+</tr>
 		<tr>
-			<td><a id="postgresqlPassword">postgresqlPassword</a></td>
-			<td>object/common.secret</td>
-			<td><pre lang="yaml">
+<td>
+
+<a id="postgresqlPassword" class="anchor">postgresqlPassword</a>
+
+</td>
+<td>
+
+object/common.secret
+
+</td>
+<td>
+
+```yaml
 # -- (string) Specify this password value. If not, it will be
 # autogenerated everytime chart upgraded
 value:
@@ -352,154 +721,427 @@ valueFrom:
     secretKeyRef:
         name:
         key: postgresql-password
+```
 
-</pre></td>
-			<td>Secret structure for postgres super user password Use this for prefilled password</td>
-		</tr>
+</td>
+<td>
+
+Secret structure for postgres super user password Use this for prefilled password
+
+</td>
+</tr>
 		<tr>
-			<td><a id="postgresqlPassword--value">postgresqlPassword.value</a></td>
-			<td>string</td>
-			<td><pre lang="json">
+<td>
+
+<a id="postgresqlPassword.value" class="anchor">postgresqlPassword.value</a>
+
+</td>
+<td>
+
+string
+
+</td>
+<td>
+
+```json
 null
-</pre></td>
-			<td>Specify this password value. If not, it will be autogenerated everytime chart upgraded</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Specify this password value. If not, it will be autogenerated everytime chart upgraded
+
+</td>
+</tr>
 		<tr>
-			<td><a id="postgresqlUsername">postgresqlUsername</a></td>
-			<td>string</td>
-			<td><pre lang="json">
+<td>
+
+<a id="postgresqlUsername" class="anchor">postgresqlUsername</a>
+
+</td>
+<td>
+
+string
+
+</td>
+<td>
+
+```json
 "docker"
-</pre></td>
-			<td>postgres super user</td>
-		</tr>
+```
+
+</td>
+<td>
+
+postgres super user
+
+</td>
+</tr>
 		<tr>
-			<td><a id="probe">probe</a></td>
-			<td>k8s/containers/probe</td>
-			<td><pre lang="gotpl">
+<td>
+
+<a id="probe" class="anchor">probe</a>
+
+</td>
+<td>
+
+k8s/containers/probe
+
+</td>
+<td>
+
+```yaml
 probe: |
- 
-</pre></td>
-			<td>Probe can be overridden If set empty, it will use default probe</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Probe can be overridden If set empty, it will use default probe
+
+</td>
+</tr>
 		<tr>
-			<td><a id="securityContext">securityContext</a></td>
-			<td>k8s/containers/securityContext</td>
-			<td><pre lang="gotpl">
+<td>
+
+<a id="securityContext" class="anchor">securityContext</a>
+
+</td>
+<td>
+
+k8s/containers/securityContext
+
+</td>
+<td>
+
+```yaml
 securityContext: |
   ##You have to use fsGroup if you use custom certificate
   #fsGroup: 101  # postgres group
   #runAsUser: 1000  # run as root
   #runAsGroup: 1000  # run as root
- 
-</pre></td>
-			<td>Define this if you want more control with the security context of the pods</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Define this if you want more control with the security context of the pods
+
+</td>
+</tr>
 		<tr>
-			<td><a id="service--annotations">service.annotations</a></td>
-			<td>tpl/map</td>
-			<td><pre lang="gotpl">
+<td>
+
+<a id="service.annotations" class="anchor">service.annotations</a>
+
+</td>
+<td>
+
+tpl/map
+
+</td>
+<td>
+
+```yaml
 service.annotations: |
- 
-</pre></td>
-			<td>Provide any additional annotations which may be required. Evaluated as a template.</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Provide any additional annotations which may be required. Evaluated as a template.
+
+</td>
+</tr>
 		<tr>
-			<td><a id="service--clusterIP">service.clusterIP</a></td>
-			<td>k8s/service/clusterIP</td>
-			<td><pre lang="json">
+<td>
+
+<a id="service.clusterIP" class="anchor">service.clusterIP</a>
+
+</td>
+<td>
+
+k8s/service/clusterIP
+
+</td>
+<td>
+
+```json
 "None"
-</pre></td>
-			<td>Set to None for Headless Service Otherwise set to "" to give a default cluster IP</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Set to None for Headless Service Otherwise set to "" to give a default cluster IP
+
+</td>
+</tr>
 		<tr>
-			<td><a id="service--labels">service.labels</a></td>
-			<td>tpl/map</td>
-			<td><pre lang="gotpl">
+<td>
+
+<a id="service.labels" class="anchor">service.labels</a>
+
+</td>
+<td>
+
+tpl/map
+
+</td>
+<td>
+
+```yaml
 service.labels: |
- 
-</pre></td>
-			<td>Provide any additional annotations which may be required. Evaluated as a template.</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Provide any additional annotations which may be required. Evaluated as a template.
+
+</td>
+</tr>
 		<tr>
-			<td><a id="service--loadBalancerIP">service.loadBalancerIP</a></td>
-			<td>k8s/service/loadBalancerIP</td>
-			<td><pre lang="json">
+<td>
+
+<a id="service.loadBalancerIP" class="anchor">service.loadBalancerIP</a>
+
+</td>
+<td>
+
+k8s/service/loadBalancerIP
+
+</td>
+<td>
+
+```json
 null
-</pre></td>
-			<td>Set the LoadBalancer service type to internal only. <a href="https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer">ref</a></td>
-		</tr>
+```
+
+</td>
+<td>
+
+Set the LoadBalancer service type to internal only. [ref](https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer)
+
+</td>
+</tr>
 		<tr>
-			<td><a id="service--nodePort">service.nodePort</a></td>
-			<td>k8s/service/nodePort</td>
-			<td><pre lang="json">
+<td>
+
+<a id="service.nodePort" class="anchor">service.nodePort</a>
+
+</td>
+<td>
+
+k8s/service/nodePort
+
+</td>
+<td>
+
+```json
 null
-</pre></td>
-			<td>Specify the nodePort value for the LoadBalancer and NodePort service types. <a href="https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport">ref</a></td>
-		</tr>
+```
+
+</td>
+<td>
+
+Specify the nodePort value for the LoadBalancer and NodePort service types. [ref](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport)
+
+</td>
+</tr>
 		<tr>
-			<td><a id="service--port">service.port</a></td>
-			<td>k8s/service/port</td>
-			<td><pre lang="json">
+<td>
+
+<a id="service.port" class="anchor">service.port</a>
+
+</td>
+<td>
+
+k8s/service/port
+
+</td>
+<td>
+
+```json
 5432
-</pre></td>
-			<td>Default TCP port</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Default TCP port
+
+</td>
+</tr>
 		<tr>
-			<td><a id="service--type">service.type</a></td>
-			<td>k8s/service/type</td>
-			<td><pre lang="json">
+<td>
+
+<a id="service.type" class="anchor">service.type</a>
+
+</td>
+<td>
+
+k8s/service/type
+
+</td>
+<td>
+
+```json
 "ClusterIP"
-</pre></td>
-			<td>PostgresSQL service type</td>
-		</tr>
+```
+
+</td>
+<td>
+
+PostgresSQL service type
+
+</td>
+</tr>
 		<tr>
-			<td><a id="test--postgis--containers">test.postgis.containers</a></td>
-			<td>tpl/array</td>
-			<td><pre lang="json">
+<td>
+
+<a id="test.postgis.containers" class="anchor">test.postgis.containers</a>
+
+</td>
+<td>
+
+tpl/array
+
+</td>
+<td>
+
+```json
 null
-</pre></td>
-			<td>List of containers override for testing</td>
-		</tr>
+```
+
+</td>
+<td>
+
+List of containers override for testing
+
+</td>
+</tr>
 		<tr>
-			<td><a id="tls--ca_file">tls.ca_file</a></td>
-			<td>string</td>
-			<td><pre lang="json">
+<td>
+
+<a id="tls.ca_file" class="anchor">tls.ca_file</a>
+
+</td>
+<td>
+
+string
+
+</td>
+<td>
+
+```json
 "ca.crt"
-</pre></td>
-			<td>Subpath of the secret CA</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Subpath of the secret CA
+
+</td>
+</tr>
 		<tr>
-			<td><a id="tls--cert_file">tls.cert_file</a></td>
-			<td>string</td>
-			<td><pre lang="json">
+<td>
+
+<a id="tls.cert_file" class="anchor">tls.cert_file</a>
+
+</td>
+<td>
+
+string
+
+</td>
+<td>
+
+```json
 "tls.crt"
-</pre></td>
-			<td>Subpath of the secret Cert file</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Subpath of the secret Cert file
+
+</td>
+</tr>
 		<tr>
-			<td><a id="tls--enabled">tls.enabled</a></td>
-			<td>bool</td>
-			<td><pre lang="json">
+<td>
+
+<a id="tls.enabled" class="anchor">tls.enabled</a>
+
+</td>
+<td>
+
+bool
+
+</td>
+<td>
+
+```json
 false
-</pre></td>
-			<td>Enable to true if you can specify where the certificate is located. You must also enable securityContext.fsGroup if you want to use tls</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Enable to true if you can specify where the certificate is located. You must also enable securityContext.fsGroup if you want to use tls
+
+</td>
+</tr>
 		<tr>
-			<td><a id="tls--key_file">tls.key_file</a></td>
-			<td>string</td>
-			<td><pre lang="json">
+<td>
+
+<a id="tls.key_file" class="anchor">tls.key_file</a>
+
+</td>
+<td>
+
+string
+
+</td>
+<td>
+
+```json
 "tls.key"
-</pre></td>
-			<td>Subpath of the secret TLS key</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Subpath of the secret TLS key
+
+</td>
+</tr>
 		<tr>
-			<td><a id="tls--secretName">tls.secretName</a></td>
-			<td>string</td>
-			<td><pre lang="json">
+<td>
+
+<a id="tls.secretName" class="anchor">tls.secretName</a>
+
+</td>
+<td>
+
+string
+
+</td>
+<td>
+
+```json
 null
-</pre></td>
-			<td>Secret of a Certificate kind that stores the certificate</td>
-		</tr>
+```
+
+</td>
+<td>
+
+Secret of a Certificate kind that stores the certificate
+
+</td>
+</tr>
 	</tbody>
 </table>
 

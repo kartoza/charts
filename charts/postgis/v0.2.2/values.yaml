@@ -122,7 +122,7 @@ service:
   port: 5432
 
   # -- (k8s/service/nodePort) Specify the nodePort value for the LoadBalancer and NodePort service types.
-  # <a href="https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport">ref</a>
+  # [ref](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport)
   nodePort:
 
   # -- (tpl/map) Provide any additional annotations which may be required.
@@ -136,7 +136,7 @@ service:
   annotations: |
 
   # -- (k8s/service/loadBalancerIP) Set the LoadBalancer service type to internal only.
-  # <a href="https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer">ref</a>
+  # [ref](https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer)
   loadBalancerIP:
 
 
