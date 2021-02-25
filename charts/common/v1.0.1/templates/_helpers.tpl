@@ -44,7 +44,9 @@ Derive shared secret name for this release
 Must only depends on global values
 */}}
 {{- define "common.sharedSecretName" -}}
-	{{- $secretName := default (tpl .Values.global.sharedSecretName $) (tpl .Values.global.existingSecret $) -}}
+	{{- $globalSharedSecretTemplate := default "" .Values.global.sharedSecretName -}}
+	{{- $existingSecretTemplate := default "" .Values.existingSecret -}}
+	{{- $secretName := default (tpl $globalSharedSecretTemplate $) (tpl $existingSecretTemplate $) -}}
 	{{- default .Release.Name $secretName -}}
 {{- end -}}
 
@@ -63,22 +65,25 @@ Get the secret from declared source
 {{- define "common.secretFrom" -}}
 valueFrom:
   secretKeyRef:
-  {{- if .Value.valueFrom.secretKeyRef.name }}
-    name: {{ .Value.valueFrom.secretKeyRef.name | quote }}
-  {{- else }}
-    name: {{ include "common.sharedSecretName" .Context | quote }}
-  {{- end }}
-    key: {{ .Value.valueFrom.secretKeyRef.key | quote }}
+    name: {{ include "common.secretName" . | quote }}
+    key: {{ include "common.secretKey" .Value | quote }}
 {{- end -}}
 
 {{/*
 Get the password secret.
+This takes a map of
+ - Value: the secret object structure
+ - Context: the top level context
 */}}
 {{- define "common.secretName" -}}
-{{- if .Value.valueFrom.secretKeyRef.name -}}
+{{- if .Context.existingSecret -}}
+    {{- printf "%s" (tpl .Context.existingSecret $) -}}
+{{- else if .Value.valueFrom.secretKeyRef.name -}}
     {{- printf "%s" (tpl .valueFrom.secretKeyRef.name $) -}}
+{{- else if not (eq (include "common.sharedSecretName" .Context) .Context.Release.Name) -}}
+    {{- include "common.sharedSecretName" .Context -}}
 {{- else -}}
-    {{- printf "%s" (include "common.sharedSecretName" .Context) -}}
+    {{- include "common.fullname" .Context -}}
 {{- end -}}
 {{- end -}}
 
@@ -112,4 +117,15 @@ This takes an array of three values:
 {{- $overrides := fromYaml (include (index . 1) $top) | default (dict ) -}}
 {{- $tpl := fromYaml (include (index . 2) $top) | default (dict ) -}}
 {{- toYaml (merge $overrides $tpl) -}}
+{{- end -}}
+
+{{/*
+Return the name of the storageClass assigned
+*/}}
+{{- define "common.storageClass" -}}
+{{- $defaultClass := coalesce .storageClass .Values.persistence.storageClass .Values.storageClass .Values.global.storageClass -}}
+{{- if $defaultClass -}}
+storageClassName: {{ $defaultClass | quote }}
+{{- else -}}
+{{- end -}}
 {{- end -}}
