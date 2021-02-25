@@ -1,0 +1,8 @@
+{{- define "common.pvc.tpl" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+{{ include "common.metadata.tpl" . }}
+{{- end -}}
+{{- define "common.pvc" -}}
+{{ include "common.util.merge" (append . "common.pvc.tpl") }}
+{{- end -}}
