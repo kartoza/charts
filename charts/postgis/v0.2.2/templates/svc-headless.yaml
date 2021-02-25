@@ -1,13 +1,7 @@
-{{- if (eq "ClusterIP" .Values.service.type)  -}}
-apiVersion: v1
-kind: Service
+{{- define "postgis.service.basic" -}}
 metadata:
-  name: {{ template "postgis.fullname" . }}-headless
+  name: {{ include "postgresql.service.name" . }}
   labels:
-    app: {{ template "postgis.fullname" . }}
-    chart: {{ template "postgis.chart" . }}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
     {{- with .Values.service.labels }}
     {{- tpl . $ | nindent 4 }}
     {{- end }}
@@ -17,24 +11,39 @@ metadata:
     {{- end }}
 spec:
   type: ClusterIP
+  clusterIP: ""
   ports:
     - name: tcp-postgis
-      port: 5432
+      port: {{ .Values.service.port }}
       targetPort: tcp-postgis
       protocol: TCP
-  selector:
-    app: {{ template "postgis.fullname" . }}
-    release: {{ .Release.Name | quote }}
-{{- else if (eq "LoadBalancer" .Values.service.type) -}}
-apiVersion: v1
-kind: Service
+{{- end -}}
+
+{{- define "postgis.service.headless" -}}
 metadata:
-  name: {{ template "postgis.fullname" . }}-lb
+  name: {{ template "common.fullname" . }}-headless
   labels:
-    app: {{ template "postgis.fullname" . }}
-    chart: {{ template "postgis.chart" . }}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    {{- with .Values.service.labels }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.service.annotations }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+spec:
+  type: "ClusterIP"
+  clusterIP: {{ .Values.service.clusterIP }}
+  ports:
+    - name: tcp-postgis
+      port: {{ .Values.service.port }}
+      targetPort: tcp-postgis
+      protocol: TCP
+{{- end -}}
+
+{{- define "postgis.service.loadbalancer" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-lb
+  labels:
     {{- with .Values.service.labels }}
     {{- tpl . $ | nindent 4 }}
     {{- end }}
@@ -54,7 +63,15 @@ spec:
       port: {{ .Values.service.port }}
       targetPort: tcp-postgis
       protocol: TCP
-  selector:
-    app: {{ template "postgis.fullname" . }}
-    release: {{ .Release.Name | quote }}
 {{- end -}}
+
+---
+{{- include "common.service" (list . "postgis.service.basic") }}
+...
+---
+{{- if (eq "ClusterIP" .Values.service.type) }}
+{{- include "common.service" (list . "postgis.service.headless") -}}
+{{- else if (eq "LoadBalancer" .Values.service.type) }}
+{{- include "common.service" (list . "postgis.service.loadbalancer") -}}
+{{- end }}
+...

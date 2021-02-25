@@ -3,8 +3,8 @@ To access postgres:
 1. Get user and password:
 
    ```bash
-   export PGUSER=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "postgis.fullname" . }} -o jsonpath='{.data.postgresql-user}' | base64 --decode)
-   export PGPASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "postgis.fullname" . }} -o jsonpath='{.data.postgresql-password}'  | base64 --decode)
+   export PGUSER=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "common.fullname" . }} -o jsonpath='{.data.postgresql-user}' | base64 --decode)
+   export PGPASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "common.fullname" . }} -o jsonpath='{.data.{{ template "common.secretKey" .Values.postgresqlPassword }}}' | base64 --decode)
    ```
 
 {{- if (eq "ClusterIP" .Values.service.type) }}

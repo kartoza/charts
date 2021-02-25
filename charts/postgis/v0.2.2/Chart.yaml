@@ -1,7 +1,7 @@
 apiVersion: v2
 name: postgis
-version: 0.2.1
-appVersion: 12.1-3
+version: 0.2.2
+appVersion: 13-3
 description: Chart for postgis
 keywords:
   - postgis
@@ -19,3 +19,7 @@ maintainers:
     email: lana.pcfre@gmail.com
 engine: gotpl
 icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/postgis.png
+dependencies:
+  - name: common
+    version: 1.0.1
+    repository: "file://../../common/v1.0.1"
