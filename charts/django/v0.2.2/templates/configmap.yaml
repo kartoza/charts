@@ -1,0 +1,17 @@
+{{- include "common.configmap" (list . "django.configmap") -}}
+{{- define "django.configmap" -}}
+metadata:
+  {{- if .Values.global.sharedConfigName }}
+  name: {{ .Values.global.sharedConfigName }}
+  {{- else }}
+  name: {{ template "common.fullname" . }}-configmap
+  {{- end }}
+{{- if .Values.extraConfigMap }}
+data:
+  {{- with .Values.extraConfigMap }}
+  {{- tpl . $ | nindent 2 }}
+  {{- end }}
+{{- else }}
+data: {}
+{{- end }}
+{{- end -}}

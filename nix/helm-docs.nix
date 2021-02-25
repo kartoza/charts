@@ -13,8 +13,6 @@ pkgs.buildGoModule {
 	vendorSha256 = "sha256:0wqs35r570icja95g4qf4kzh1wlm4smfiq5flmg4cn4xqv4r1161";
 	nativeBuildInputs = [ pkgs.makeWrapper ];
 	postFixup = ''
-		wrapProgram $out/bin/helm-docs \
-			--add-flags -t=_templates.gotmpl \
-			--add-flags -t=README.md.gotmpl
+		wrapProgram $out/bin/helm-docs --add-flags '$HELM_DOCS_ARGS'
 	'';
 }
