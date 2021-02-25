@@ -1,0 +1,16 @@
+{{- define "common.statefulset.tpl" -}}
+apiVersion: apps/v1
+kind: StatefulSet
+{{ include "common.metadata.tpl" . }}
+spec:
+  serviceName: {{ template "common.fullname" . }}
+  selector:
+    matchLabels:
+      app: {{ template "common.fullname" . }}
+      release: {{ .Release.Name | quote }}
+  template:
+    {{- include "common.metadata.tpl" . | nindent 4 }}
+{{- end -}}
+{{- define "common.statefulset" -}}
+{{ include "common.util.merge" (append . "common.statefulset.tpl") }}
+{{- end -}}

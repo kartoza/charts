@@ -1,8 +1,12 @@
 chart-dirs:
+  - charts/django
   - charts/geoserver
   - charts/postgis
   - charts/geonode
   - charts/guacamole
   - charts/qgis-server
+target-branch: main
+chart-repos:
+  - bitnami=https://charts.bitnami.com/bitnami
 check-version-increment: no
-helm-extra-args: --timeout 600s
+helm-extra-args: --timeout 3600s

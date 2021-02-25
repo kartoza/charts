@@ -1,0 +1,10 @@
+{{- define "common.metadata.tpl" -}}
+metadata:
+  name: {{ template "common.fullname" . }}
+  labels:
+    app: {{ template "common.fullname" . }}
+    chart: {{ template "common.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  namespace: {{ .Release.Namespace }}
+{{- end -}}

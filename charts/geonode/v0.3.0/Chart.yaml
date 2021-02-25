@@ -1,0 +1,42 @@
+apiVersion: v2
+name: geonode
+version: 0.3.0
+appVersion: 3.0.0
+description: Chart for GeoNode
+keywords:
+  - GeoNode
+  - GIS
+  - GeoServer
+home: http://geonode.org
+sources:
+  - https://github.com/GeoNode/geonode
+maintainers:
+  - name: lucernae
+    email: rizky@kartoza.com
+  - name: lucernae
+    email: lana.pcfre@gmail.com
+icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/geonode-logo_for_readme.gif
+engine: gotpl
+dependencies:
+  - name: postgis
+    version: 0.2.1
+    repository: "file://../../postgis/v0.2.1"
+    condition: postgis.enabled
+    tags:
+      - database-backend
+      - postgis
+  - name: geoserver
+    version: 0.2.1
+    repository: "file://../../geoserver/v0.2.1"
+    condition: geoserver.enabled
+    tags:
+      - map-backend
+      - geoserver
+  - name: rabbitmq
+    version: 7.6.6
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: rabbitmq.enabled
+    tags:
+      - broker
+      - rabbitmq
+      - amqp

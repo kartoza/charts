@@ -2,3 +2,18 @@
 .idea
 .python-version
 Chart.lock
+
+# direnv related
+.direnv
+.local.envrc
+.local.env
+
+# k8s related
+kubeconfig.yaml
+
+# nix related
+result
+local-shell.nix
+
+# chart-testing related
+ct.override.yaml

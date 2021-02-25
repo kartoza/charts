@@ -1,0 +1,554 @@
+image:
+  registry: docker.io
+  repository: geonode/spcgeonode
+  tag: "django-3.0"
+  pullPolicy: IfNotPresent
+
+global:
+  # This name is used for service interconnection between subcharts and parent charts.
+  nameOverride: geonode
+  existingSecret: |
+  sharedSecretName: geonode-shared-secret
+  # generic values
+  geonodeSiteName: geonode
+  geonodeSiteURL: |
+    http://{{- .Values.global.geonodeSiteName -}}/
+  geonodeCommand: |
+    ["/spcgeonode/scripts/spcgeonode/django/docker-entrypoint.sh"]
+  geonodeArgs: |
+    ["uwsgi","--chdir=/spcgeonode","--module=geonode.wsgi","--socket=:8000","--http=0.0.0.0:8080","--processes=5","--buffer-size=8192"]
+  adminUser: admin
+  adminPassword:
+    value:
+    valueFrom:
+      secretKeyRef:
+        name:
+        key: admin-password
+  adminEmail: admin@localhost
+  djangoSecretKey:
+    value:
+    valueFrom:
+      secretKeyRef:
+        name:
+        key: django-secret
+  databaseUsername: geonode
+  databasePassword:
+    value:
+    valueFrom:
+      secretKeyRef:
+        name:
+        key: database-password
+  databaseName: geonode
+  databaseHost: postgis
+  databasePort: 5432
+  debug: "False"
+  djangoSettingsModule: geonode.local_settings
+  staticRoot: /opt/geonode/static
+  mediaRoot: /opt/geonode/media
+  # geoserverURL must end with slash
+  geoserverURL: |
+  internalGeoserverURL: |
+  # geoserver specific values
+  geoserverAdminUser: admin
+  geoserverAdminPassword:
+    value:
+    valueFrom:
+      secretKeyRef:
+        name:
+        key: geoserver-password
+  geodatabaseUsername: geonode_data
+  geodatabasePassword:
+    value:
+    valueFrom:
+      secretKeyRef:
+        name:
+        key: geodatabase-password
+  geodatabaseName: geonode_data
+  geodatabaseHost: postgis
+  geodatabasePort: 5432
+
+  # Celery async settings
+  celeryAsync:
+    enabled: false
+    brokerUser: |
+      {{- .Values.rabbitmq.auth.username -}}
+
+    brokerPassword: |
+      {{- .Values.rabbitmq.auth.password -}}
+
+    externalBroker:
+      enabled: false
+      brokerURL:
+
+    commandSpec:
+      celery:
+        command: |
+          ["/usr/local/bin/celery"]
+        args: |
+          ["worker","--app=geonode.celery_app:app","-l=debug"]
+      celerybeat:
+        command: |
+          ["/usr/local/bin/celery"]
+        args: |
+          ["beat","--app=geonode.celery_app:app","--pidfile=/celerybeat.pid","-l=debug"]
+      celerycam:
+        command: |
+          ["/usr/local/bin/celery"]
+        args: |
+          ["events","--app=geonode.celery_app:app","--pidfile=/celeryev.pid","--camera=django_celery_monitor.camera.Camera","--frequency=2.0","-l=debug"]
+
+# Define this for extra GeoNode environment variables
+extraPodEnv: |
+  - name: C_FORCE_ROOT
+    value: "True"
+  - name: MONITORING_ENABLED
+    value: "False"
+#  - name: KEY_1
+#    value: "VALUE_1"
+#  - name: KEY_2
+#    value: "VALUE_2"
+
+# This will be evaluated as pod spec
+extraPodSpec: |
+#  nodeSelector:
+#    a.label: value
+
+# Define this for extra secrets to be included
+extraSecret: |
+#  key_1: value_1
+
+# Define this for extra config map
+extraConfigMap: |
+# file_1: conf content
+
+# Define this for extra volume mounts in the pod
+extraVolumeMounts: |
+# You may potentially mount a config map/secret
+#  - name: custom-config
+#    mountPath: /docker-entrypoint.sh
+#    subPath: docker-entrypoint.sh
+#    readOnly: true
+
+# Define this for extra volume (in pair with extraVolumeMounts)
+extraVolume: |
+# You may potentially mount a config map/secret
+#  - name: custom-config
+#    configMap:
+#      name: geonode-config
+
+service:
+  ## GeoNode service
+  type: ClusterIP
+  # clusterIP: ""
+  # externalIPs: ""
+  port: 80
+
+  # nodePort:
+
+  annotations: {}
+
+ingress:
+  enabled: false
+  # host: geonode.test
+  annotations: {}
+  labels: {}
+  tls:
+    enabled: false
+    ## Provide secret name if tls is enabled
+    secretName: geonode-tls
+
+# probe can be overridden
+probe: |
+
+geoserver:
+  # Set to enable to generate subcharts
+  enabled: true
+  image:
+    registry: docker.io
+    repository: geonode/spcgeonode
+    tag: "geoserver-3.0"
+    pullPolicy: IfNotPresent
+
+  ingress:
+    enabled: false
+    # host: geonode.test
+    annotations: {}
+    labels: {}
+    tls:
+      enabled: false
+      ## Provide secret name if tls is enabled
+      secretName: geonode-tls
+
+  geoserverDataDir: /spcgeonode-geodatadir
+  geowebcacheCacheDir: /spcgeonode-geodatadir/gwc
+  existingSecret: |
+    {{ include "geonode.sharedSecretName" . | quote -}}
+
+  extraPodEnv: |
+    - name: HTTP_HOST
+      value: {{ .Values.global.geonodeSiteName | quote }}
+    - name: HTTP_PORT
+      value: "80"
+    {{- if .Values.ingress.tls.enabled }}
+    - name: HTTPS_HOST
+      value: {{ .Values.global.geonodeSiteName | quote }}
+    - name: HTTPS_PORT
+      value: "443"
+    {{- end }}
+    - name: ADMIN_USERNAME
+      value: {{ default "admin" .Values.global.geoserverAdminUser | quote }}
+    - name: ADMIN_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "geonode.sharedSecretName" . | quote }}
+          key: {{ .Values.global.geoserverAdminPassword.valueFrom.secretKeyRef.key }}
+    - name: DATABASE_URL
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "geonode.sharedSecretName" . | quote }}
+          key: database-url
+    - name: GEODATABASE_URL
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "geonode.sharedSecretName" . | quote }}
+          key: geodatabase-url
+    - name: INTERNAL_OAUTH2_BASEURL
+      value: "http://{{ include "geonode.fullname" . }}"
+    {{- if .Values.ingress.enabled }}
+    - name: GEONODE_URL
+      value: "http://{{ .Values.global.geonodeSiteName }}"
+    {{- end }}
+    {{- if .Values.ingress.tls.enabled }}
+    - name: SSL_CERT_FILE
+      value: "/tmp/tls-secrets/tls.crt"
+    {{- end }}
+
+  extraConfigMap: |
+    docker-entrypoint.sh: |
+      #!/bin/sh
+
+      # Exit script in case of error
+      set -e
+
+      echo $"\n\n\n"
+      echo "-----------------------------------------------------"
+      echo "STARTING GEOSERVER ENTRYPOINT -----------------------"
+      date
+
+
+      ############################
+      # 0. Defining BASEURL
+      ############################
+
+      echo "-----------------------------------------------------"
+      echo "0. Defining BASEURL"
+
+      if [ ! -z "$HTTPS_HOST" ]; then
+          BASEURL="https://$HTTPS_HOST"
+          if [ "$HTTPS_PORT" != "443" ]; then
+              BASEURL="$BASEURL:$HTTPS_PORT"
+          fi
+      else
+          BASEURL="http://$HTTP_HOST"
+          if [ "$HTTP_PORT" != "80" ]; then
+              BASEURL="$BASEURL:$HTTP_PORT"
+          fi
+      fi
+      export INTERNAL_OAUTH2_BASEURL="${INTERNAL_OAUTH2_BASEURL:=$BASEURL}"
+      export GEONODE_URL="${GEONODE_URL:=$BASEURL}"
+      export BASEURL="$BASEURL/geoserver"
+
+      echo "INTERNAL_OAUTH2_BASEURL is $INTERNAL_OAUTH2_BASEURL"
+      echo "GEONODE_URL is $GEONODE_URL"
+      echo "BASEURL is $BASEURL"
+
+      ############################
+      # 1. Initializing Geodatadir
+      ############################
+
+      echo "-----------------------------------------------------"
+      echo "1. Initializing Geodatadir"
+
+      if [ "$(ls -A /spcgeonode-geodatadir/workspaces)" ]; then
+          echo 'Geodatadir not empty, skipping initialization...'
+      else
+          echo 'Geodatadir empty, we run initialization...'
+          cp -rf /data/* /spcgeonode-geodatadir/
+      fi
+
+
+      ############################
+      # 2. ADMIN ACCOUNT
+      ############################
+
+      # This section is not strictly required but allows to login geoserver with the admin account even if OAuth2 is unavailable (e.g. if Django can't start)
+
+      echo "-----------------------------------------------------"
+      echo "2. (Re)setting admin account"
+
+      ADMIN_ENCRYPTED_PASSWORD=$(/usr/lib/jvm/java-1.8-openjdk/jre/bin/java -classpath /geoserver/webapps/geoserver/WEB-INF/lib/jasypt-1.9.2.jar org.jasypt.intf.cli.JasyptStringDigestCLI digest.sh algorithm=SHA-256 saltSizeBytes=16 iterations=100000 input="$ADMIN_PASSWORD" verbose=0 | tr -d '\n')
+      sed -i -r "s|<user enabled=\".*\" name=\".*\" password=\".*\"/>|<user enabled=\"true\" name=\"$ADMIN_USERNAME\" password=\"digest1:$ADMIN_ENCRYPTED_PASSWORD\"/>|" "/spcgeonode-geodatadir/security/usergroup/default/users.xml"
+      # TODO : more selective regexp for this one as there may be several users...
+      sed -i -r "s|<userRoles username=\".*\">|<userRoles username=\"$ADMIN_USERNAME\">|" "/spcgeonode-geodatadir/security/role/default/roles.xml"
+      ADMIN_ENCRYPTED_PASSWORD=""
+
+      ############################
+      # 3. WAIT FOR POSTGRESQL
+      ############################
+
+      echo "-----------------------------------------------------"
+      echo "3. Wait for PostgreSQL to be ready and initialized"
+
+      # Wait for PostgreSQL
+      set +e
+      for i in $(seq 60); do
+          sleep 10
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c "SELECT client_id FROM oauth2_provider_application" &>/dev/null && break
+      done
+      if [ $? != 0 ]; then
+          echo "PostgreSQL not ready or not initialized"
+          exit 1
+      fi
+      set -e
+
+      ############################
+      # 4. OAUTH2 CONFIGURATION
+      ############################
+
+      echo "-----------------------------------------------------"
+      echo "4. (Re)setting OAuth2 Configuration"
+
+      # Edit /spcgeonode-geodatadir/security/filter/geonode-oauth2/config.xml
+
+      # Getting oauth keys and secrets from the database
+      CLIENT_ID=$(psql "$DATABASE_URL" -c "SELECT client_id FROM oauth2_provider_application WHERE name='GeoServer'" -t | tr -d '[:space:]')
+      CLIENT_SECRET=$(psql "$DATABASE_URL" -c "SELECT client_secret FROM oauth2_provider_application WHERE name='GeoServer'" -t | tr -d '[:space:]')
+      if [ -z "$CLIENT_ID" ] || [ -z "$CLIENT_SECRET" ]; then
+          echo "Could not get OAuth2 ID and SECRET from database. Make sure Postgres container is started and Django has finished it's migrations."
+          exit 1
+      fi
+
+      sed -i -r "s|<cliendId>.*</cliendId>|<cliendId>$CLIENT_ID</cliendId>|" "/spcgeonode-geodatadir/security/filter/geonode-oauth2/config.xml"
+      sed -i -r "s|<clientSecret>.*</clientSecret>|<clientSecret>$CLIENT_SECRET</clientSecret>|" "/spcgeonode-geodatadir/security/filter/geonode-oauth2/config.xml"
+      # OAuth endpoints (client)
+      sed -i -r "s|<userAuthorizationUri>.*</userAuthorizationUri>|<userAuthorizationUri>$GEONODE_URL/o/authorize/</userAuthorizationUri>|" "/spcgeonode-geodatadir/security/filter/geonode-oauth2/config.xml"
+      sed -i -r "s|<redirectUri>.*</redirectUri>|<redirectUri>$BASEURL/index.html</redirectUri>|" "/spcgeonode-geodatadir/security/filter/geonode-oauth2/config.xml"
+      sed -i -r "s|<logoutUri>.*</logoutUri>|<logoutUri>$GEONODE_URL/account/logout/</logoutUri>|" "/spcgeonode-geodatadir/security/filter/geonode-oauth2/config.xml"
+      # OAuth endpoints (server)
+      sed -i -r "s|<accessTokenUri>.*</accessTokenUri>|<accessTokenUri>$INTERNAL_OAUTH2_BASEURL/o/token/</accessTokenUri>|" "/spcgeonode-geodatadir/security/filter/geonode-oauth2/config.xml"
+      sed -i -r "s|<checkTokenEndpointUrl>.*</checkTokenEndpointUrl>|<checkTokenEndpointUrl>$INTERNAL_OAUTH2_BASEURL/api/o/v4/tokeninfo/</checkTokenEndpointUrl>|" "/spcgeonode-geodatadir/security/filter/geonode-oauth2/config.xml"
+
+      # Edit /security/role/geonode REST role service/config.xml
+      sed -i -r "s|<baseUrl>.*</baseUrl>|<baseUrl>$BASEURL</baseUrl>|" "/spcgeonode-geodatadir/security/role/geonode REST role service/config.xml"
+
+      CLIENT_ID=""
+      CLIENT_SECRET=""
+
+
+      ############################
+      # 5. RE(SETTING) BASE URL
+      ############################
+
+      echo "-----------------------------------------------------"
+      echo "5. (Re)setting Baseurl"
+
+      sed -i -r "s|<proxyBaseUrl>.*</proxyBaseUrl>|<proxyBaseUrl>$BASEURL</proxyBaseUrl>|" "/spcgeonode-geodatadir/global.xml"
+
+      ############################
+      # 6. IMPORTING SSL CERTIFICATE
+      ############################
+
+      echo "-----------------------------------------------------"
+      echo "6. Importing SSL certificate (if using HTTPS)"
+
+      # https://docs.geoserver.org/stable/en/user/community/oauth2/index.html#ssl-trusted-certificates
+      if [ ! -z "$HTTPS_HOST" ]; then
+          # Random password are generated every container restart
+          PASSWORD=$(openssl rand -base64 18)
+          # Since keystore password are autogenerated every container restart,
+          # The same keystore will not be able to be opened again.
+          # So, we create a new one.
+          rm -f /keystore.jks
+
+          # Support for Kubernetes/Docker file secrets if the certificate file path is defined
+          if [ ! -z "${SSL_CERT_FILE}" ]; then
+            cp -f ${SSL_CERT_FILE} server.crt
+          else
+            openssl s_client -connect ${HTTPS_HOST#https://}:${HTTPS_PORT} </dev/null |
+                openssl x509 -out server.crt
+          fi
+
+          # create a keystore and import certificate
+          if [ "$(ls -A /keystore.jks)" ]; then
+          echo 'Keystore not empty, skipping initialization...'
+          else
+          echo 'Keystore empty, we run initialization...'
+              keytool -import -noprompt -trustcacerts \
+                  -alias ${HTTPS_HOST} -file server.crt \
+                  -keystore /keystore.jks -storepass ${PASSWORD}
+          fi
+          rm server.crt
+
+          JAVA_OPTS="$JAVA_OPTS -Djavax.net.ssl.keyStore=/keystore.jks -Djavax.net.ssl.keyStorePassword=$PASSWORD"
+      fi
+
+      echo "-----------------------------------------------------"
+      echo "FINISHED GEOSERVER ENTRYPOINT -----------------------"
+      echo "-----------------------------------------------------"
+
+      # Run the CMD
+      exec "$@"
+
+
+  extraVolume: |
+    - name: config-volume
+      configMap:
+        name: {{ template "geoserver.fullname" . }}
+        defaultMode: 0755
+    {{- if .Values.ingress.tls.enabled }}
+    - name: tls-volume
+      secret:
+        secretName: {{ .Values.ingress.tls.secretName | quote }}
+    {{- end }}
+
+  extraVolumeMounts: |
+    - mountPath: /docker-entrypoint.sh
+      subPath: docker-entrypoint.sh
+      name: config-volume
+    {{- if .Values.ingress.tls.enabled }}
+    - mountPath: /tmp/tls-secrets/tls.crt
+      subPath: tls.crt
+      name: tls-volume
+    {{- end }}
+
+  persistence:
+    geoserverDataDir:
+      mountPath: /spcgeonode-geodatadir
+    geowebcacheCacheDir:
+      mountPath: /spcgeonode-geodatadir/gwc
+
+  podLabels: |
+    geonode/app: geonode
+
+  # Use external to use external service
+  external:
+    url: http://geoserver/geoserver/
+    admin_user: admin
+    # leave empty to auto generate,
+    # fill to hardcode values,
+    # supply secrets ref to take values from secrets
+    admin_password:
+      valueFrom:
+        secretKeyRef:
+          name:
+          key: geoserver-password
+
+postgis:
+  enabled: true
+
+  postgresqlUsername: geonode
+  postgresqlPassword:
+  postgresqlDatabase: geonode
+  existingSecret: |
+    {{ include "geonode.sharedSecretName" . | quote -}}
+
+  extraPodEnv: |
+    - name: GEODATABASE_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "geonode.sharedSecretName" . | quote }}
+          key: {{ .Values.global.geodatabasePassword.valueFrom.secretKeyRef.key }}
+
+  extraConfigMap: |
+    geonode-db.sh: |
+      #!/usr/bin/env bash
+      GEODATABASE="{{ .Values.global.geodatabaseName }}"
+      # password comes from environment variables, so it can be retrieved from secret
+      GEODATABASE_USER="{{ .Values.global.geodatabaseUsername }}"
+      createdb ${GEODATABASE}
+      cat << EOF | su postgres -c "psql -d $GEODATABASE"
+      -- Create database for Geonode to store vector layers
+      CREATE EXTENSION IF NOT EXISTS postgis;
+      -- Create role
+      CREATE ROLE ${GEODATABASE_USER};
+      ALTER ROLE ${GEODATABASE_USER} LOGIN PASSWORD '${GEODATABASE_PASSWORD}';
+      ALTER DATABASE ${GEODATABASE} OWNER TO ${GEODATABASE_USER};
+      EOF
+
+
+  extraVolume: |
+    - name: config-volume
+      configMap:
+        name: {{ template "postgis.fullname" . }}
+        defaultMode: 0755
+
+  extraVolumeMounts: |
+    - mountPath: /docker-entrypoint-initdb.d/geonode-db.sh
+      subPath: geonode-db.sh
+      name: config-volume
+
+  podLabels: |
+    geonode/app: geonode
+
+  external:
+    host: postgis
+    port: 5432
+    user: geonode
+    password:
+      valueFrom:
+        secretKeyRef:
+          name:
+          key: database-password
+
+
+persistence:
+  staticDir:
+    enabled: true
+    existingClaim: false
+    mountPath: /opt/geonode/static
+    subPath: "static"
+    size: 8Gi
+    accessModes:
+      - ReadWriteOnce
+    annotations: {}
+  mediaDir:
+    enabled: true
+    existingClaim: false
+    mountPath: /opt/geonode/media
+    subPath: "media"
+    size: 8Gi
+    accessModes:
+      - ReadWriteOnce
+    annotations: {}
+
+networkPolicy:
+  ## Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
+  ##
+  enabled: false
+
+  ## The Policy model to apply. When set to false, only pods with the correct
+  ## client label will have network access to the port PostgreSQL is listening
+  ## on. When true, PostgreSQL will accept connections from any source
+  ## (with the correct destination port).
+  ##
+  allowExternal: true
+
+  ## if explicitNamespacesSelector is missing or set to {}, only client Pods that are in the networkPolicy's namespace
+  ## and that match other criteria, the ones that have the good label, can reach the DB.
+  ## But sometimes, we want the DB to be accessible to clients from other namespaces, in this case, we can use this
+  ## LabelSelector to select these namespaces, note that the networkPolicy's namespace should also be explicitly added.
+  ##
+  ## Example:
+  ## explicitNamespacesSelector:
+  ##   matchLabels:
+  ##     role: frontend
+  ##   matchExpressions:
+  ##    - {key: role, operator: In, values: [frontend]}
+  explicitNamespacesSelector: {}
+
+rabbitmq:
+  enabled: false
+  auth:
+    username: rabbit
+    password: alice
+    erlangCookie: randomsecret

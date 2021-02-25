@@ -12,19 +12,77 @@ jobs:
       - name: Fetch history
         run: git fetch --prune --unshallow
 
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: 'v3.4.0'
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.0.1
+
+      - name: Set up nix
+        uses: cachix/install-nix-action@v12
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Set up nix store cache
+        uses: actions/cache@v2
+        with:
+          path: /tmp/nix-closure
+          # Build inputs are:
+          # - shell.nix
+          # - nix/ directory
+          key: nix-store-${{ hashFiles('default.nix', 'nix') }}
+          restore-keys: |
+            nix-store-${{ hashFiles('default.nix', 'nix') }}-
+            nix-store-
+
+      - name: Loads nix derivation cache
+        id: load-cache
+        run: |
+          if [[ -f /tmp/nix-closure/nix-shell.closure ]]; then
+            nix-store --import --option require-sigs false < /tmp/nix-closure/nix-shell.closure
+            echo "::set-output name=use-cache::true"
+          fi
+      - run: |
+          nix-env -f '<nixpkgs>' -iA pkgs.direnv
+          nix-build
+          nix-shell --run "direnv allow"
+      - name: Store nix derivation cache
+        run: |
+          DERIVATION=$(readlink result)
+          echo $DERIVATION
+          mkdir -p /tmp/nix-closure
+          nix-store --export $(nix-store -qR ${DERIVATION}) > /tmp/nix-closure/nix-shell.closure
+
+      - name: Run chart-testing (list-changed)
+        id: list-changed
+        shell: direnv exec . bash -eo pipefail {0}
+        run: |
+          changed=$(ct list-changed)
+          if [[ -n "$changed" ]]; then
+            echo "::set-output name=changed::true"
+          fi
+
       - name: Run chart-testing (lint)
         id: lint
-        uses: helm/chart-testing-action@v1.0.0
-        with:
-          command: lint
+        shell: direnv exec . bash -eo pipefail {0}
+        run: ct lint
 
-# Disable this actions until we have a good alternative to check helm install
-#      - name: Create kind cluster
-#        uses: helm/kind-action@v1.0.0
-#        # Only build a kind cluster if there are chart changes to test.
-#        if: steps.lint.outputs.changed == 'true'
-#
-#      - name: Run chart-testing (install)
-#        uses: helm/chart-testing-action@v1.0.0
-#        with:
-#          command: install
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.0.0
+        with:
+          node_image: "kindest/node:v1.19.1"
+        # Only build a kind cluster if there are chart changes to test.
+        if: steps.list-changed.outputs.changed == 'true'
+
+      - name: Run chart-testing (install)
+        if: steps.list-changed.outputs.changed == 'true'
+        shell: direnv exec . bash -eo pipefail {0}
+        run: |
+          unset KUBECONFIG
+          ct install

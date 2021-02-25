@@ -1,0 +1,9 @@
+{{- define "common.ingress.tpl" -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+{{ include "common.metadata.tpl" . }}
+spec: {}
+{{- end -}}
+{{- define "common.ingress" -}}
+{{ include "common.util.merge" (append . "common.ingress.tpl") }}
+{{- end -}}

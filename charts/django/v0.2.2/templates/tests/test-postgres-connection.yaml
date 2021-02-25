@@ -1,0 +1,29 @@
+{{- define "django.test.postgres.pod" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-postgres-test
+  annotations:
+    helm.sh/hook: test
+spec:
+  restartPolicy: Never
+  containers:
+    - name: {{ .Release.Name }}-postgres-test
+      # The Django image itself must contains binaries that can connect
+      # to the said database
+      image: {{ template "common.image" . }}
+      env:
+        - name: DATABASE_URL
+          {{- $param := dict "Value" .Values.global.databaseURL "Context" . -}}
+          {{ include "common.secretFrom" $param | nindent 10 }}
+      command:
+        - /bin/sh
+        - -ec
+        - |
+          psql ${DATABASE_URL} -c "\dt+" > /tmp/test-output.txt
+          cat /tmp/test-output.txt
+{{- end -}}
+
+{{- if .Values.postgis.enabled -}}
+
+{{- include "common.pod" (list . "django.test.postgres.pod") -}}
+
+{{- end -}}

@@ -1,0 +1,16 @@
+{{ include "common.service" (list . "django.service") }}
+{{- define "django.service" }}
+spec:
+  type: ClusterIP
+  {{- if .Values.service.externalIPs }}
+  externalIPs: {{ .Values.service.externalIPs }}
+  {{- end }}
+  ports:
+    - name: http-django
+      port: 80
+      protocol: TCP
+      targetPort: nginx-django
+  selector:
+    app: {{ template "common.fullname" . }}
+    release: {{ .Release.Name | quote }}
+{{- end }}

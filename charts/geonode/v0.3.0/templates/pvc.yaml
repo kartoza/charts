@@ -1,0 +1,45 @@
+
+{{- if and .Values.persistence.staticDir.enabled (not .Values.persistence.staticDir.existingClaim) }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: static-dir
+{{- with .Values.persistence.staticDir.annotations }}
+  annotations:
+  {{- range $key, $value := . }}
+    {{ $key }}: {{ $value }}
+  {{- end }}
+{{- end }}
+spec:
+  accessModes:
+  {{- range .Values.persistence.staticDir.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+  resources:
+    requests:
+        storage: {{ .Values.persistence.staticDir.size | quote }}
+...
+{{- end }}
+{{- if and .Values.persistence.mediaDir.enabled (not .Values.persistence.mediaDir.existingClaim) }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media-dir
+{{- with .Values.persistence.mediaDir.annotations }}
+  annotations:
+  {{- range $key, $value := . }}
+    {{ $key }}: {{ $value }}
+  {{- end }}
+{{- end }}
+spec:
+  accessModes:
+  {{- range .Values.persistence.mediaDir.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.mediaDir.size | quote }}
+...
+{{- end }}

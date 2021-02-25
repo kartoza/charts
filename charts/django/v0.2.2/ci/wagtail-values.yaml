@@ -1,0 +1,202 @@
+image:
+  repository: wagtail/bakerydemo
+  tag: "release-624f441"
+
+global:
+  siteName: wagtail.test
+  djangoCommand: |
+    ["/code/custom-django-entrypoint.sh"]
+  djangoArgs: |
+    ["/venv/bin/uwsgi", "--show-config"]
+  adminUser: admin
+  debug: "on"
+  adminPassword:
+    value: changemypass
+  djangoSecretKey:
+    value: longrandomstring19754091095017
+  djangoSettingsModule: bakerydemo.settings.production_settings
+  mediaRoot: /opt/wagtail/media
+  staticRoot: /opt/wagtail/collect_static
+  databaseName: app_db
+  databaseUsername: app_user
+  databasePassword:
+    value: changemypassword
+
+extraPodEnv: |
+  - name: DATABASE_URL
+    valueFrom:
+      secretKeyRef:
+        name: {{ .Values.global.sharedSecretName }}
+        key: database-url
+  - name: DJANGO_DEBUG
+    value: {{ .Values.global.debug | quote }}
+  - name: UWSGI_HTTP
+    value: ":8080"
+  - name: DJANGO_LOAD_INITIAL_DATA
+    value: "on"
+
+persistence:
+  staticDir:
+    enabled: true
+    mountPath: /opt/wagtail/collect_static
+  mediaDir:
+    mountPath: /opt/wagtail/media
+
+ingress:
+  enabled: true
+  host: wagtail.test
+
+extraConfigMap: |
+  default.conf: |
+    # This is nginx config
+    server {
+      listen              80;
+      server_name         {{ .Values.global.siteName }} www.{{ .Values.global.siteName }} {{ include "common.fullname" . }} 127.0.0.1 nginx;
+
+      charset     utf-8;
+
+      # max upload size
+      client_max_body_size 100G;
+
+      # compression
+      gzip on;
+      gzip_proxied any;
+      gzip_types
+          text/css
+          text/javascript
+          text/xml
+          text/plain
+          application/javascript
+          application/x-javascript
+          application/json;
+
+      # Django media
+      location /media  {
+          alias {{ .Values.global.mediaRoot }};  # your Django project's media files - amend as required
+          include  /etc/nginx/mime.types;
+          expires 365d;
+      }
+
+      location /static {
+          alias {{ .Values.global.staticRoot }}; # your Django project's static files - amend as required
+          include  /etc/nginx/mime.types;
+          expires 365d;
+      }
+
+      # Finally, send all non-media requests to the Django server.
+      location / {
+          # proxy_params
+
+          # Using a variable is a trick to let Nginx start even if upstream host is not up yet
+          # (see https://sandro-keil.de/blog/2017/07/24/let-nginx-start-if-upstream-host-is-unavailable-or-down/)
+          set $upstream 127.0.0.1:8080;
+          proxy_set_header Host $http_host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_pass http://$upstream;
+      }
+
+    }
+
+  custom-django-entrypoint.sh: |
+    #!/bin/sh
+    # Modified entrypoint that also does collectstatic initialization and
+    # superuser creations
+    set -e
+
+    until psql $DATABASE_URL -c '\l'; do
+      >&2 echo "Postgres is unavailable - sleeping"
+      sleep 1
+    done
+
+    >&2 echo "Postgres is up - continuing"
+
+    if [ "$1" = '/venv/bin/uwsgi' ]; then
+        /venv/bin/python manage.py migrate --noinput
+    fi
+
+    if [ "$DJANGO_LOAD_INITIAL_DATA" = 'on' ]; then
+    	/venv/bin/python manage.py load_initial_data
+        # We do manual copy because they put /code/bakerydemo/media/images as volumes
+        # So it overshadows our volumes
+        cp -rf /code/bakerydemo/media/* {{ .Values.global.mediaRoot }}
+        cp -rf {{ .Values.global.mediaRoot }}/original_images/* {{ .Values.global.mediaRoot }}/images
+        chown -R 1000:2000 {{ .Values.global.mediaRoot }}
+    fi
+
+    # Doing collectstatic
+    /venv/bin/python manage.py collectstatic --noinput
+
+    # Reset password according to what specified in helm chart values
+    echo "Password Reset"
+    cat << EOF | /venv/bin/python manage.py shell
+    from django.contrib.auth import get_user_model
+    import os
+    admin_username = os.getenv('ADMIN_USERNAME')
+    admin_password = os.getenv('ADMIN_PASSWORD')
+    superuser = get_user_model().objects.get(username=admin_username)
+    superuser.set_password(admin_password)
+    superuser.save()
+    EOF
+
+    exec "$@"
+
+  production_settings.py: |
+    # Django settings file
+    from .production import *  # noqa
+    MEDIA_ROOT = '{{ .Values.global.mediaRoot }}'
+    STATIC_ROOT = '{{ .Values.global.staticRoot }}'
+
+extraVolumeMounts: |
+  - name: config-volume
+    mountPath: /code/custom-django-entrypoint.sh
+    subPath: custom-django-entrypoint.sh
+  - name: config-volume
+    mountPath: /code/bakerydemo/settings/production_settings.py
+    subPath: production_settings.py
+
+extraPodSpec: |
+  # For UWSGI process so it can have volume access
+  initContainers:
+    - name: setup-media-dir
+      image: busybox
+      args:
+        - chown
+        - -R
+        - 1000:2000
+        - {{ .Values.global.mediaRoot }}
+      volumeMounts:
+        - name: media-dir
+          mountPath: {{ .Values.global.mediaRoot }}
+          subPath: {{ .Values.persistence.mediaDir.subPath }}
+    - name: setup-static-dir
+      image: busybox
+      args:
+        - chown
+        - -R
+        - 1000:2000
+        - {{ .Values.global.staticRoot }}
+      volumeMounts:
+        - name: static-dir
+          mountPath: {{ .Values.global.staticRoot }}
+          subPath: {{ .Values.persistence.staticDir.subPath }}
+
+test:
+  django:
+    containers: |
+      - name: {{ .Release.Name }}-test
+        image: curlimages/curl
+        command:
+          - /bin/sh
+          - -ec
+          - |
+            set -eux
+            # check basic url
+            curl -v -H 'Host: {{ .Values.global.siteName }}' {{ template "common.fullname" . }}
+            # check about page
+            curl -v -H 'Host: {{ .Values.global.siteName }}' {{ template "common.fullname" . }}/about/
+            # check breads page
+            curl -v -H 'Host: {{ .Values.global.siteName }}' {{ template "common.fullname" . }}/breads/
+            # check admin page
+            curl -v -H 'Host: {{ .Values.global.siteName }}' {{ template "common.fullname" . }}/admin/

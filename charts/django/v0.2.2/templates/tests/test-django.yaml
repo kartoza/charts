@@ -1,0 +1,23 @@
+{{- include "common.pod" (list . "django.test.pod") -}}
+{{- define "django.test.pod" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-test
+  annotations:
+    helm.sh/hook: test
+spec:
+  restartPolicy: Never
+  containers:
+    {{- if not .Values.test.django.containers }}
+    - name: {{ .Release.Name }}-test
+      image: curlimages/curl
+      command:
+        - /bin/sh
+        - -ec
+        - |
+          curl -v -H 'Host: {{ .Values.global.siteName }}' {{ template "common.fullname" . }}
+    {{- else }}
+    {{- with .Values.test.django.containers }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+    {{- end }}
+{{- end -}}
