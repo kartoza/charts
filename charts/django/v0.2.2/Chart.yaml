@@ -1,6 +1,6 @@
 apiVersion: v2
 name: django
-version: 0.2.1
+version: 0.2.2
 appVersion: "3.1"
 description: Generic chart for basic Django-based web app
 keywords:
@@ -16,12 +16,12 @@ icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/django
 engine: gotpl
 dependencies:
   - name: postgis
-    version: 0.2.1
-    repository: "file://../../postgis/v0.2.1"
+    version: 0.2.2
+    repository: "file://../../postgis/v0.2.2"
     condition: postgis.enabled
     tags:
       - database-backend
       - postgis
   - name: common
-    version: 1.0.0
-    repository: "file://../../common/v1.0.0"
+    version: 1.0.1
+    repository: "file://../../common/v1.0.1"

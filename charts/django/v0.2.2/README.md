@@ -2,7 +2,7 @@
 
 # django
 
-![Version: 0.2.1](https://img.shields.io/badge/Version-0.2.1-informational?style=flat-square) ![AppVersion: 3.1](https://img.shields.io/badge/AppVersion-3.1-informational?style=flat-square)
+![Version: 0.2.2](https://img.shields.io/badge/Version-0.2.2-informational?style=flat-square) ![AppVersion: 3.1](https://img.shields.io/badge/AppVersion-3.1-informational?style=flat-square)
 
 Generic chart for basic Django-based web app
 
@@ -22,8 +22,8 @@ Generic chart for basic Django-based web app
 
 | Repository | Name | Version |
 |------------|------|---------|
-| [../../common/v1.0.0](../../common/v1.0.0) | common | 1.0.0 |
-| [../../postgis/v0.2.1](../../postgis/v0.2.1) | postgis | 0.2.1 |
+| [../../common/v1.0.1](../../common/v1.0.1) | common | 1.0.1 |
+| [../../postgis/v0.2.2](../../postgis/v0.2.2) | postgis | 0.2.2 |
 
 # Long Description
 
@@ -322,6 +322,14 @@ global.existingSecret: |
 			<td>Name of existing secret</td>
 		</tr>
 		<tr>
+			<td><a id="global--fullnameOverride">global.fullnameOverride</a></td>
+			<td>string</td>
+			<td><pre lang="json">
+null
+</pre></td>
+			<td>You can override full release name</td>
+		</tr>
+		<tr>
 			<td><a id="global--mainAppName">global.mainAppName</a></td>
 			<td>string</td>
 			<td><pre lang="json">
@@ -341,9 +349,9 @@ global.existingSecret: |
 			<td><a id="global--nameOverride">global.nameOverride</a></td>
 			<td>string</td>
 			<td><pre lang="json">
-"django"
+null
 </pre></td>
-			<td></td>
+			<td>You can override release suffix</td>
 		</tr>
 		<tr>
 			<td><a id="global--rootURLConf">global.rootURLConf</a></td>
@@ -666,7 +674,7 @@ postgis.extraPodEnv: |
 postgis.extraVolume: |
   - name: config-volume
     configMap:
-      name: {{ template "postgis.fullname" . }}
+      name: {{ template "common.fullname" . }}
       defaultMode: 0755
  
 </pre></td>
@@ -685,12 +693,30 @@ postgis.extraVolumeMounts: |
 			<td>Extra volume mounts for postgis We use extra volume mounts postgis configmap to pregenerate database</td>
 		</tr>
 		<tr>
+			<td><a id="postgis--nameOverride">postgis.nameOverride</a></td>
+			<td>string</td>
+			<td><pre lang="json">
+"postgis"
+</pre></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><a id="postgis--postgresqlPassword">postgis.postgresqlPassword</a></td>
+			<td>object/common.secret</td>
+			<td><pre lang="json">
+{
+  "value": null
+}
+</pre></td>
+			<td>Postgres super user password. It can be different than [global.databasePassword](#global--databasePassword)</td>
+		</tr>
+		<tr>
 			<td><a id="postgis--postgresqlUsername">postgis.postgresqlUsername</a></td>
 			<td>string</td>
 			<td><pre lang="json">
 "superuser"
 </pre></td>
-			<td></td>
+			<td>Postgres super user account. It can be different than [global.databaseUsername](#global--databaseUsername)</td>
 		</tr>
 		<tr>
 			<td><a id="probe">probe</a></td>
@@ -762,4 +788,4 @@ null
 </table>
 
 # Helm-Docs Chart Template Version
-common-v1.0.0
+common-v1.0.1
