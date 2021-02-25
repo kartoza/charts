@@ -60,12 +60,24 @@ Input: map
 {{- $defaultValue = (toPrettyJson (fromJson (trimAll "`" (default .Default .AutoDefault) ) ) ) -}}
 {{- $notationType = "json" }}
 {{- end -}}
+{{- $needCollapsible := (ge (len $defaultValue) 50) }}
 
+{{- if $needCollapsible -}}
+<details>
+<summary>+Expand</summary>
+{{- end }}
+
+{{ "" }}
 {{- if eq $notationType "tpl" }}
 {{- template "chart.valueDefaultColumnRender.tpl" (list . $defaultValue $notationType) }}
 {{- else }}
 {{- template "chart.valueDefaultColumnRender.default" (list . $defaultValue $notationType) }}
 {{- end }}
+{{ "" }}
+
+{{- if $needCollapsible }}
+</details>
+{{- end -}}
 
 {{- end -}}
 
