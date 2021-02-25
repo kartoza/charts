@@ -1,0 +1,55 @@
+{{- define "django.pvc.static-dir" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: static-dir
+{{- with .Values.persistence.staticDir.annotations }}
+  annotations:
+  {{- range $key, $value := . }}
+    {{ $key }}: {{ $value }}
+  {{- end }}
+{{- end }}
+spec:
+  accessModes:
+  {{- range .Values.persistence.staticDir.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+  {{ include "django.staticDir.storageClass" . }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.staticDir.size | quote }}
+{{- end }}
+
+{{- define "django.pvc.media-dir" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media-dir
+{{- with .Values.persistence.mediaDir.annotations }}
+  annotations:
+  {{- range $key, $value := . }}
+    {{ $key }}: {{ $value }}
+  {{- end }}
+{{- end }}
+spec:
+  accessModes:
+  {{- range .Values.persistence.mediaDir.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+  {{ include "django.mediaDir.storageClass" . }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.mediaDir.size | quote }}
+{{- end }}
+
+
+{{- if and .Values.persistence.staticDir.enabled (not .Values.persistence.staticDir.existingClaim) }}
+---
+{{ include "common.pvc" (list . "django.pvc.static-dir") }}
+...
+{{- end }}
+{{- if and .Values.persistence.mediaDir.enabled (not .Values.persistence.mediaDir.existingClaim) }}
+---
+{{ include "common.pvc" (list . "django.pvc.media-dir") }}
+...
+{{- end }}

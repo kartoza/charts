@@ -1,0 +1,63 @@
+{{ template "chart.header" . }}
+
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.badgesSection" . }}
+
+{{ template "chart.description" . }}
+
+{{ template "chart.homepageLine" . }}
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+# Long Description
+
+This is Kartoza's base chart for Django app
+
+This helm chart was intended to be the base chart for any Django-based deployment.
+The customization are provided via values.yml and pod environment.
+
+
+# How to Use
+
+For helm:
+
+```bash
+helm install release-name kartoza/django
+```
+
+# Intro
+
+This chart bootstrap a Django web framework.
+Django is a web framework based on python programming language.
+It is a general purpose web framework. This helm chart is created as a base chart
+for you. It is supposed to be overrideable for you to provide your own Django image/app.
+
+Django can be deployed as a standalone web app. In this chart, we deployed Django coupled with
+Nginx webserver with WSGI protocol and Postgis database backend.
+
+# What it can do
+
+The default deployment install generic Django image coupled with Nginx webserver and Postgis RDBMS backend.
+
+Optional customizations:
+
+- Enable/Disable Postgis RDBMS
+- Override entrypoint script of Django
+- Override python module requirements
+- Override Nginx config (if you want to use different staticfiles mapping or protocols)
+- Add extra configuration file
+- Add custom settings.py
+- Add custom urls.py
+- Override DJANGO_SETTINGS_MODULE
+- Toggle Debug mode
+
+{{ template "chart.valuesSectionHtml" . }}
+
+{{ template "helm-docs.versionFooter" . }}
+
+{{ template "chart.templates.version" . }}
