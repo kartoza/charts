@@ -44,4 +44,7 @@ List of working charts, but not thoroughly tested:
 - [Guacamole](charts/guacamole)
 - [NextCloud](charts/nextcloud)
 
-Our design patterns are somewhat inspired by the [BitNami]
+Our design patterns are somewhat inspired by the [Bitnami](https://bitnami.com/)
+helm charts. We are trying to refactor most reusable pieces in [common](charts/common)
+library charts. By using the available template tags and docs template, we hope 
+making a new Helm charts of different application will be easier.
