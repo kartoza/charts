@@ -1,0 +1,25 @@
+apiVersion: v2
+name: postgis
+version: 0.2.3
+appVersion: 13-3
+description: Chart for postgis
+keywords:
+  - postgis
+  - postgresql
+  - database
+  - postgres
+  - sql
+  - replication
+  - cluster
+home: https://postgis.net/
+sources:
+  - https://github.com/kartoza/docker-postgis
+maintainers:
+  - name: lucernae
+    email: lana.pcfre@gmail.com
+engine: gotpl
+icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/postgis.png
+dependencies:
+  - name: common
+    version: 1.0.1
+    repository: "file://../../common/v1.0.1"
