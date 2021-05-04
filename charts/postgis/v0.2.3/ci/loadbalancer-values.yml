@@ -1,0 +1,26 @@
+---
+postgresqlUsername: myuser
+postgresqlPassword:
+  value: mysecret
+postgresqlDatabase: dbone,dbtwo
+
+service:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.100.6
+  externalIPs: |
+    - {{ .Values.service.loadBalancerIP }}
+  port: 35432
+
+securityContext: |
+  fsGroup: 101
+
+tls:
+  enabled: true
+  secretName: postgis-tls
+  ca_file: ca.crt
+  cert_file: tls.crt
+  key_file: tls.key
+
+extraPodSpec: |
+  nodeSelector:
+    label: value
