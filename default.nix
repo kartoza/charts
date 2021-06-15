@@ -4,8 +4,8 @@ let
 		owner = "NixOS";
 		repo = "nixpkgs";
 		# branch@date: master@2021-02-23
-		rev = "11cd34cd592f917bab5f42e2b378ab329dee3bcf";
-		sha256 = "sha256:1mgga54np22csagzaxfjq5hrgyv8y4igrl3f6z24fb39rvvx236w";
+		rev = "95737ccee7892aef3e094c881207ea6e25cf0c9d";
+		sha256 = "sha256:1rcfnxqavcdgpcgjnyjpzfdy6jfd7jvd0rhz82wnm0znia7bdyxf";
 	}) {};
 in
 {
@@ -47,6 +47,7 @@ pkgs.stdenv.mkDerivation rec {
 		pkgs.makeWrapper
 		pkgs.kubectl
 		pkgs.kubernetes-helm
+		pkgs.kind
 		helm-docs
 		ct-bin
 		python

@@ -1,0 +1,18 @@
+---
+defaultImage: true
+image:
+  repository: "ranchercharts/kubernetes_incubator-nfs-provisioner"
+  tag: "v2.2.1-k8s1.12"
+storageClass:
+  create: true
+  name: "nfs"
+  defaultClass: false
+  reclaimPolicy: "Retain"
+  allowVolumeExpansion: true
+persistence:
+  enabled: true
+  size: "20Gi"
+  storageClass: "longhorn-default"
+  hostPath: "/srv"
+service:
+  type: "ClusterIP"

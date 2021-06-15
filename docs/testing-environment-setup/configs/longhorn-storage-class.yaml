@@ -1,0 +1,15 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+  name: longhorn-default
+parameters:
+  baseImage: ""
+  fromBackup: ""
+  numberOfReplicas: "1"
+  staleReplicaTimeout: "30"
+provisioner: driver.longhorn.io
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
