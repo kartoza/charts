@@ -12,7 +12,6 @@ storageClass:
 persistence:
   enabled: true
   size: "20Gi"
-  storageClass: "longhorn-default"
   hostPath: "/srv"
 service:
   type: "ClusterIP"
