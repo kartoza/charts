@@ -351,6 +351,34 @@ entries:
     version: 1.12.0
   postgis:
   - apiVersion: v2
+    appVersion: 13-3.1
+    created: "2021-06-20T13:26:31.39655069Z"
+    dependencies:
+    - name: common
+      repository: file://../../common/v1.0.1
+      version: 1.0.1
+    description: Chart for postgis
+    digest: b51d66a725e79108acb63b6a86a3108a2ae44ee13c531be9f828ee8226d42bee
+    home: https://postgis.net/
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/postgis.png
+    keywords:
+    - postgis
+    - postgresql
+    - database
+    - postgres
+    - sql
+    - replication
+    - cluster
+    maintainers:
+    - email: lana.pcfre@gmail.com
+      name: lucernae
+    name: postgis
+    sources:
+    - https://github.com/kartoza/docker-postgis
+    urls:
+    - https://github.com/kartoza/charts/releases/download/postgis-0.2.4/postgis-0.2.4.tgz
+    version: 0.2.4
+  - apiVersion: v2
     appVersion: 13-3
     created: "2021-05-04T08:33:50.530674582Z"
     dependencies:
@@ -469,4 +497,4 @@ entries:
     urls:
     - https://github.com/kartoza/charts/releases/download/qgis-server-0.2.1/qgis-server-0.2.1.tgz
     version: 0.2.1
-generated: "2021-05-04T08:33:50.530703384Z"
+generated: "2021-06-20T13:26:31.396716789Z"
