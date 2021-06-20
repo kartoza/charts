@@ -2,7 +2,7 @@
 
 # postgis
 
-![Version: 0.2.2](https://img.shields.io/badge/Version-0.2.2-informational?style=flat-square) ![AppVersion: 13-3](https://img.shields.io/badge/AppVersion-13--3-informational?style=flat-square)
+![Version: 0.2.4](https://img.shields.io/badge/Version-0.2.4-informational?style=flat-square) ![AppVersion: 13-3.1](https://img.shields.io/badge/AppVersion-13--3.1-informational?style=flat-square)
 
 Chart for postgis
 
@@ -373,7 +373,7 @@ registry: docker.io
 # -- Image repository
 repository: kartoza/postgis
 # -- Image tag
-tag: "13-3"
+tag: "13-3.1"
 # -- (k8s/containers/image/imagePullPolicy) Image pullPolicy
 pullPolicy: IfNotPresent
 ```
@@ -473,7 +473,7 @@ string
 <td>
 
 ```json
-"13-3"
+"13-3.1"
 ```
 
 </td>
