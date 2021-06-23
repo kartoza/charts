@@ -1,0 +1,125 @@
+{{/*
+This is the basic Job spec
+*/}}
+{{- define "nextcloud.job.spec.default" -}}
+{{ include "common.metadata.tpl" . }}
+spec:
+  template:
+    {{ include "common.metadata.tpl" . | nindent 4 }}
+{{- end -}}
+
+{{/*
+This is Nextcloud Job specific spec
+*/}}
+{{- define "nextcloud.job.spec" -}}
+metadata:
+  {{- with .Values.labels }}
+  labels:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.annotations }}
+  annotations:
+  {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  template:
+    metadata:
+      labels:
+        app/role: "nextcloud-cronjob"
+        {{- with .Values.podLabels }}
+        {{- tpl . $ | nindent 8 }}
+        {{- end }}
+        {{- if .Values.redis.enabled }}
+        {{ template "nextcloud.redis.fullname" . }}-client: "true"
+        {{- end }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+        {{- with .Values.podAnnotations }}
+        {{- tpl . $ | nindent 8 }}
+        {{- end }}
+      {{- end }}
+    spec:
+      restartPolicy: Never
+      {{- if (default .Values.image.pullSecrets .Values.cronjob.image.pullSecrets) }}
+      imagePullSecrets:
+        {{- range (default .Values.image.pullSecrets .Values.cronjob.image.pullSecrets) }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}
+      {{- with (default .Values.extraPodSpec .Values.cronjob.extraPodSpec) }}
+      {{- tpl . $ | nindent 6 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ include "common.image" . | quote }}
+          imagePullPolicy: {{ default .Values.image.pullPolicy .Values.cronjob.image.pullPolicy }}
+          command: [ "curl" ]
+          args:
+          {{- if .Values.cronjob.curlInsecure }}
+            - "-k"
+          {{- end }}
+            - "--fail"
+            - "-L"
+          {{- if .Values.cronjob.nextcloudHost }}
+            - "{{ .Values.cronjob.nextcloudHost }}/cron.php"
+          {{- else if and .Values.ingress.enabled .Values.ingress.tls.enabled }}
+            - "https://{{ .Values.nextcloud.host }}/cron.php"
+          {{- else if .Values.ingress.enabled }}
+            - "http://{{ .Values.nextcloud.host }}/cron.php"
+          {{- else }}
+            - "http://{{ include "common.fullname" . }}:{{ .Values.service.port }}/cron.php"
+          {{- end }}
+          resources: {{ toYaml (default .Values.resources .Values.cronjob.resources) | nindent 12 }}
+{{- end -}}
+
+{{/*
+This is the merged nextcloud job spec
+*/}}
+{{- define "nextcloud.job.spec.merged" -}}
+{{ include "common.util.merge" (list . "nextcloud.job.spec" "nextcloud.job.spec.default") }}
+{{- end -}}
+
+{{/*
+This is the basic CronJob spec
+*/}}
+{{- define "nextcloud.cronjob.default" -}}
+apiVersion: batch/v1beta1
+kind: CronJob
+{{ include "common.metadata.tpl" . }}
+spec:
+  jobTemplate: {}
+{{- end -}}
+
+
+{{/*
+This is the Nextcloud CronJob specific spec.
+Note that it includes the merged Nextcloud Job spec.
+*/}}
+{{- define "nextcloud.cronjob" -}}
+metadata:
+  {{- with .Values.labels }}
+  labels:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.annotations }}
+  annotations:
+  {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  schedule: "{{ .Values.cronjob.schedule }}"
+  concurrencyPolicy: Forbid
+  {{- with .Values.cronjob.failedJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ . }}
+  {{- end }}
+  {{- with .Values.cronjob.successfulJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ . }}
+  {{- end }}
+  jobTemplate: {{ include "nextcloud.job.spec.merged" . | nindent 4 }}
+{{- end -}}
+
+{{/*
+This is the merged Nextcloud CronJob spec
+*/}}
+{{- if .Values.cronjob.enabled }}
+{{ include "common.util.merge" (list . "nextcloud.cronjob" "nextcloud.cronjob.default") }}
+{{- end }}
