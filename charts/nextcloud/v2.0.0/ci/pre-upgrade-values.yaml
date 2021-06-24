@@ -51,7 +51,8 @@ nginx:
 
 cronjob:
   enabled: true
-  nextcloudHost: http://nextcloud-nextcloud:8080
+  nextcloudHost: |
+    http://{{- include "common.fullname" . -}}:{{- .Values.service.port -}}
   extraPodSpec: |
     affinity: {}
 
