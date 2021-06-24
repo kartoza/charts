@@ -5,6 +5,7 @@ chart-dirs:
   - charts/geonode
   - charts/guacamole
   - charts/qgis-server
+  - charts/nextcloud
 target-branch: main
 chart-repos:
   - bitnami=https://charts.bitnami.com/bitnami

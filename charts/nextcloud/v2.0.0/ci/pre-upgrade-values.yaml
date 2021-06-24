@@ -61,7 +61,7 @@ ingress:
   tls:
     enabled: true
     secretName: nextcloud-tls
-    
+
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: 4G
     cert-manager.io/cluster-issuer: selfsigned

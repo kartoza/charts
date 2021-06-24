@@ -278,7 +278,7 @@ postgis:
   # -- (tpl/string) Existing secret to be used
   # @notationType -- tpl
   existingSecret: |
-  
+
   # -- (tpl/object) Extra config map for postgis to be included
   # Can be used to pregenerate Django database for first setup
   # @notationType -- tpl
@@ -301,7 +301,7 @@ postgis:
       ALTER DATABASE ${DATABASE} OWNER TO ${DATABASE_USER};
       GRANT ALL PRIVILEGES ON DATABASE ${DATABASE} TO ${DATABASE_USER};
       EOF
-  
+
   # -- (tpl/array) Extra pod env for postgis
   # We expose Django database password in case we need to pregenerate it
   # @notationType -- tpl
@@ -320,7 +320,7 @@ postgis:
       configMap:
         name: {{ template "common.fullname" . }}
         defaultMode: 0755
-  
+
   # -- (tpl/array) Extra volume mounts for postgis
   # We use extra volume mounts postgis configmap to pregenerate database
   # @notationType -- tpl
@@ -355,7 +355,7 @@ redis:
   auth:
     existingSecret: nextcloud-shared-secret
     existingSecretPasswordKey: redis-password
-    
+
 
 ## Cronjob to execute Nextcloud background tasks
 ## ref: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/background_jobs_configuration.html#cron-jobs
