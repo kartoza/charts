@@ -60,8 +60,11 @@ spec:
           {{- end }}
             - "--fail"
             - "-L"
+            - "-H 'Host: {{ .Values.nextcloud.host }}'"
           {{- if .Values.cronjob.nextcloudHost }}
-            - "{{ .Values.cronjob.nextcloudHost }}/cron.php"
+            {{- with .Values.cronjob.nextcloudHost }}
+            - "{{ (tpl . $) }}/cron.php"
+            {{- end }}
           {{- else if and .Values.ingress.enabled .Values.ingress.tls.enabled }}
             - "https://{{ .Values.nextcloud.host }}/cron.php"
           {{- else if .Values.ingress.enabled }}

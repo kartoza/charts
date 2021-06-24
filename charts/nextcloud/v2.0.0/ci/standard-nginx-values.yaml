@@ -2,8 +2,6 @@ image:
   registry: docker.io
   repository: nextcloud
   tag: 21.0.2-fpm-alpine
-  # tag: 21.0.2-apache
-
 
 global:
   nextcloudAdminUser: nextcloud-admin
@@ -53,7 +51,8 @@ nginx:
 
 cronjob:
   enabled: true
-  nextcloudHost: http://nextcloud-nextcloud:8080
+  nextcloudHost: |
+    http://{{- include "common.fullname" . -}}:{{- .Values.service.port -}}
   extraPodSpec: |
     affinity: {}
 
@@ -66,6 +65,12 @@ ingress:
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: 4G
     cert-manager.io/cluster-issuer: selfsigned
+
+test:
+  nextcloud:
+    # use the hostname of the service resource
+    host: |
+      http://{{- include "common.fullname" . -}}:{{- .Values.service.port -}}
 
 persistence:
   enabled: true

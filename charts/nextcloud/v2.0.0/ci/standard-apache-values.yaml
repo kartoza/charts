@@ -1,7 +1,7 @@
 image:
   registry: docker.io
   repository: nextcloud
-  tag: 20-fpm-alpine
+  tag: 21.0.2-apache
 
 global:
   nextcloudAdminUser: nextcloud-admin
@@ -47,11 +47,12 @@ redis:
     password: RfVb94Ka5x
 
 nginx:
-  enabled: true
+  enabled: false
 
 cronjob:
   enabled: true
-  nextcloudHost: http://nextcloud-nextcloud:8080
+  nextcloudHost: |
+    http://{{- include "common.fullname" . -}}:{{- .Values.service.port -}}
   extraPodSpec: |
     affinity: {}
 

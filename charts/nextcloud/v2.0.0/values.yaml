@@ -69,6 +69,8 @@ replicaCount: 1
 ##
 ingress:
   enabled: false
+  tls:
+    enabled: false
   annotations: {}
   #  nginx.ingress.kubernetes.io/proxy-body-size: 4G
   #  kubernetes.io/tls-acme: "true"
@@ -375,7 +377,7 @@ cronjob:
   # Set curl's insecure option if you use e.g. self-signed certificates
   curlInsecure: false
   # You can set nextcloud host directly if you want to use in-cluster access
-  nextcloudHost: ""
+  nextcloudHost: |
   failedJobsHistoryLimit: 5
   successfulJobsHistoryLimit: 2
   # If not set, nextcloud deployment one will be set
@@ -400,6 +402,12 @@ cronjob:
   # If not set, nextcloud deployment one will be set
   # affinity: {}
   extraPodSpec: |
+
+test:
+  nextcloud:
+    insecureHost: true
+    host: |
+    containers: |
 
 service:
   type: ClusterIP

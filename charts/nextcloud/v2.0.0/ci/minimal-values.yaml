@@ -1,7 +1,10 @@
 image:
   registry: docker.io
   repository: nextcloud
-  tag: 21.0.2-fpm-alpine
+  tag: 21.0.2-apache
+
+internalDatabase:
+  enabled: true
 
 global:
   nextcloudAdminUser: nextcloud-admin
@@ -16,8 +19,6 @@ postgis:
 
 redis:
   enabled: false
-  auth:
-    password: RfVb94Ka5x
 
 nginx:
   enabled: false
@@ -27,6 +28,12 @@ cronjob:
 
 ingress:
   enabled: false
+
+test:
+  nextcloud:
+    # use the hostname of the service resource
+    host: |
+      http://{{- include "common.fullname" . -}}:{{- .Values.service.port -}}
 
 persistence:
   enabled: false

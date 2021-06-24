@@ -330,7 +330,7 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
-      {{- if .Values.nextcloud.configs }}
+      {{- if (fromYaml (include "nextcloud.configmap.merged" .)).data }}
       - name: nextcloud-config
         configMap:
           name: {{ template "common.fullname" . }}-config
