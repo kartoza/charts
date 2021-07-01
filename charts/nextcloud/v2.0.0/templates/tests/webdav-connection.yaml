@@ -42,7 +42,7 @@ spec:
           value: "{{ $protocol }}://{{ $hostname }}/remote.php/dav/files/{{ $user }}/"
         {{- end }}
       command:
-        - /bin/bash
+        - /bin/sh
         - -ceu
         - |
           echo "Test WebDAV connections"
