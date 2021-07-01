@@ -1,0 +1,15 @@
+{{- define "common.deployment.tpl" -}}
+apiVersion: apps/v1
+kind: Deployment
+{{ include "common.metadata.tpl" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "common.fullname" . }}
+      release: {{ .Release.Name | quote }}
+  template:
+    {{- include "common.metadata.tpl" . | nindent 4 }}
+{{- end -}}
+{{- define "common.deployment" -}}
+{{ include "common.util.merge" (append . "common.deployment.tpl") }}
+{{- end -}}

@@ -1,0 +1,15 @@
+{{- define "common.cronjob.tpl" -}}
+apiVersion: batch/v1beta1
+kind: CronJob
+{{ include "common.metadata.tpl" . }}
+spec:
+  jobTemplate:
+    {{- include "common.metadata.tpl" . | nindent 4 }}
+    spec:
+      template:
+        {{- include "common.metadata.tpl" . | nindent 4 }}
+{{- end -}}
+
+{{- define "common.cronjob" -}}
+{{ include "common.util.merge" (append . "common.cronjob.tpl") }}
+{{- end -}}

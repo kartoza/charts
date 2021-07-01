@@ -1,0 +1,12 @@
+{{- define "common.service.tpl" -}}
+apiVersion: v1
+kind: Service
+{{ include "common.metadata.tpl" . }}
+spec:
+  selector:
+    app: {{ template "common.fullname" . }}
+    release: {{ .Release.Name | quote }}
+{{- end -}}
+{{- define "common.service" -}}
+{{ include "common.util.merge" (append . "common.service.tpl") }}
+{{- end -}}
