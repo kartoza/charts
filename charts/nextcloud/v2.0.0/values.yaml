@@ -15,6 +15,7 @@ global:
   sharedSecretName: nextcloud-shared-secret
   sharedConfigName: nextcloud-shared-config
   existingSecret: ""
+  databasePort: 5432
   databaseUsername: nextcloud
   databaseName: nextcloud
   databasePassword:
