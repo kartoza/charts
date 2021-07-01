@@ -1,0 +1,76 @@
+image:
+  registry: docker.io
+  repository: nextcloud
+  tag: 20-fpm-alpine
+
+global:
+  nextcloudAdminUser: nextcloud-admin
+  nextcloudAdminPassword:
+    value: 11u883n-mnas
+  databasePassword:
+    value: 98237bc1ntcn9
+  redisPassword:
+    value: RfVb94Ka5x
+
+nextcloud:
+  host: nextcloud.test
+  configs:
+    test.config.php: |-
+      <?php
+      // You can add additional php config like this
+      $CONFIG = array (
+        'debug' => true,
+        'trusted_domains' => array(
+          0 => 'localhost',
+          1 => 'nextcloud.test',
+          2 => 'localhost:8080',
+          3 => 'nextcloud.test:8080',
+        ),
+        'trusted_proxy' => [
+          '10.0.0.0/8'
+        ],
+        'overwritehost' => 'nextcloud.test',
+        'overwriteprotocol' => 'https',
+      );
+  phpConfigs:
+    z-nextcloud.ini: |-
+      ; we use name z-nextcloud.ini to make sure we override nextcloud.ini
+      ; because z-nextcloud.ini is ordered after nextcloud.ini
+      memory_limit=512M
+
+postgis:
+  enabled: true
+
+redis:
+  enabled: true
+  auth:
+    password: RfVb94Ka5x
+
+nginx:
+  enabled: true
+
+cronjob:
+  enabled: true
+  nextcloudHost: |
+    http://{{- include "common.fullname" . -}}:{{- .Values.service.port -}}
+  extraPodSpec: |
+    affinity: {}
+
+ingress:
+  enabled: true
+  tls:
+    enabled: true
+    secretName: nextcloud-tls
+
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 4G
+    cert-manager.io/cluster-issuer: selfsigned
+
+test:
+  nextcloud:
+    # use the hostname of the service resource
+    host: |
+      http://{{- include "common.fullname" . -}}:{{- .Values.service.port -}}
+
+persistence:
+  enabled: true

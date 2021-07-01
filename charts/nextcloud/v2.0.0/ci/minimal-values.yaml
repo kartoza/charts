@@ -1,0 +1,39 @@
+image:
+  registry: docker.io
+  repository: nextcloud
+  tag: 21.0.2-apache
+
+internalDatabase:
+  enabled: true
+
+global:
+  nextcloudAdminUser: nextcloud-admin
+  nextcloudAdminPassword:
+    value: 11u883n-mnas
+
+nextcloud:
+  host: nextcloud.test
+
+postgis:
+  enabled: false
+
+redis:
+  enabled: false
+
+nginx:
+  enabled: false
+
+cronjob:
+  enabled: false
+
+ingress:
+  enabled: false
+
+test:
+  nextcloud:
+    # use the hostname of the service resource
+    host: |
+      http://{{- include "common.fullname" . -}}:{{- .Values.service.port -}}
+
+persistence:
+  enabled: false

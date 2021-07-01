@@ -1,0 +1,77 @@
+{{- include "common.pod" (list . "nextcloud.test.connection") -}}
+{{- define "nextcloud.test.connection" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-webdav-test
+  annotations:
+    helm.sh/hook: test
+spec:
+  restartPolicy: Never
+  containers:
+    {{- if not .Values.test.nextcloud.containers }}
+    - name: {{ template "common.fullname" . }}-webdav-test
+      image: {{ template "common.image" . }}
+      env:
+        {{- $user := .Values.global.nextcloudAdminUser }}
+        - name: USER
+          value: {{ $user | quote }}
+        - name: PASSWORD
+          {{- $param := dict "Value" .Values.global.nextcloudAdminPassword "Context" . }}
+          {{ include "common.secretFrom" $param | nindent 10 }}
+
+        {{- $protocol := "" -}}
+        {{- $hostname := "" -}}
+        {{- if .Values.ingress.tls.enabled -}}
+          {{- $protocol = "https" -}}
+        {{- else -}}
+          {{- $protocol = "http" -}}
+        {{- end }}
+
+        {{- if .Values.ingress.enabled -}}
+          {{- $hostname = .Values.nextcloud.host -}}
+        {{- else -}}
+          {{- $hostname = printf "%s:%s" (include "common.fullname" .) .Values.service.port -}}
+        {{- end }}
+
+        {{- if .Values.test.nextcloud.host }}
+        - name: DAV_URL
+          {{- with .Values.test.nextcloud.host }}
+          value: "{{- (tpl . $) -}}/remote.php/dav/files/{{ $user }}/"
+          {{- end }}
+        {{- else }}
+        - name: DAV_URL
+          value: "{{ $protocol }}://{{ $hostname }}/remote.php/dav/files/{{ $user }}/"
+        {{- end }}
+      command:
+        - /bin/sh
+        - -ceu
+        - |
+          echo "Test WebDAV connections"
+          echo "Getting share directories structure"
+          echo
+          {{- if .Values.test.nextcloud.insecureHost }}
+          INSECURE_FLAG=-k
+          {{- else }}
+          INSECURE_FLAG=
+          {{- end }}
+          AUTH_TOKEN=$(echo "$USER:$PASSWORD")
+          curl -u $AUTH_TOKEN --location $INSECURE_FLAG --request PROPFIND "${DAV_URL}" \
+            --header 'Depth: 1' \
+            --header 'Host: {{ .Values.nextcloud.host }}'
+          echo
+          echo "Save a file"
+          echo
+          curl -u $AUTH_TOKEN --location $INSECURE_FLAG --request PUT "${DAV_URL}Test.md" \
+            --header "Content-Type: text/plain" \
+            --header 'Host: {{ .Values.nextcloud.host }}' \
+            --data-raw "# Test putting files"
+          echo
+          echo "Getting file contents"
+          echo
+          curl -u $AUTH_TOKEN  --location $INSECURE_FLAG --request GET "${DAV_URL}Test.md" \
+            --header 'Host: {{ .Values.nextcloud.host }}'
+    {{- else }}
+    {{- with .Values.test.nextcloud.containers }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+    {{- end }}
+{{- end -}}

@@ -1,0 +1,35 @@
+apiVersion: v2
+name: nextcloud
+version: 2.0.0
+appVersion: 21.0.2
+description: |
+  A file sharing server that puts the control and security of your own data back into your hands.
+
+  Based on officially deprecated chart from https://github.com/helm/charts.git,
+  but now heavily customized for Kartoza internal orchestration.
+keywords:
+- nextcloud
+- storage
+- http
+- web
+- php
+home: https://nextcloud.com/
+icon: https://cdn.rawgit.com/docker-library/docs/defa5ffc7123177acd60ddef6e16bddf694cc35f/nextcloud/logo.svg
+sources:
+- https://github.com/nextcloud/docker
+maintainers:
+- name: lucernae
+  email: lana.pcfre@gmail.com
+engine: gotpl
+dependencies:
+  - name: common
+    version: 1.1.0
+    repository: "file://../../common/v1.1.0"
+  - name: postgis
+    version: 0.2.4
+    repository: "file://../../postgis/v0.2.4"
+    condition: postgis.enabled
+  - name: redis
+    version: 14.6.1
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: redis.enabled

@@ -1,0 +1,93 @@
+{{/*
+This is the Nextcloud CronJob specific spec.
+Note that it includes the merged Nextcloud Job spec.
+*/}}
+{{- define "nextcloud.cronjob" -}}
+metadata:
+  {{- with .Values.labels }}
+  labels:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.annotations }}
+  annotations:
+  {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  schedule: "{{ .Values.cronjob.schedule }}"
+  concurrencyPolicy: Forbid
+  {{- with .Values.cronjob.failedJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ . }}
+  {{- end }}
+  {{- with .Values.cronjob.successfulJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ . }}
+  {{- end }}
+  jobTemplate:
+    metadata:
+      {{- with .Values.labels }}
+      labels:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.annotations }}
+      annotations:
+      {{ toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      template:
+        metadata:
+          labels:
+            app/role: "nextcloud-cronjob"
+            {{- with .Values.podLabels }}
+            {{- tpl . $ | nindent 12 }}
+            {{- end }}
+            {{- if .Values.redis.enabled }}
+            {{ template "nextcloud.redis.fullname" . }}-client: "true"
+            {{- end }}
+          {{- if .Values.podAnnotations }}
+          annotations:
+            {{- with .Values.podAnnotations }}
+            {{- tpl . $ | nindent 12 }}
+            {{- end }}
+          {{- end }}
+        spec:
+          restartPolicy: Never
+          {{- if (default .Values.image.pullSecrets .Values.cronjob.image.pullSecrets) }}
+          imagePullSecrets:
+            {{- range (default .Values.image.pullSecrets .Values.cronjob.image.pullSecrets) }}
+            - name: {{ . }}
+            {{- end }}
+          {{- end }}
+          {{- with (default .Values.extraPodSpec .Values.cronjob.extraPodSpec) }}
+          {{- tpl . $ | nindent 10 }}
+          {{- end }}
+          containers:
+            - name: {{ .Chart.Name }}
+              image: {{ include "common.image" . | quote }}
+              imagePullPolicy: {{ default .Values.image.pullPolicy .Values.cronjob.image.pullPolicy }}
+              command: [ "curl" ]
+              args:
+              {{- if .Values.cronjob.curlInsecure }}
+                - "-k"
+              {{- end }}
+                - "--fail"
+                - "-L"
+                - "-H 'Host: {{ .Values.nextcloud.host }}'"
+              {{- if .Values.cronjob.nextcloudHost }}
+                {{- with .Values.cronjob.nextcloudHost }}
+                - "{{ (tpl . $) }}/cron.php"
+                {{- end }}
+              {{- else if and .Values.ingress.enabled .Values.ingress.tls.enabled }}
+                - "https://{{ .Values.nextcloud.host }}/cron.php"
+              {{- else if .Values.ingress.enabled }}
+                - "http://{{ .Values.nextcloud.host }}/cron.php"
+              {{- else }}
+                - "http://{{ include "common.fullname" . }}:{{ .Values.service.port }}/cron.php"
+              {{- end }}
+              resources: {{ toYaml (default .Values.resources .Values.cronjob.resources) | nindent 16 }}
+{{- end -}}
+
+{{/*
+This is the merged Nextcloud CronJob spec
+*/}}
+{{- if .Values.cronjob.enabled }}
+{{ include "common.cronjob" (list . "nextcloud.cronjob") }}
+{{- end }}

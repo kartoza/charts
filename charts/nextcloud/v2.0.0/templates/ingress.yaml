@@ -1,0 +1,37 @@
+{{- define "nextcloud.ingress" -}}
+metadata:
+  annotations:
+    {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  labels:
+    {{- with .Values.ingress.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  rules:
+  - host: {{ (default .Values.ingress.host .Values.nextcloud.host) }}
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        backend:
+          {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+          service:
+            name: {{ template "common.fullname" . }}
+            port:
+              name: http
+          {{- else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
+          serviceName: {{ template "common.fullname" . }}
+          servicePort: http
+          {{- end }}
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ (default .Values.ingress.host .Values.nextcloud.host) }}
+      secretName: {{ .Values.ingress.tls.secretName }}
+  {{- end }}
+{{- end -}}
+
+{{- if .Values.ingress.enabled }}
+{{ include "common.ingress" (list . "nextcloud.ingress") }}
+{{- end }}

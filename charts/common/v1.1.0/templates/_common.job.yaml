@@ -1,0 +1,11 @@
+{{- define "common.job.tpl" -}}
+apiVersion: batch/v1
+kind: Job
+{{ include "common.metadata.tpl" . }}
+spec:
+  template:
+    {{- include "common.metadata.tpl" . | nindent 4 }}
+{{- end -}}
+{{- define "common.job" -}}
+{{ include "common.util.merge" (append . "common.job.tpl") }}
+{{- end -}}

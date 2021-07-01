@@ -1,0 +1,21 @@
+{{- define "nextcloud.service" -}}
+spec:
+  type: {{ .Values.service.type }}
+  {{- if eq .Values.service.type "LoadBalancer" }}
+  loadBalancerIP: {{ default "" .Values.service.loadBalancerIP }}
+  {{- end }}
+  ports:
+  - port: {{ .Values.service.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+    {{- if eq .Values.service.type "NodePort" }}
+    nodePort: {{ default "" .Values.service.nodePort}}
+    {{- end }}
+  selector:
+    app/role: nextcloud-server
+    app: {{ template "common.fullname" . }}
+    release: {{ .Release.Name | quote }}
+{{- end -}}
+
+{{ include "common.service" (list . "nextcloud.service") }}

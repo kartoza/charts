@@ -1,0 +1,13 @@
+{{- define "nextcloud.php.configmap" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-phpconfig
+data:
+  {{- range $key, $value := .Values.nextcloud.phpConfigs }}
+  {{ $key }}: |-
+{{ $value | indent 4 }}
+  {{- end }}
+{{- end -}}
+
+{{- if .Values.nextcloud.phpConfigs -}}
+{{ include "common.configmap" (list . "nextcloud.php.configmap") }}
+{{- end }}
