@@ -1,5 +1,4 @@
 {{- define "nextcloud.ingress" -}}
-apiVersion: extensions/v1beta1
 metadata:
   annotations:
     {{- with .Values.ingress.annotations }}
@@ -16,8 +15,15 @@ spec:
       paths:
       - pathType: ImplementationSpecific
         backend:
+          {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+          service:
+            name: {{ template "common.fullname" . }}
+            port:
+              name: http
+          {{- else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
           serviceName: {{ template "common.fullname" . }}
           servicePort: http
+          {{- end }}
   {{- if .Values.ingress.tls.enabled }}
   tls:
     - hosts:
