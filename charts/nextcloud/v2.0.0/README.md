@@ -27,8 +27,7 @@ but now heavily customized for Kartoza internal orchestration.
 |------------|------|---------|
 | [../../common/v1.1.0](../../common/v1.1.0) | common | 1.1.0 |
 | [../../postgis/v0.2.4](../../postgis/v0.2.4) | postgis | 0.2.4 |
-|
-[https://charts.bitnami.com/bitnami](https://charts.bitnami.com/bitnami) | redis | 14.6.1 |
+| [https://charts.bitnami.com/bitnami](https://charts.bitnami.com/bitnami) | redis | 14.6.1 |
 
 # Description
 
@@ -96,7 +95,7 @@ Optional customizations:
 		<tr>
 <td>
 
-<a id="annotations" class="anchor">annotations</a>
+<a id='annotations' class="anchor">annotations</a>
 
 </td>
 <td>
@@ -120,7 +119,7 @@ Custom chart annotations. Will be added to every resource created by this chart.
 		<tr>
 <td>
 
-<a id="cronjob.annotations" class="anchor">cronjob.annotations</a>
+<a id='cronjob.annotations' class="anchor">cronjob.annotations</a>
 
 </td>
 <td>
@@ -142,7 +141,7 @@ object
 		<tr>
 <td>
 
-<a id="cronjob.curlInsecure" class="anchor">cronjob.curlInsecure</a>
+<a id='cronjob.curlInsecure' class="anchor">cronjob.curlInsecure</a>
 
 </td>
 <td>
@@ -166,7 +165,7 @@ Set curl's insecure option if you use e.g. self-signed certificates
 		<tr>
 <td>
 
-<a id="cronjob.enabled" class="anchor">cronjob.enabled</a>
+<a id='cronjob.enabled' class="anchor">cronjob.enabled</a>
 
 </td>
 <td>
@@ -190,7 +189,33 @@ Set to true to use Kubernetes based cronjob to trigger Nextcloud's webcron.
 		<tr>
 <td>
 
-<a id="cronjob.failedJobsHistoryLimit" class="anchor">cronjob.failedJobsHistoryLimit</a>
+<a id='cronjob.extraPodSpec' class="anchor">cronjob.extraPodSpec</a>
+
+</td>
+<td>
+
+tpl/object
+
+</td>
+<td>
+
+```yaml
+cronjob.extraPodSpec: |
+  #  nodeSelector:
+  #    a.label: value
+```
+
+</td>
+<td>
+
+This will be evaluated as pod spec
+
+</td>
+</tr>
+		<tr>
+<td>
+
+<a id='cronjob.failedJobsHistoryLimit' class="anchor">cronjob.failedJobsHistoryLimit</a>
 
 </td>
 <td>
@@ -214,7 +239,7 @@ CronJob failedJobsHistoryLimit spec
 		<tr>
 <td>
 
-<a id="cronjob.image" class="anchor">cronjob.image</a>
+<a id='cronjob.image' class="anchor">cronjob.image</a>
 
 </td>
 <td>
@@ -238,7 +263,7 @@ Nexcloud image is used as default but only curl and sh is needed
 		<tr>
 <td>
 
-<a id="cronjob.nextcloudHost" class="anchor">cronjob.nextcloudHost</a>
+<a id='cronjob.nextcloudHost' class="anchor">cronjob.nextcloudHost</a>
 
 </td>
 <td>
@@ -262,7 +287,7 @@ You can set nextcloud host directly if you want to use in-cluster access
 		<tr>
 <td>
 
-<a id="cronjob.resources" class="anchor">cronjob.resources</a>
+<a id='cronjob.resources' class="anchor">cronjob.resources</a>
 
 </td>
 <td>
@@ -272,54 +297,35 @@ dict
 </td>
 <td>
 
-<details>
-<summary>+Expand</summary>
-
 ```json
-{
-  "extraPodSpec": "#  nodeSelector:\n#    a.label: value\n"
-}
+null
 ```
-
-</details>
 
 </td>
 <td>
 
 If not set, nextcloud deployment one will be set
 
-</td>
-</tr>
-		<tr>
-<td>
-
-<a id="cronjob.resources.extraPodSpec" class="anchor">cronjob.resources.extraPodSpec</a>
-
-</td>
-<td>
-
-tpl/object
-
-</td>
-<td>
+We usually recommend not to specify default resources and to leave this as a conscious
+choice for the user. This also increases chances charts run on environments with little
+resources, such as Minikube. If you do want to specify resources, uncomment the following
+lines, adjust them as necessary, and remove the curly braces after 'resources:'.
 
 ```yaml
-cronjob.resources.extraPodSpec: |
-  #  nodeSelector:
-  #    a.label: value
+limits:
+  cpu: 100m
+  memory: 128Mi
+requests:
+  cpu: 100m
+  memory: 128Mi
 ```
 
 </td>
-<td>
-
-This will be evaluated as pod spec
-
-</td>
 </tr>
 		<tr>
 <td>
 
-<a id="cronjob.schedule" class="anchor">cronjob.schedule</a>
+<a id='cronjob.schedule' class="anchor">cronjob.schedule</a>
 
 </td>
 <td>
@@ -336,12 +342,18 @@ string
 </td>
 <td>
 
+Cron schedule.
+
+Every 15 minutes.
+Note: Setting this to any any other value than 15 minutes might
+cause issues with how nextcloud background jobs are executed
+
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="cronjob.successfulJobsHistoryLimit" class="anchor">cronjob.successfulJobsHistoryLimit</a>
+<a id='cronjob.successfulJobsHistoryLimit' class="anchor">cronjob.successfulJobsHistoryLimit</a>
 
 </td>
 <td>
@@ -365,7 +377,7 @@ CronJob successfulJobsHistoryLimit spec
 		<tr>
 <td>
 
-<a id="externalDatabase.database" class="anchor">externalDatabase.database</a>
+<a id='externalDatabase.database' class="anchor">externalDatabase.database</a>
 
 </td>
 <td>
@@ -382,14 +394,14 @@ string
 </td>
 <td>
 
-**Deprecated** Database name. Will be overriden by [global.databaseName](#global--databaseName)
+**Deprecated** Database name. Will be overriden by [global.databaseName](#global.databaseName)
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="externalDatabase.enabled" class="anchor">externalDatabase.enabled</a>
+<a id='externalDatabase.enabled' class="anchor">externalDatabase.enabled</a>
 
 </td>
 <td>
@@ -413,7 +425,7 @@ Set to true to use external database
 		<tr>
 <td>
 
-<a id="externalDatabase.existingSecret.enabled" class="anchor">externalDatabase.existingSecret.enabled</a>
+<a id='externalDatabase.existingSecret.enabled' class="anchor">externalDatabase.existingSecret.enabled</a>
 
 </td>
 <td>
@@ -435,7 +447,7 @@ false
 		<tr>
 <td>
 
-<a id="externalDatabase.host" class="anchor">externalDatabase.host</a>
+<a id='externalDatabase.host' class="anchor">externalDatabase.host</a>
 
 </td>
 <td>
@@ -459,7 +471,7 @@ Database host
 		<tr>
 <td>
 
-<a id="externalDatabase.password" class="anchor">externalDatabase.password</a>
+<a id='externalDatabase.password' class="anchor">externalDatabase.password</a>
 
 </td>
 <td>
@@ -476,14 +488,14 @@ null
 </td>
 <td>
 
-**Deprecated** Database password. Will be overriden by [global.databasePassword](#global--databasePassword)
+**Deprecated** Database password. Will be overriden by [global.databasePassword](#global.databasePassword)
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="externalDatabase.type" class="anchor">externalDatabase.type</a>
+<a id='externalDatabase.type' class="anchor">externalDatabase.type</a>
 
 </td>
 <td>
@@ -507,7 +519,7 @@ Supported database engines: mysql or postgresql
 		<tr>
 <td>
 
-<a id="externalDatabase.user" class="anchor">externalDatabase.user</a>
+<a id='externalDatabase.user' class="anchor">externalDatabase.user</a>
 
 </td>
 <td>
@@ -524,14 +536,14 @@ string
 </td>
 <td>
 
-**Deprecated** Database username. Will be overriden by [global.databaseUsername](#global--databaseUsername)
+**Deprecated** Database username. Will be overriden by [global.databaseUsername](#global.databaseUsername)
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="extraConfigMap" class="anchor">extraConfigMap</a>
+<a id='extraConfigMap' class="anchor">extraConfigMap</a>
 
 </td>
 <td>
@@ -549,14 +561,14 @@ extraConfigMap: |
 </td>
 <td>
 
-Define this for extra config map to be included in django-shared-config
+Define this for extra config map to be included in shared-config
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="extraPodSpec" class="anchor">extraPodSpec</a>
+<a id='extraPodSpec' class="anchor">extraPodSpec</a>
 
 </td>
 <td>
@@ -582,7 +594,7 @@ This will be evaluated as pod spec
 		<tr>
 <td>
 
-<a id="extraPodenv" class="anchor">extraPodenv</a>
+<a id='extraPodenv' class="anchor">extraPodenv</a>
 
 </td>
 <td>
@@ -606,7 +618,7 @@ Extra pod env for Nextcloud container
 		<tr>
 <td>
 
-<a id="extraSecret" class="anchor">extraSecret</a>
+<a id='extraSecret' class="anchor">extraSecret</a>
 
 </td>
 <td>
@@ -624,14 +636,14 @@ extraSecret: |
 </td>
 <td>
 
-Define this for extra secrets to be included in django-shared-secret secret
+Define this for extra secrets to be included in shared-secret secret
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="extraVolume" class="anchor">extraVolume</a>
+<a id='extraVolume' class="anchor">extraVolume</a>
 
 </td>
 <td>
@@ -647,9 +659,9 @@ tpl/list
 ```yaml
 extraVolume: |
   # You may potentially mount a config map/secret
-  #  - name: custom-config
-  #    configMap:
-  #      name: geonode-config
+  #  - name: external-mounts
+  #    persistentVolumeClaim:
+  #      name: nfs-volume
 ```
 
 </details>
@@ -657,14 +669,17 @@ extraVolume: |
 </td>
 <td>
 
-Define this for extra volume (in pair with extraVolumeMounts) Extra mounts for the pods. Example shown is for connecting a legacy NFS volume to NextCloud pods in Kubernetes. This can then be configured in External Storage
+Define this for extra volume (in pair with extraVolumeMounts)
+
+Extra mounts for the pods. Example shown is for connecting a legacy NFS volume
+to NextCloud pods in Kubernetes. This can then be configured in External Storage
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="extraVolumeMounts" class="anchor">extraVolumeMounts</a>
+<a id='extraVolumeMounts' class="anchor">extraVolumeMounts</a>
 
 </td>
 <td>
@@ -680,9 +695,9 @@ tpl/list
 ```yaml
 extraVolumeMounts: |
   # You may potentially mount a config map/secret
-  #  - name: custom-config
-  #    mountPath: /docker-entrypoint.sh
-  #    subPath: docker-entrypoint.sh
+  #  - name: external-mounts
+  #    mountPath: /external-data
+  #    subPath: subfolder
   #    readOnly: true
 ```
 
@@ -698,7 +713,7 @@ Define this for extra volume mounts in the pod
 		<tr>
 <td>
 
-<a id="fullnameOverride" class="anchor">fullnameOverride</a>
+<a id='fullnameOverride' class="anchor">fullnameOverride</a>
 
 </td>
 <td>
@@ -722,7 +737,7 @@ You can override full release name
 		<tr>
 <td>
 
-<a id="global.databaseName" class="anchor">global.databaseName</a>
+<a id='global.databaseName' class="anchor">global.databaseName</a>
 
 </td>
 <td>
@@ -746,7 +761,7 @@ Global interconnect information. For database name to be used by nextcloud
 		<tr>
 <td>
 
-<a id="global.databasePassword" class="anchor">global.databasePassword</a>
+<a id='global.databasePassword' class="anchor">global.databasePassword</a>
 
 </td>
 <td>
@@ -761,6 +776,8 @@ object/common.secret
 
 ```yaml
 # -- (string) Global interconnect information. Specify this password value.
+# @section
+#
 # If not, it will be autogenerated everytime chart upgraded.
 # If you use external backend, you must provide the value
 value:
@@ -782,7 +799,7 @@ Secret structure for Database Password
 		<tr>
 <td>
 
-<a id="global.databasePassword.value" class="anchor">global.databasePassword.value</a>
+<a id='global.databasePassword.value' class="anchor">global.databasePassword.value</a>
 
 </td>
 <td>
@@ -799,14 +816,17 @@ null
 </td>
 <td>
 
-Global interconnect information. Specify this password value. If not, it will be autogenerated everytime chart upgraded. If you use external backend, you must provide the value
+Global interconnect information. Specify this password value.
+
+If not, it will be autogenerated everytime chart upgraded.
+If you use external backend, you must provide the value
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="global.databasePort" class="anchor">global.databasePort</a>
+<a id='global.databasePort' class="anchor">global.databasePort</a>
 
 </td>
 <td>
@@ -823,14 +843,18 @@ int
 </td>
 <td>
 
-Global interconnect information. For database port. By default this chart can generate standard postgres chart. So you can leave it as default. If you use external backend, you must provide the value
+Global interconnect information. For database port.
+
+By default this chart can generate standard postgres chart.
+So you can leave it as default. If you use external backend,
+you must provide the value
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="global.databaseUsername" class="anchor">global.databaseUsername</a>
+<a id='global.databaseUsername' class="anchor">global.databaseUsername</a>
 
 </td>
 <td>
@@ -854,7 +878,7 @@ Global interconnect information. For database username backend to connect to. If
 		<tr>
 <td>
 
-<a id="global.existingSecret" class="anchor">global.existingSecret</a>
+<a id='global.existingSecret' class="anchor">global.existingSecret</a>
 
 </td>
 <td>
@@ -878,7 +902,7 @@ Name of existing secret
 		<tr>
 <td>
 
-<a id="global.fullnameOverride" class="anchor">global.fullnameOverride</a>
+<a id='global.fullnameOverride' class="anchor">global.fullnameOverride</a>
 
 </td>
 <td>
@@ -902,7 +926,7 @@ You can override full release name
 		<tr>
 <td>
 
-<a id="global.nameOverride" class="anchor">global.nameOverride</a>
+<a id='global.nameOverride' class="anchor">global.nameOverride</a>
 
 </td>
 <td>
@@ -926,7 +950,7 @@ You can override release suffix
 		<tr>
 <td>
 
-<a id="global.nextcloudAdminPassword" class="anchor">global.nextcloudAdminPassword</a>
+<a id='global.nextcloudAdminPassword' class="anchor">global.nextcloudAdminPassword</a>
 
 </td>
 <td>
@@ -940,9 +964,11 @@ object/common.secret
 <summary>+Expand</summary>
 
 ```yaml
-# -- (string) Specify this password value. If not, it will be autogenerated
-# everytime chart upgraded. It is recommended to create two superuser account.
-# One account is the service superuser, as described in the [global.nextcloudAdminUser](#global--nextcloudAdminUser),
+# -- (string) Specify this password value. If not, it will be autogenerated everytime chart upgraded.
+# @section
+#
+# It is recommended to create two superuser account.
+# One account is the service superuser, as described in the [global.nextcloudAdminUser](#global.nextcloudAdminUser),
 # which will have it's password set from here. Other superuser account's
 # and password is set when Nextcloud instance is running (thus saved in
 # the database backend)
@@ -965,7 +991,7 @@ Secret structure for Admin Password
 		<tr>
 <td>
 
-<a id="global.nextcloudAdminPassword.value" class="anchor">global.nextcloudAdminPassword.value</a>
+<a id='global.nextcloudAdminPassword.value' class="anchor">global.nextcloudAdminPassword.value</a>
 
 </td>
 <td>
@@ -982,14 +1008,20 @@ null
 </td>
 <td>
 
-Specify this password value. If not, it will be autogenerated everytime chart upgraded. It is recommended to create two superuser account. One account is the service superuser, as described in the [global.nextcloudAdminUser](#global--nextcloudAdminUser), which will have it's password set from here. Other superuser account's and password is set when Nextcloud instance is running (thus saved in the database backend)
+Specify this password value. If not, it will be autogenerated everytime chart upgraded.
+
+It is recommended to create two superuser account.
+One account is the service superuser, as described in the [global.nextcloudAdminUser](#global.nextcloudAdminUser),
+which will have it's password set from here. Other superuser account's
+and password is set when Nextcloud instance is running (thus saved in
+the database backend)
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="global.nextcloudAdminUser" class="anchor">global.nextcloudAdminUser</a>
+<a id='global.nextcloudAdminUser' class="anchor">global.nextcloudAdminUser</a>
 
 </td>
 <td>
@@ -1013,7 +1045,7 @@ Default super user admin username
 		<tr>
 <td>
 
-<a id="global.redisPassword" class="anchor">global.redisPassword</a>
+<a id='global.redisPassword' class="anchor">global.redisPassword</a>
 
 </td>
 <td>
@@ -1027,8 +1059,10 @@ object/common.secret
 <summary>+Expand</summary>
 
 ```yaml
-# -- (string) Specify this password value. If not, it will be autogenerated
-# everytime chart upgraded. It is recommended to use autogenerated value
+# -- (string) Specify this password value. If not, it will be autogenerated everytime chart upgraded.
+# @section
+#
+# It is recommended to use autogenerated value
 # if you create Redis instance together with this chart. Otherwise,
 # you had to specify password of your Redis instance.
 value:
@@ -1037,12 +1071,14 @@ valueFrom:
         name:
         key: redis-password
 # -- (string) Global default storage class
+# @section
+#
 # Will affect both Nextcloud and subcharts.
 # If defined, storageClassName: <storageClass>
 # If set to "-", storageClassName: "", which disables dynamic provisioning
 # If undefined (the default) or set to null, no storageClassName spec is
-#   set, choosing the default provisioner.  (gp2 on AWS, standard on
-#   GKE, AWS & OpenStack)
+# set, choosing the default provisioner.  (gp2 on AWS, standard on
+# GKE, AWS & OpenStack)
 storageClass: null
 ```
 
@@ -1058,7 +1094,7 @@ Secret structure for Redis Password
 		<tr>
 <td>
 
-<a id="global.redisPassword.storageClass" class="anchor">global.redisPassword.storageClass</a>
+<a id='global.redisPassword.storageClass' class="anchor">global.redisPassword.storageClass</a>
 
 </td>
 <td>
@@ -1075,14 +1111,21 @@ null
 </td>
 <td>
 
-Global default storage class Will affect both Nextcloud and subcharts. If defined, storageClassName: <storageClass> If set to "-", storageClassName: "", which disables dynamic provisioning If undefined (the default) or set to null, no storageClassName spec is   set, choosing the default provisioner.  (gp2 on AWS, standard on   GKE, AWS & OpenStack)
+Global default storage class
+
+Will affect both Nextcloud and subcharts.
+If defined, storageClassName: <storageClass>
+If set to "-", storageClassName: "", which disables dynamic provisioning
+If undefined (the default) or set to null, no storageClassName spec is
+set, choosing the default provisioner.  (gp2 on AWS, standard on
+GKE, AWS & OpenStack)
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="global.redisPassword.value" class="anchor">global.redisPassword.value</a>
+<a id='global.redisPassword.value' class="anchor">global.redisPassword.value</a>
 
 </td>
 <td>
@@ -1099,14 +1142,18 @@ null
 </td>
 <td>
 
-Specify this password value. If not, it will be autogenerated everytime chart upgraded. It is recommended to use autogenerated value if you create Redis instance together with this chart. Otherwise, you had to specify password of your Redis instance.
+Specify this password value. If not, it will be autogenerated everytime chart upgraded.
+
+It is recommended to use autogenerated value
+if you create Redis instance together with this chart. Otherwise,
+you had to specify password of your Redis instance.
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="global.sharedConfigName" class="anchor">global.sharedConfigName</a>
+<a id='global.sharedConfigName' class="anchor">global.sharedConfigName</a>
 
 </td>
 <td>
@@ -1130,7 +1177,7 @@ Name of shared config store that will be generated
 		<tr>
 <td>
 
-<a id="global.sharedSecretName" class="anchor">global.sharedSecretName</a>
+<a id='global.sharedSecretName' class="anchor">global.sharedSecretName</a>
 
 </td>
 <td>
@@ -1154,7 +1201,7 @@ Name of shared secret store that will be generated
 		<tr>
 <td>
 
-<a id="global.smtpPassword" class="anchor">global.smtpPassword</a>
+<a id='global.smtpPassword' class="anchor">global.smtpPassword</a>
 
 </td>
 <td>
@@ -1188,7 +1235,7 @@ Secret structure for SMTP Password
 		<tr>
 <td>
 
-<a id="global.smtpPassword.value" class="anchor">global.smtpPassword.value</a>
+<a id='global.smtpPassword.value' class="anchor">global.smtpPassword.value</a>
 
 </td>
 <td>
@@ -1212,7 +1259,7 @@ SMTP password credentials to send email from this Nextcloud instance
 		<tr>
 <td>
 
-<a id="global.smtpUser" class="anchor">global.smtpUser</a>
+<a id='global.smtpUser' class="anchor">global.smtpUser</a>
 
 </td>
 <td>
@@ -1236,7 +1283,7 @@ SMTP user credentials to send email from this Nextcloud instance
 		<tr>
 <td>
 
-<a id="hpa" class="anchor">hpa</a>
+<a id='hpa' class="anchor">hpa</a>
 
 </td>
 <td>
@@ -1270,7 +1317,7 @@ Enable pod autoscaling using HorizontalPodAutoscaler ref: https://kubernetes.io/
 		<tr>
 <td>
 
-<a id="image" class="anchor">image</a>
+<a id='image' class="anchor">image</a>
 
 </td>
 <td>
@@ -1301,14 +1348,17 @@ pullPolicy: IfNotPresent
 </td>
 <td>
 
-Image map Official nextcloud image version ref: https://hub.docker.com/r/library/nextcloud/tags/
+Image map
+
+Official nextcloud image version
+ref: https://hub.docker.com/r/library/nextcloud/tags/
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="image.pullPolicy" class="anchor">image.pullPolicy</a>
+<a id='image.pullPolicy' class="anchor">image.pullPolicy</a>
 
 </td>
 <td>
@@ -1332,7 +1382,7 @@ Image pullPolicy
 		<tr>
 <td>
 
-<a id="image.registry" class="anchor">image.registry</a>
+<a id='image.registry' class="anchor">image.registry</a>
 
 </td>
 <td>
@@ -1356,7 +1406,7 @@ Image registry
 		<tr>
 <td>
 
-<a id="image.repository" class="anchor">image.repository</a>
+<a id='image.repository' class="anchor">image.repository</a>
 
 </td>
 <td>
@@ -1380,7 +1430,7 @@ Image repository
 		<tr>
 <td>
 
-<a id="image.tag" class="anchor">image.tag</a>
+<a id='image.tag' class="anchor">image.tag</a>
 
 </td>
 <td>
@@ -1404,7 +1454,84 @@ Image tag
 		<tr>
 <td>
 
-<a id="ingress.annotations" class="anchor">ingress.annotations</a>
+<a id='ingress' class="anchor">ingress</a>
+
+</td>
+<td>
+
+dict
+
+</td>
+<td>
+
+<details>
+<summary>+Expand</summary>
+
+```yaml
+# -- (bool) Set to true to generate Ingress resource
+enabled: false
+tls:
+    # -- (bool) Set to true to enable HTTPS
+    enabled: false
+    # -- (string) You must provide a secret name where the TLS cert is stored
+    secretName: nextcloud-tls
+# -- (tpl/string) Set custom host name. (DNS name convention)
+# if empty, will follow [nextcloud.host](#nextcloud.host) value
+# @notationType -- tpl
+host: ""
+# -- (dict) Custom Ingress annotations
+# @section
+#
+# Example:
+#
+# ```
+# nginx.ingress.kubernetes.io/proxy-body-size: 4G
+# kubernetes.io/tls-acme: "true"
+# certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+# nginx.ingress.kubernetes.io/server-snippet: |-
+#   server_tokens off;
+#   proxy_hide_header X-Powered-By;
+#   rewrite ^/.well-known/webfinger /public.php?service=webfinger last;
+#   rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+#   rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
+#   location = /.well-known/carddav {
+#     return 301 $scheme://$host/remote.php/dav;
+#   }
+#   location = /.well-known/caldav {
+#     return 301 $scheme://$host/remote.php/dav;
+#   }
+#   location = /robots.txt {
+#     allow all;
+#     log_not_found off;
+#     access_log off;
+#   }
+#   location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
+#     deny all;
+#   }
+#   location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
+#     deny all;
+#   }
+# ```
+annotations: {}
+# -- (dict) Custom Ingress labels
+labels: {}
+```
+
+</details>
+
+</td>
+<td>
+
+Allowing use of ingress controllers
+
+ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+
+</td>
+</tr>
+		<tr>
+<td>
+
+<a id='ingress.annotations' class="anchor">ingress.annotations</a>
 
 </td>
 <td>
@@ -1421,14 +1548,45 @@ dict
 </td>
 <td>
 
-Custom Ingress annotations Example: ``` nginx.ingress.kubernetes.io/proxy-body-size: 4G kubernetes.io/tls-acme: "true" certmanager.k8s.io/cluster-issuer: letsencrypt-prod nginx.ingress.kubernetes.io/server-snippet: |-   server_tokens off;   proxy_hide_header X-Powered-By;   rewrite ^/.well-known/webfinger /public.php?service=webfinger last;   rewrite ^/.well-known/host-meta /public.php?service=host-meta last;   rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;   location = /.well-known/carddav {     return 301 $scheme://$host/remote.php/dav;   }   location = /.well-known/caldav {     return 301 $scheme://$host/remote.php/dav;   }   location = /robots.txt {     allow all;     log_not_found off;     access_log off;   }   location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {     deny all;   }   location ~ ^/(?:autotest|occ|issue|indie|db_|console) {     deny all;   } ```
+Custom Ingress annotations
+
+Example:
+
+```
+nginx.ingress.kubernetes.io/proxy-body-size: 4G
+kubernetes.io/tls-acme: "true"
+certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+nginx.ingress.kubernetes.io/server-snippet: |-
+  server_tokens off;
+  proxy_hide_header X-Powered-By;
+  rewrite ^/.well-known/webfinger /public.php?service=webfinger last;
+  rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+  rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
+  location = /.well-known/carddav {
+    return 301 $scheme://$host/remote.php/dav;
+  }
+  location = /.well-known/caldav {
+    return 301 $scheme://$host/remote.php/dav;
+  }
+  location = /robots.txt {
+    allow all;
+    log_not_found off;
+    access_log off;
+  }
+  location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
+    deny all;
+  }
+  location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
+    deny all;
+  }
+```
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="ingress.enabled" class="anchor">ingress.enabled</a>
+<a id='ingress.enabled' class="anchor">ingress.enabled</a>
 
 </td>
 <td>
@@ -1452,7 +1610,7 @@ Set to true to generate Ingress resource
 		<tr>
 <td>
 
-<a id="ingress.host" class="anchor">ingress.host</a>
+<a id='ingress.host' class="anchor">ingress.host</a>
 
 </td>
 <td>
@@ -1469,14 +1627,14 @@ ingress.host: |
 </td>
 <td>
 
-Set custom host name. (DNS name convention) if empty, will follow [nextcloud.host](#nextcloud--host) value
+Set custom host name. (DNS name convention) if empty, will follow [nextcloud.host](#nextcloud.host) value
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="ingress.labels" class="anchor">ingress.labels</a>
+<a id='ingress.labels' class="anchor">ingress.labels</a>
 
 </td>
 <td>
@@ -1500,7 +1658,7 @@ Custom Ingress labels
 		<tr>
 <td>
 
-<a id="ingress.tls.enabled" class="anchor">ingress.tls.enabled</a>
+<a id='ingress.tls.enabled' class="anchor">ingress.tls.enabled</a>
 
 </td>
 <td>
@@ -1524,7 +1682,7 @@ Set to true to enable HTTPS
 		<tr>
 <td>
 
-<a id="ingress.tls.secretName" class="anchor">ingress.tls.secretName</a>
+<a id='ingress.tls.secretName' class="anchor">ingress.tls.secretName</a>
 
 </td>
 <td>
@@ -1548,7 +1706,7 @@ You must provide a secret name where the TLS cert is stored
 		<tr>
 <td>
 
-<a id="internalDatabase.enabled" class="anchor">internalDatabase.enabled</a>
+<a id='internalDatabase.enabled' class="anchor">internalDatabase.enabled</a>
 
 </td>
 <td>
@@ -1572,7 +1730,7 @@ Set to true to use file-based internal database (SQLite). Only use this for test
 		<tr>
 <td>
 
-<a id="internalDatabase.name" class="anchor">internalDatabase.name</a>
+<a id='internalDatabase.name' class="anchor">internalDatabase.name</a>
 
 </td>
 <td>
@@ -1594,7 +1752,7 @@ string
 		<tr>
 <td>
 
-<a id="labels" class="anchor">labels</a>
+<a id='labels' class="anchor">labels</a>
 
 </td>
 <td>
@@ -1618,7 +1776,7 @@ Custom chart label. Will be added to every resource created by this chart.
 		<tr>
 <td>
 
-<a id="lifecycle" class="anchor">lifecycle</a>
+<a id='lifecycle' class="anchor">lifecycle</a>
 
 </td>
 <td>
@@ -1640,7 +1798,7 @@ object
 		<tr>
 <td>
 
-<a id="mariadb.db.name" class="anchor">mariadb.db.name</a>
+<a id='mariadb.db.name' class="anchor">mariadb.db.name</a>
 
 </td>
 <td>
@@ -1662,7 +1820,7 @@ string
 		<tr>
 <td>
 
-<a id="mariadb.db.password" class="anchor">mariadb.db.password</a>
+<a id='mariadb.db.password' class="anchor">mariadb.db.password</a>
 
 </td>
 <td>
@@ -1684,7 +1842,7 @@ string
 		<tr>
 <td>
 
-<a id="mariadb.db.user" class="anchor">mariadb.db.user</a>
+<a id='mariadb.db.user' class="anchor">mariadb.db.user</a>
 
 </td>
 <td>
@@ -1706,7 +1864,7 @@ string
 		<tr>
 <td>
 
-<a id="mariadb.enabled" class="anchor">mariadb.enabled</a>
+<a id='mariadb.enabled' class="anchor">mariadb.enabled</a>
 
 </td>
 <td>
@@ -1728,7 +1886,7 @@ false
 		<tr>
 <td>
 
-<a id="mariadb.persistence.accessMode" class="anchor">mariadb.persistence.accessMode</a>
+<a id='mariadb.persistence.accessMode' class="anchor">mariadb.persistence.accessMode</a>
 
 </td>
 <td>
@@ -1750,7 +1908,7 @@ string
 		<tr>
 <td>
 
-<a id="mariadb.persistence.enabled" class="anchor">mariadb.persistence.enabled</a>
+<a id='mariadb.persistence.enabled' class="anchor">mariadb.persistence.enabled</a>
 
 </td>
 <td>
@@ -1772,7 +1930,7 @@ false
 		<tr>
 <td>
 
-<a id="mariadb.persistence.size" class="anchor">mariadb.persistence.size</a>
+<a id='mariadb.persistence.size' class="anchor">mariadb.persistence.size</a>
 
 </td>
 <td>
@@ -1794,7 +1952,7 @@ string
 		<tr>
 <td>
 
-<a id="metrics.enabled" class="anchor">metrics.enabled</a>
+<a id='metrics.enabled' class="anchor">metrics.enabled</a>
 
 </td>
 <td>
@@ -1816,7 +1974,7 @@ false
 		<tr>
 <td>
 
-<a id="metrics.https" class="anchor">metrics.https</a>
+<a id='metrics.https' class="anchor">metrics.https</a>
 
 </td>
 <td>
@@ -1838,7 +1996,7 @@ false
 		<tr>
 <td>
 
-<a id="metrics.image.pullPolicy" class="anchor">metrics.image.pullPolicy</a>
+<a id='metrics.image.pullPolicy' class="anchor">metrics.image.pullPolicy</a>
 
 </td>
 <td>
@@ -1860,7 +2018,7 @@ string
 		<tr>
 <td>
 
-<a id="metrics.image.repository" class="anchor">metrics.image.repository</a>
+<a id='metrics.image.repository' class="anchor">metrics.image.repository</a>
 
 </td>
 <td>
@@ -1882,7 +2040,7 @@ string
 		<tr>
 <td>
 
-<a id="metrics.image.tag" class="anchor">metrics.image.tag</a>
+<a id='metrics.image.tag' class="anchor">metrics.image.tag</a>
 
 </td>
 <td>
@@ -1904,7 +2062,7 @@ string
 		<tr>
 <td>
 
-<a id="metrics.replicaCount" class="anchor">metrics.replicaCount</a>
+<a id='metrics.replicaCount' class="anchor">metrics.replicaCount</a>
 
 </td>
 <td>
@@ -1926,7 +2084,7 @@ int
 		<tr>
 <td>
 
-<a id="metrics.service.annotations."prometheus.io/port"" class="anchor">metrics.service.annotations."prometheus.io/port"</a>
+<a id='metrics.service.annotations."prometheus.io/port"' class="anchor">metrics.service.annotations."prometheus.io/port"</a>
 
 </td>
 <td>
@@ -1948,7 +2106,7 @@ string
 		<tr>
 <td>
 
-<a id="metrics.service.annotations."prometheus.io/scrape"" class="anchor">metrics.service.annotations."prometheus.io/scrape"</a>
+<a id='metrics.service.annotations."prometheus.io/scrape"' class="anchor">metrics.service.annotations."prometheus.io/scrape"</a>
 
 </td>
 <td>
@@ -1970,7 +2128,7 @@ string
 		<tr>
 <td>
 
-<a id="metrics.service.labels" class="anchor">metrics.service.labels</a>
+<a id='metrics.service.labels' class="anchor">metrics.service.labels</a>
 
 </td>
 <td>
@@ -1992,7 +2150,7 @@ object
 		<tr>
 <td>
 
-<a id="metrics.service.type" class="anchor">metrics.service.type</a>
+<a id='metrics.service.type' class="anchor">metrics.service.type</a>
 
 </td>
 <td>
@@ -2014,7 +2172,7 @@ string
 		<tr>
 <td>
 
-<a id="metrics.timeout" class="anchor">metrics.timeout</a>
+<a id='metrics.timeout' class="anchor">metrics.timeout</a>
 
 </td>
 <td>
@@ -2036,7 +2194,7 @@ string
 		<tr>
 <td>
 
-<a id="nameOverride" class="anchor">nameOverride</a>
+<a id='nameOverride' class="anchor">nameOverride</a>
 
 </td>
 <td>
@@ -2060,7 +2218,7 @@ You can override release suffix
 		<tr>
 <td>
 
-<a id="nextcloud.configs" class="anchor">nextcloud.configs</a>
+<a id='nextcloud.configs' class="anchor">nextcloud.configs</a>
 
 </td>
 <td>
@@ -2077,14 +2235,41 @@ dict
 </td>
 <td>
 
-Extra config files created in /var/www/html/config/ ref: https://docs.nextcloud.com/server/15/admin_manual/configuration_server/config_sample_php_parameters.html#multiple-config-php-file Value is a mapping of filename --> file content For example, to use S3 as primary storage ref: https://docs.nextcloud.com/server/13/admin_manual/configuration_files/primary_storage.html#simple-storage-service-s3 ```yaml  configs:    s3.config.php: |-      <?php      $CONFIG = array (        'objectstore' => array(          'class' => '\\OC\\Files\\ObjectStore\\S3',          'arguments' => array(            'bucket'     => 'my-bucket',            'autocreate' => true,            'key'        => 'xxx',            'secret'     => 'xxx',            'region'     => 'us-east-1',            'use_ssl'    => true          )        )      ); ```
+Extra config files created in /var/www/html/config/
+
+ref: https://docs.nextcloud.com/server/15/admin_manual/configuration_server/config_sample_php_parameters.html#multiple-config-php-file
+
+Value is a mapping of filename --> file content
+
+For example, to use S3 as primary storage
+
+ref: https://docs.nextcloud.com/server/13/admin_manual/configuration_files/primary_storage.html#simple-storage-service-s3
+
+```yaml
+ configs:
+   s3.config.php: |-
+     <?php
+     $CONFIG = array (
+       'objectstore' => array(
+         'class' => '\\OC\\Files\\ObjectStore\\S3',
+         'arguments' => array(
+           'bucket'     => 'my-bucket',
+           'autocreate' => true,
+           'key'        => 'xxx',
+           'secret'     => 'xxx',
+           'region'     => 'us-east-1',
+           'use_ssl'    => true
+         )
+       )
+     );
+```
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="nextcloud.datadir" class="anchor">nextcloud.datadir</a>
+<a id='nextcloud.datadir' class="anchor">nextcloud.datadir</a>
 
 </td>
 <td>
@@ -2108,7 +2293,7 @@ nextcloud data dir location
 		<tr>
 <td>
 
-<a id="nextcloud.defaultConfigs" class="anchor">nextcloud.defaultConfigs</a>
+<a id='nextcloud.defaultConfigs' class="anchor">nextcloud.defaultConfigs</a>
 
 </td>
 <td>
@@ -2121,16 +2306,21 @@ dict
 <details>
 <summary>+Expand</summary>
 
-```json
-{
-  ".htaccess": true,
-  "apache-pretty-urls.config.php": true,
-  "apcu.config.php": true,
-  "apps.config.php": true,
-  "autoconfig.php": true,
-  "redis.config.php": true,
-  "smtp.config.php": true
-}
+```yaml
+# -- (bool) To protect /var/www/html/config
+.htaccess: true
+# -- (bool) Redis default configuration
+redis.config.php: true
+# -- (bool) Apache configuration for rewrite urls
+apache-pretty-urls.config.php: true
+# -- (bool) Define APCu as local cache
+apcu.config.php: true
+# -- (bool) Apps directory configs
+apps.config.php: true
+# -- (bool)Used for auto configure database
+autoconfig.php: true
+# -- (bool) SMTP default configuration
+smtp.config.php: true
 ```
 
 </details>
@@ -2138,14 +2328,18 @@ dict
 </td>
 <td>
 
-Default config files IMPORTANT: Will be used only if you put extra configs, otherwise default will come from nextcloud itself Default confgurations can be found here: https://github.com/nextcloud/docker/tree/master/16.0/apache/config
+Default config files
+
+**IMPORTANT**: Will be used only if you put extra configs, otherwise default will come from nextcloud itself.
+
+Default confgurations can be found here: https://github.com/nextcloud/docker/tree/master/16.0/apache/config
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="nextcloud.defaultConfigs.".htaccess"" class="anchor">nextcloud.defaultConfigs.".htaccess"</a>
+<a id='nextcloud.defaultConfigs.".htaccess"' class="anchor">nextcloud.defaultConfigs.".htaccess"</a>
 
 </td>
 <td>
@@ -2169,7 +2363,7 @@ To protect /var/www/html/config
 		<tr>
 <td>
 
-<a id="nextcloud.defaultConfigs."apache-pretty-urls.config.php"" class="anchor">nextcloud.defaultConfigs."apache-pretty-urls.config.php"</a>
+<a id='nextcloud.defaultConfigs."apache-pretty-urls.config.php"' class="anchor">nextcloud.defaultConfigs."apache-pretty-urls.config.php"</a>
 
 </td>
 <td>
@@ -2193,7 +2387,7 @@ Apache configuration for rewrite urls
 		<tr>
 <td>
 
-<a id="nextcloud.defaultConfigs."apcu.config.php"" class="anchor">nextcloud.defaultConfigs."apcu.config.php"</a>
+<a id='nextcloud.defaultConfigs."apcu.config.php"' class="anchor">nextcloud.defaultConfigs."apcu.config.php"</a>
 
 </td>
 <td>
@@ -2217,7 +2411,7 @@ Define APCu as local cache
 		<tr>
 <td>
 
-<a id="nextcloud.defaultConfigs."apps.config.php"" class="anchor">nextcloud.defaultConfigs."apps.config.php"</a>
+<a id='nextcloud.defaultConfigs."apps.config.php"' class="anchor">nextcloud.defaultConfigs."apps.config.php"</a>
 
 </td>
 <td>
@@ -2241,7 +2435,7 @@ Apps directory configs
 		<tr>
 <td>
 
-<a id="nextcloud.defaultConfigs."autoconfig.php"" class="anchor">nextcloud.defaultConfigs."autoconfig.php"</a>
+<a id='nextcloud.defaultConfigs."autoconfig.php"' class="anchor">nextcloud.defaultConfigs."autoconfig.php"</a>
 
 </td>
 <td>
@@ -2265,7 +2459,7 @@ Used for auto configure database
 		<tr>
 <td>
 
-<a id="nextcloud.defaultConfigs."redis.config.php"" class="anchor">nextcloud.defaultConfigs."redis.config.php"</a>
+<a id='nextcloud.defaultConfigs."redis.config.php"' class="anchor">nextcloud.defaultConfigs."redis.config.php"</a>
 
 </td>
 <td>
@@ -2289,7 +2483,7 @@ Redis default configuration
 		<tr>
 <td>
 
-<a id="nextcloud.defaultConfigs."smtp.config.php"" class="anchor">nextcloud.defaultConfigs."smtp.config.php"</a>
+<a id='nextcloud.defaultConfigs."smtp.config.php"' class="anchor">nextcloud.defaultConfigs."smtp.config.php"</a>
 
 </td>
 <td>
@@ -2313,7 +2507,7 @@ SMTP default configuration
 		<tr>
 <td>
 
-<a id="nextcloud.host" class="anchor">nextcloud.host</a>
+<a id='nextcloud.host' class="anchor">nextcloud.host</a>
 
 </td>
 <td>
@@ -2330,14 +2524,17 @@ string
 </td>
 <td>
 
-Nextcloud's trusted hostname. Has to be set for production instance because it connects to Ingress name, trusted proxy domain, and URL name.
+Nextcloud's trusted hostname.
+
+Has to be set for production instance
+because it connects to Ingress name, trusted proxy domain, and URL name.
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="nextcloud.mail.domain" class="anchor">nextcloud.mail.domain</a>
+<a id='nextcloud.mail.domain' class="anchor">nextcloud.mail.domain</a>
 
 </td>
 <td>
@@ -2361,7 +2558,7 @@ nextcloud mail domain
 		<tr>
 <td>
 
-<a id="nextcloud.mail.enabled" class="anchor">nextcloud.mail.enabled</a>
+<a id='nextcloud.mail.enabled' class="anchor">nextcloud.mail.enabled</a>
 
 </td>
 <td>
@@ -2385,7 +2582,7 @@ Set to true to enable mail settings
 		<tr>
 <td>
 
-<a id="nextcloud.mail.fromAddress" class="anchor">nextcloud.mail.fromAddress</a>
+<a id='nextcloud.mail.fromAddress' class="anchor">nextcloud.mail.fromAddress</a>
 
 </td>
 <td>
@@ -2409,7 +2606,7 @@ nextcloud mail send from field
 		<tr>
 <td>
 
-<a id="nextcloud.mail.smtp.authtype" class="anchor">nextcloud.mail.smtp.authtype</a>
+<a id='nextcloud.mail.smtp.authtype' class="anchor">nextcloud.mail.smtp.authtype</a>
 
 </td>
 <td>
@@ -2433,7 +2630,7 @@ SMTP authentication method
 		<tr>
 <td>
 
-<a id="nextcloud.mail.smtp.host" class="anchor">nextcloud.mail.smtp.host</a>
+<a id='nextcloud.mail.smtp.host' class="anchor">nextcloud.mail.smtp.host</a>
 
 </td>
 <td>
@@ -2457,7 +2654,7 @@ SMTP Hostname
 		<tr>
 <td>
 
-<a id="nextcloud.mail.smtp.name" class="anchor">nextcloud.mail.smtp.name</a>
+<a id='nextcloud.mail.smtp.name' class="anchor">nextcloud.mail.smtp.name</a>
 
 </td>
 <td>
@@ -2474,14 +2671,14 @@ string
 </td>
 <td>
 
-**Deprecated** SMTP username. Will be overridden by [global.smtpUser](#global--smtpUser)
+**Deprecated** SMTP username. Will be overridden by [global.smtpUser](#global.smtpUser)
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="nextcloud.mail.smtp.password" class="anchor">nextcloud.mail.smtp.password</a>
+<a id='nextcloud.mail.smtp.password' class="anchor">nextcloud.mail.smtp.password</a>
 
 </td>
 <td>
@@ -2498,14 +2695,14 @@ string
 </td>
 <td>
 
-**Deprecated** SMTP password. Will be overridden by [global.smtpPassword](#global--smtpPassword)
+**Deprecated** SMTP password. Will be overridden by [global.smtpPassword](#global.smtpPassword)
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="nextcloud.mail.smtp.port" class="anchor">nextcloud.mail.smtp.port</a>
+<a id='nextcloud.mail.smtp.port' class="anchor">nextcloud.mail.smtp.port</a>
 
 </td>
 <td>
@@ -2529,7 +2726,7 @@ SMTP port
 		<tr>
 <td>
 
-<a id="nextcloud.mail.smtp.secure" class="anchor">nextcloud.mail.smtp.secure</a>
+<a id='nextcloud.mail.smtp.secure' class="anchor">nextcloud.mail.smtp.secure</a>
 
 </td>
 <td>
@@ -2553,7 +2750,7 @@ SMTP protocol connection
 		<tr>
 <td>
 
-<a id="nextcloud.password" class="anchor">nextcloud.password</a>
+<a id='nextcloud.password' class="anchor">nextcloud.password</a>
 
 </td>
 <td>
@@ -2570,14 +2767,14 @@ string
 </td>
 <td>
 
-**Deprecated**. Will be overridden by [global.nextcloudAdminPassword](#global--nextcloudAdminPassword)
+**Deprecated**. Will be overridden by [global.nextcloudAdminPassword](#global.nextcloudAdminPassword)
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="nextcloud.persistence.subPath" class="anchor">nextcloud.persistence.subPath</a>
+<a id='nextcloud.persistence.subPath' class="anchor">nextcloud.persistence.subPath</a>
 
 </td>
 <td>
@@ -2599,7 +2796,7 @@ null
 		<tr>
 <td>
 
-<a id="nextcloud.phpConfigs" class="anchor">nextcloud.phpConfigs</a>
+<a id='nextcloud.phpConfigs' class="anchor">nextcloud.phpConfigs</a>
 
 </td>
 <td>
@@ -2616,14 +2813,19 @@ dict
 </td>
 <td>
 
-PHP Configuration files Will be injected in /usr/local/etc/php/conf.d Value is a mapping of filename --> file content To make sure your PHP conf is overriding the default, create a filename with last alphabetical order, like "z-php.ini"
+PHP Configuration files
+
+Will be injected in /usr/local/etc/php/conf.d
+Value is a mapping of filename --> file content
+To make sure your PHP conf is overriding the default, create a filename
+with last alphabetical order, like "z-php.ini"
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="nextcloud.strategy.type" class="anchor">nextcloud.strategy.type</a>
+<a id='nextcloud.strategy.type' class="anchor">nextcloud.strategy.type</a>
 
 </td>
 <td>
@@ -2645,7 +2847,7 @@ string
 		<tr>
 <td>
 
-<a id="nextcloud.tableprefix" class="anchor">nextcloud.tableprefix</a>
+<a id='nextcloud.tableprefix' class="anchor">nextcloud.tableprefix</a>
 
 </td>
 <td>
@@ -2669,7 +2871,7 @@ nextcloud db table prefix
 		<tr>
 <td>
 
-<a id="nextcloud.update" class="anchor">nextcloud.update</a>
+<a id='nextcloud.update' class="anchor">nextcloud.update</a>
 
 </td>
 <td>
@@ -2693,7 +2895,7 @@ Trigger update if custom command is used
 		<tr>
 <td>
 
-<a id="nextcloud.username" class="anchor">nextcloud.username</a>
+<a id='nextcloud.username' class="anchor">nextcloud.username</a>
 
 </td>
 <td>
@@ -2710,14 +2912,14 @@ string
 </td>
 <td>
 
-**Deprecated**. Will be overridden by [global.nextcloudAdminUser](#global--nextcloudAdminUser)
+**Deprecated**. Will be overridden by [global.nextcloudAdminUser](#global.nextcloudAdminUser)
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="nginx.config.custom" class="anchor">nginx.config.custom</a>
+<a id='nginx.config.custom' class="anchor">nginx.config.custom</a>
 
 </td>
 <td>
@@ -2741,7 +2943,7 @@ Use this key to put your own nginx configuration
 		<tr>
 <td>
 
-<a id="nginx.config.default" class="anchor">nginx.config.default</a>
+<a id='nginx.config.default' class="anchor">nginx.config.default</a>
 
 </td>
 <td>
@@ -2765,7 +2967,7 @@ This generates the default nginx config as per the nextcloud documentation
 		<tr>
 <td>
 
-<a id="nginx.enabled" class="anchor">nginx.enabled</a>
+<a id='nginx.enabled' class="anchor">nginx.enabled</a>
 
 </td>
 <td>
@@ -2789,7 +2991,7 @@ Enable nginx server. You need to set an fpm version of the image for nextcloud i
 		<tr>
 <td>
 
-<a id="nginx.image" class="anchor">nginx.image</a>
+<a id='nginx.image' class="anchor">nginx.image</a>
 
 </td>
 <td>
@@ -2802,12 +3004,10 @@ object/container-image
 <details>
 <summary>+Expand</summary>
 
-```json
-{
-  "pullPolicy": "IfNotPresent",
-  "repository": "nginx",
-  "tag": "alpine"
-}
+```yaml
+repository: nginx
+tag: alpine
+pullPolicy: IfNotPresent
 ```
 
 </details>
@@ -2822,7 +3022,7 @@ Image map for nginx
 		<tr>
 <td>
 
-<a id="nginx.resources" class="anchor">nginx.resources</a>
+<a id='nginx.resources' class="anchor">nginx.resources</a>
 
 </td>
 <td>
@@ -2844,7 +3044,7 @@ object
 		<tr>
 <td>
 
-<a id="persistence" class="anchor">persistence</a>
+<a id='persistence' class="anchor">persistence</a>
 
 </td>
 <td>
@@ -2857,15 +3057,29 @@ dict
 <details>
 <summary>+Expand</summary>
 
-```json
-{
-  "accessMode": "ReadWriteOnce",
-  "annotations": {},
-  "enabled": false,
-  "existingClaim": null,
-  "size": "8Gi",
-  "storageClass": null
-}
+```yaml
+# -- (bool) Set to true to use persistence. By default it is using
+# the default storage class.
+# By default Nextcloud Data is in /var/www/html inside the container
+enabled: false
+annotations: {}
+# -- (string) nextcloud data Persistent Volume Storage Class
+# @section
+#
+# If defined, storageClassName: <storageClass>
+#
+# If set to "-", storageClassName: "", which disables dynamic provisioning
+#
+# If undefined (the default) or set to null, no storageClassName spec is
+# set, choosing the default provisioner.  (gp2 on AWS, standard on
+# GKE, AWS & OpenStack)
+storageClass: null
+# -- (tpl/string) A manually managed Persistent Volume and Claim
+# Requires persistence.enabled: true
+# If defined, PVC must be created manually before volume will be bound
+existingClaim: null
+accessMode: ReadWriteOnce
+size: 8Gi
 ```
 
 </details>
@@ -2880,7 +3094,7 @@ Enable persistence using Persistent Volume Claims ref: http://kubernetes.io/docs
 		<tr>
 <td>
 
-<a id="persistence.enabled" class="anchor">persistence.enabled</a>
+<a id='persistence.enabled' class="anchor">persistence.enabled</a>
 
 </td>
 <td>
@@ -2904,7 +3118,7 @@ Set to true to use persistence. By default it is using the default storage class
 		<tr>
 <td>
 
-<a id="persistence.existingClaim" class="anchor">persistence.existingClaim</a>
+<a id='persistence.existingClaim' class="anchor">persistence.existingClaim</a>
 
 </td>
 <td>
@@ -2928,7 +3142,7 @@ A manually managed Persistent Volume and Claim Requires persistence.enabled: tru
 		<tr>
 <td>
 
-<a id="persistence.storageClass" class="anchor">persistence.storageClass</a>
+<a id='persistence.storageClass' class="anchor">persistence.storageClass</a>
 
 </td>
 <td>
@@ -2945,14 +3159,22 @@ null
 </td>
 <td>
 
-nextcloud data Persistent Volume Storage Class If defined, storageClassName: <storageClass> If set to "-", storageClassName: "", which disables dynamic provisioning If undefined (the default) or set to null, no storageClassName spec is   set, choosing the default provisioner.  (gp2 on AWS, standard on   GKE, AWS & OpenStack)
+nextcloud data Persistent Volume Storage Class
+
+If defined, storageClassName: <storageClass>
+
+If set to "-", storageClassName: "", which disables dynamic provisioning
+
+If undefined (the default) or set to null, no storageClassName spec is
+set, choosing the default provisioner.  (gp2 on AWS, standard on
+GKE, AWS & OpenStack)
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="podAnnotations" class="anchor">podAnnotations</a>
+<a id='podAnnotations' class="anchor">podAnnotations</a>
 
 </td>
 <td>
@@ -2976,7 +3198,7 @@ Custom pod annotations. Will be added to every pod created by this chart
 		<tr>
 <td>
 
-<a id="podLabels" class="anchor">podLabels</a>
+<a id='podLabels' class="anchor">podLabels</a>
 
 </td>
 <td>
@@ -3000,7 +3222,7 @@ Custom pod label. Will be added to every pod created by this chart
 		<tr>
 <td>
 
-<a id="postgis.enabled" class="anchor">postgis.enabled</a>
+<a id='postgis.enabled' class="anchor">postgis.enabled</a>
 
 </td>
 <td>
@@ -3024,7 +3246,7 @@ Enable postgis as database backend by default. Set to false if using different e
 		<tr>
 <td>
 
-<a id="postgis.existingSecret" class="anchor">postgis.existingSecret</a>
+<a id='postgis.existingSecret' class="anchor">postgis.existingSecret</a>
 
 </td>
 <td>
@@ -3048,7 +3270,7 @@ Existing secret to be used
 		<tr>
 <td>
 
-<a id="postgis.extraConfigMap" class="anchor">postgis.extraConfigMap</a>
+<a id='postgis.extraConfigMap' class="anchor">postgis.extraConfigMap</a>
 
 </td>
 <td>
@@ -3088,14 +3310,14 @@ postgis.extraConfigMap: |
 </td>
 <td>
 
-Extra config map for postgis to be included Can be used to pregenerate Django database for first setup
+Extra config map for postgis to be included. Can be used to pregenerate database and roles for first setup
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="postgis.extraPodEnv" class="anchor">postgis.extraPodEnv</a>
+<a id='postgis.extraPodEnv' class="anchor">postgis.extraPodEnv</a>
 
 </td>
 <td>
@@ -3122,14 +3344,14 @@ postgis.extraPodEnv: |
 </td>
 <td>
 
-Extra pod env for postgis We expose Django database password in case we need to pregenerate it
+Extra pod env for postgis We expose database password in case we need to pregenerate it
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="postgis.extraVolume" class="anchor">postgis.extraVolume</a>
+<a id='postgis.extraVolume' class="anchor">postgis.extraVolume</a>
 
 </td>
 <td>
@@ -3162,7 +3384,7 @@ Extra volume declaration for postgis We use extra volume to mount postgis config
 		<tr>
 <td>
 
-<a id="postgis.extraVolumeMounts" class="anchor">postgis.extraVolumeMounts</a>
+<a id='postgis.extraVolumeMounts' class="anchor">postgis.extraVolumeMounts</a>
 
 </td>
 <td>
@@ -3194,7 +3416,7 @@ Extra volume mounts for postgis We use extra volume mounts postgis configmap to 
 		<tr>
 <td>
 
-<a id="postgis.nameOverride" class="anchor">postgis.nameOverride</a>
+<a id='postgis.nameOverride' class="anchor">postgis.nameOverride</a>
 
 </td>
 <td>
@@ -3216,7 +3438,7 @@ string
 		<tr>
 <td>
 
-<a id="postgis.postgresqlDatabase" class="anchor">postgis.postgresqlDatabase</a>
+<a id='postgis.postgresqlDatabase' class="anchor">postgis.postgresqlDatabase</a>
 
 </td>
 <td>
@@ -3238,7 +3460,7 @@ string
 		<tr>
 <td>
 
-<a id="postgis.postgresqlPassword" class="anchor">postgis.postgresqlPassword</a>
+<a id='postgis.postgresqlPassword' class="anchor">postgis.postgresqlPassword</a>
 
 </td>
 <td>
@@ -3255,14 +3477,14 @@ value:
 </td>
 <td>
 
-Postgres super user password. It can be different than [global.databasePassword](#global--databasePassword)
+Postgres super user password. It can be different than [global.databasePassword](#global.databasePassword)
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="postgis.postgresqlUsername" class="anchor">postgis.postgresqlUsername</a>
+<a id='postgis.postgresqlUsername' class="anchor">postgis.postgresqlUsername</a>
 
 </td>
 <td>
@@ -3279,14 +3501,14 @@ string
 </td>
 <td>
 
-Postgres super user account. It can be different than [global.databaseUsername](#global--databaseUsername)
+Postgres super user account. It can be different than [global.databaseUsername](#global.databaseUsername)
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="probe" class="anchor">probe</a>
+<a id='probe' class="anchor">probe</a>
 
 </td>
 <td>
@@ -3303,14 +3525,32 @@ probe: |
 </td>
 <td>
 
-Liveness and readiness probe values Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes Can also be overridden from [extraPodSpec](#extraPodSpec)  enabled: true  initialDelaySeconds: 30  periodSeconds: 15  timeoutSeconds: 5  failureThreshold: 3  successThreshold: 1  enabled: true  initialDelaySeconds: 30  periodSeconds: 15  timeoutSeconds: 5  failureThreshold: 3  successThreshold: 1
+Liveness and readiness probe values
+
+Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+Can also be overridden from [extraPodSpec](#extraPodSpec)
+
+```yaml
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+readinessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+```
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="redis.auth.existingSecret" class="anchor">redis.auth.existingSecret</a>
+<a id='redis.auth.existingSecret' class="anchor">redis.auth.existingSecret</a>
 
 </td>
 <td>
@@ -3332,7 +3572,7 @@ string
 		<tr>
 <td>
 
-<a id="redis.auth.existingSecretPasswordKey" class="anchor">redis.auth.existingSecretPasswordKey</a>
+<a id='redis.auth.existingSecretPasswordKey' class="anchor">redis.auth.existingSecretPasswordKey</a>
 
 </td>
 <td>
@@ -3354,7 +3594,7 @@ string
 		<tr>
 <td>
 
-<a id="redis.enabled" class="anchor">redis.enabled</a>
+<a id='redis.enabled' class="anchor">redis.enabled</a>
 
 </td>
 <td>
@@ -3376,7 +3616,7 @@ false
 		<tr>
 <td>
 
-<a id="redis.usePassword" class="anchor">redis.usePassword</a>
+<a id='redis.usePassword' class="anchor">redis.usePassword</a>
 
 </td>
 <td>
@@ -3398,7 +3638,7 @@ false
 		<tr>
 <td>
 
-<a id="replicaCount" class="anchor">replicaCount</a>
+<a id='replicaCount' class="anchor">replicaCount</a>
 
 </td>
 <td>
@@ -3420,7 +3660,7 @@ int
 		<tr>
 <td>
 
-<a id="resources" class="anchor">resources</a>
+<a id='resources' class="anchor">resources</a>
 
 </td>
 <td>
@@ -3437,14 +3677,28 @@ map[]
 </td>
 <td>
 
-Resource allocation We usually recommend not to specify default resources and to leave this as a conscious choice for the user. This also increases chances charts run on environments with little resources, such as Minikube. If you do want to specify resources, uncomment the following lines, adjust them as necessary, and remove the curly braces after 'resources:'. limits:  cpu: 100m  memory: 128Mi requests:  cpu: 100m  memory: 128Mi
+Resource allocation
+
+We usually recommend not to specify default resources and to leave this as a conscious
+choice for the user. This also increases chances charts run on environments with little
+resources, such as Minikube. If you do want to specify resources, uncomment the following
+lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+
+```yaml
+limits:
+  cpu: 100m
+  memory: 128Mi
+requests:
+  cpu: 100m
+  memory: 128Mi
+```
 
 </td>
 </tr>
 		<tr>
 <td>
 
-<a id="securityContext" class="anchor">securityContext</a>
+<a id='securityContext' class="anchor">securityContext</a>
 
 </td>
 <td>
@@ -3480,7 +3734,7 @@ Custom security context because it depends on which http server is used.
 		<tr>
 <td>
 
-<a id="service.loadBalancerIP" class="anchor">service.loadBalancerIP</a>
+<a id='service.loadBalancerIP' class="anchor">service.loadBalancerIP</a>
 
 </td>
 <td>
@@ -3502,7 +3756,7 @@ string
 		<tr>
 <td>
 
-<a id="service.nodePort" class="anchor">service.nodePort</a>
+<a id='service.nodePort' class="anchor">service.nodePort</a>
 
 </td>
 <td>
@@ -3524,7 +3778,7 @@ string
 		<tr>
 <td>
 
-<a id="service.port" class="anchor">service.port</a>
+<a id='service.port' class="anchor">service.port</a>
 
 </td>
 <td>
@@ -3546,7 +3800,7 @@ int
 		<tr>
 <td>
 
-<a id="service.type" class="anchor">service.type</a>
+<a id='service.type' class="anchor">service.type</a>
 
 </td>
 <td>
@@ -3568,7 +3822,7 @@ string
 		<tr>
 <td>
 
-<a id="test.nextcloud.containers" class="anchor">test.nextcloud.containers</a>
+<a id='test.nextcloud.containers' class="anchor">test.nextcloud.containers</a>
 
 </td>
 <td>
@@ -3590,7 +3844,7 @@ string
 		<tr>
 <td>
 
-<a id="test.nextcloud.host" class="anchor">test.nextcloud.host</a>
+<a id='test.nextcloud.host' class="anchor">test.nextcloud.host</a>
 
 </td>
 <td>
@@ -3612,7 +3866,7 @@ string
 		<tr>
 <td>
 
-<a id="test.nextcloud.insecureHost" class="anchor">test.nextcloud.insecureHost</a>
+<a id='test.nextcloud.insecureHost' class="anchor">test.nextcloud.insecureHost</a>
 
 </td>
 <td>
@@ -3635,4 +3889,4 @@ true
 </table>
 
 # Helm-Docs Chart Template Version
-common-v1.0.1
+common-v1.1.0
