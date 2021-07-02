@@ -7,7 +7,7 @@ Helm-chart docs template version
 */}}
 {{- define "chart.templates.version" -}}
 # Helm-Docs Chart Template Version
-common-v1.0.1
+common-v1.1.0
 {{- end -}}
 
 {{/*
@@ -102,7 +102,7 @@ Input: map
   .AutoDefault
 */}}
 {{- define  "chart.keyColumnRender" -}}
-<a id="{{.Key}}" class="anchor">{{.Key}}</a>
+<a id='{{.Key}}' class="anchor">{{.Key}}</a>
 {{- end -}}
 
 {{/*
@@ -112,6 +112,7 @@ Input: map
   .NotationType
   .Default
   .AutoDefault
+  .Description
 */}}
 {{- define "chart.descriptionColumnRender" -}}
 {{ if .Description }}{{ .Description }}{{ else }}{{ .AutoDescription }}{{ end }}
@@ -165,7 +166,7 @@ Input: string -- Repository links
 {{- if hasPrefix "file://" . -}}
 {{- $repository := trimPrefix "file://" . -}}
 [{{ $repository }}]({{ $repository }})
-{{- else }}
+{{- else -}}
 [{{ . }}]({{ . }})
 {{- end -}}
 {{- end -}}
