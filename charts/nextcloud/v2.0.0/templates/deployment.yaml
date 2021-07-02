@@ -153,7 +153,7 @@ spec:
         - name: SMTP_AUTHTYPE
           value: {{ .Values.nextcloud.mail.smtp.authtype | quote }}
         - name: SMTP_NAME
-          value: {{ .Values.nextcloud.mail.smtp.name | quote }}
+          value: {{ template "nextcloud.smtp.username" . | quote }}
         - name: SMTP_PASSWORD
           {{- $param := dict "Value" .Values.global.smtpPassword "Context" . -}}
           {{ include "common.secretFrom" $param | nindent 10 }}
@@ -266,7 +266,8 @@ spec:
             httpHeaders:
             - name: Host
               value: {{ .Values.nextcloud.host | quote }}
-          periodSeconds: 10
+          periodSeconds: 15
+          initialDelaySeconds: 30
           failureThreshold: 3
           successThreshold: 1
         startupProbe:
@@ -285,7 +286,9 @@ spec:
             httpHeaders:
             - name: Host
               value: {{ .Values.nextcloud.host | quote }}
-          periodSeconds: 10
+          periodSeconds: 15
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
           failureThreshold: 3
           successThreshold: 1
         {{- end }}
