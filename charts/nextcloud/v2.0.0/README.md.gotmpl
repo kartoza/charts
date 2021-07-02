@@ -1,0 +1,75 @@
+{{ template "chart.header" . }}
+
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.badgesSection" . }}
+
+{{ template "chart.description" . }}
+
+{{ template "chart.homepageLine" . }}
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+# Description
+
+[nextcloud](https://nextcloud.com/) is a file sharing server that puts the control and security of your own data back into your hands.
+
+Notes:
+This charts are copied and modified over from https://github.com/helm/charts.git so it can be used inside Rancher.
+
+# How to Use
+
+## TL;DR;
+
+For helm:
+
+```bash
+helm install --name <release-name> kartoza/nextcloud
+```
+
+# Intro
+
+This chart bootstraps a [nextcloud](https://hub.docker.com/_/nextcloud/)
+deployment on a [Kubernetes](http://kubernetes.io) cluster using the
+[Helm](https://helm.sh) package manager.
+
+It also packages the [Kartoza PostGIS chart](https://github.com/kartoza/charts/tree/main/charts/postgis)
+which is required for bootstrapping a postgres deployment for the
+database requirements of the nextcloud application.
+
+It uses [Bitnami's Redis](https://bitnami.com/stack/redis/helm) if you
+want to setup Nextcloud with Redis cache, sesssion, and file locking.
+
+# Prerequisites
+
+Due to Nextcloud image originally designed for monolithic applications,
+we only able to test again specific configurations. It may work beyond that,
+but you had to do your own customizations
+
+Currently tested on:
+- Kubernetes 1.19+ with Beta APIs enabled
+- PV provisioner support in the underlying infrastructure
+
+# What it can do
+
+The default deployment values install stateless Nextcloud with no persistence
+support so you can check around the image.
+
+Example of values can be seen in [ci directories](./ci)
+
+Optional customizations:
+
+- Enable/Disable Postgis RDBMS as backend
+- Enable/Disable Redis support for session, cache, and file-locking
+- Enable persistence (using your default PV provisioner)
+- Enable nginx or apache based image
+
+{{ template "chart.valuesSectionHtml" . }}
+
+{{ template "helm-docs.versionFooter" . }}
+
+{{ template "chart.templates.version" . }}
