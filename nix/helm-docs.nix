@@ -6,8 +6,8 @@ pkgs.buildGoModule {
 		owner = "lucernae";
 		repo = "helm-docs";
 		# github.com/lucernae/helm-docs@notation-type
-		rev = "0c63790cb525f306ff81631d36c39889d75c7020";
-		sha256 = "sha256:154rznqqw68d83j8p98l7n4n3fb3bp0q3nafbc0n09jv5rggr93i";
+		rev = "76d8026d0d7e25fa0dd308c5b07db0e7d8d82188";
+		sha256 = "sha256:0cjx3j42cr1c9rwc9d11p944fj836b8ccilalbvpvx8xds9vi298";
 	};
 	runVend = true;
 	vendorSha256 = "sha256:0wqs35r570icja95g4qf4kzh1wlm4smfiq5flmg4cn4xqv4r1161";
