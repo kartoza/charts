@@ -1182,3 +1182,7 @@ Secret of a Certificate kind that stores the certificate
 
 # Helm-Docs Chart Template Version
 common-v1.0.1
+
+# Docs Version
+
+v2021.07.24
