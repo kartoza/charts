@@ -351,6 +351,62 @@ entries:
     version: 1.12.0
   postgis:
   - apiVersion: v2
+    appVersion: 13-3.1
+    created: "2021-07-24T02:20:30.748599303Z"
+    dependencies:
+    - name: common
+      repository: file://../../common/v1.0.1
+      version: 1.0.1
+    description: Chart for postgis
+    digest: b570ed04085e7b5713bbf9b6c66821eefcf944ea24603cb08779fe527c976167
+    home: https://postgis.net/
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/postgis.png
+    keywords:
+    - postgis
+    - postgresql
+    - database
+    - postgres
+    - sql
+    - replication
+    - cluster
+    maintainers:
+    - email: lana.pcfre@gmail.com
+      name: lucernae
+    name: postgis
+    sources:
+    - https://github.com/kartoza/docker-postgis
+    urls:
+    - https://github.com/kartoza/charts/releases/download/postgis-0.2.4/postgis-0.2.4.tgz
+    version: 0.2.4
+  - apiVersion: v2
+    appVersion: 13-3
+    created: "2021-07-24T02:20:30.59424931Z"
+    dependencies:
+    - name: common
+      repository: file://../../common/v1.0.1
+      version: 1.0.1
+    description: Chart for postgis
+    digest: cc664bc221fdb461fe8d010880c9ccf1c50fbddf0fb61bc8301a1b95b07154f7
+    home: https://postgis.net/
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/postgis.png
+    keywords:
+    - postgis
+    - postgresql
+    - database
+    - postgres
+    - sql
+    - replication
+    - cluster
+    maintainers:
+    - email: lana.pcfre@gmail.com
+      name: lucernae
+    name: postgis
+    sources:
+    - https://github.com/kartoza/docker-postgis
+    urls:
+    - https://github.com/kartoza/charts/releases/download/postgis-0.2.3/postgis-0.2.3.tgz
+    version: 0.2.3
+  - apiVersion: v2
     appVersion: 13-3
     created: "2021-02-25T17:00:45.916077825Z"
     dependencies:
@@ -441,4 +497,4 @@ entries:
     urls:
     - https://github.com/kartoza/charts/releases/download/qgis-server-0.2.1/qgis-server-0.2.1.tgz
     version: 0.2.1
-generated: "2021-06-20T13:44:45.649022274Z"
+generated: "2021-07-24T02:20:30.748669408Z"
