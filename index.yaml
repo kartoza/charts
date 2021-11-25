@@ -2,6 +2,21 @@ apiVersion: v1
 entries:
   common:
   - apiVersion: v2
+    appVersion: 1.1.0
+    created: "2021-11-25T07:56:10.979961949Z"
+    description: Common library for ops
+    digest: be5d0a458894bb1df12e2106b3aaf3691a1a08eb104f513efd0c7181d5f1036e
+    maintainers:
+    - email: lana.pcfre@gmail.com
+      name: lucernae
+    name: common
+    sources:
+    - https://github.com/kartoza/charts/tree/main/charts/common
+    type: library
+    urls:
+    - https://github.com/kartoza/charts/releases/download/common-1.1.0/common-1.1.0.tgz
+    version: 1.1.0
+  - apiVersion: v2
     appVersion: 1.0.1
     created: "2021-02-25T17:00:45.694089483Z"
     description: Common library for ops
@@ -497,4 +512,4 @@ entries:
     urls:
     - https://github.com/kartoza/charts/releases/download/qgis-server-0.2.1/qgis-server-0.2.1.tgz
     version: 0.2.1
-generated: "2021-07-24T02:20:30.748669408Z"
+generated: "2021-11-25T07:56:11.25521221Z"
