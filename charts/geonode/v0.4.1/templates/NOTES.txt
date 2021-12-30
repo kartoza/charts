@@ -1,0 +1,26 @@
+To access GeoNode:
+
+1. Get user and password:
+
+   ```bash
+   export GEONODE_ADMIN_USER=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "geonode.sharedSecretName" . }} -o jsonpath='{.data.admin-user}' | base64 --decode)
+   export GEONODE_ADMIN_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "geonode.sharedSecretName" . }} -o jsonpath='{.data.admin-password}'  | base64 --decode)
+   ```
+
+{{- if not .Values.ingress.enabled }}
+2. You didn't enable ingress, so GeoNode is exposed as Cluster Service by default.
+
+   You can arrange access by exposing it to NodePort or external address manually using kubernetes.
+
+   Otherwise, you can access it via Kubernetes API-Server proxy:
+
+   http://[cluster master address]/api/v1/namespaces/{{ .Release.Namespace }}/services/{{ template "geonode.fullname" . }}:80/proxy/
+
+{{- end }}
+
+{{- if .Values.ingress.enabled }}
+2. You have enabled ingress, service will be available here:
+
+   http://{{ .Values.ingress.host }}/
+
+{{- end }}
