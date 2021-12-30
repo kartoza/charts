@@ -110,6 +110,51 @@ entries:
   geonode:
   - apiVersion: v2
     appVersion: 3.1.0
+    created: "2021-12-30T15:51:20.945565458Z"
+    dependencies:
+    - condition: postgis.enabled
+      name: postgis
+      repository: file://../../postgis/v0.2.1
+      tags:
+      - database-backend
+      - postgis
+      version: 0.2.1
+    - condition: geoserver.enabled
+      name: geoserver
+      repository: file://../../geoserver/v0.3.1
+      tags:
+      - map-backend
+      - geoserver
+      version: 0.3.1
+    - condition: rabbitmq.enabled
+      name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - broker
+      - rabbitmq
+      - amqp
+      version: 7.6.6
+    description: Chart for GeoNode
+    digest: a315f0e5cf9b937c24bcc005f8c04f1093cf87ecf4260d5d4f6b7d690d45c714
+    home: http://geonode.org
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/geonode-logo_for_readme.gif
+    keywords:
+    - GeoNode
+    - GIS
+    - GeoServer
+    maintainers:
+    - email: rizky@kartoza.com
+      name: lucernae
+    - email: lana.pcfre@gmail.com
+      name: lucernae
+    name: geonode
+    sources:
+    - https://github.com/GeoNode/geonode
+    urls:
+    - https://github.com/kartoza/charts/releases/download/geonode-0.4.1/geonode-0.4.1.tgz
+    version: 0.4.1
+  - apiVersion: v2
+    appVersion: 3.1.0
     created: "2021-01-26T16:04:48.043340759Z"
     dependencies:
     - condition: postgis.enabled
@@ -512,4 +557,4 @@ entries:
     urls:
     - https://github.com/kartoza/charts/releases/download/qgis-server-0.2.1/qgis-server-0.2.1.tgz
     version: 0.2.1
-generated: "2021-11-25T07:56:11.25521221Z"
+generated: "2021-12-30T15:51:20.945616861Z"
