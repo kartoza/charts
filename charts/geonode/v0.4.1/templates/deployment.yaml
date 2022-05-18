@@ -85,7 +85,7 @@ spec:
           {{- end }}
 
         - name: {{ template "geonode.fullname" . }}-nginx
-          image: nginx:1.17.2-alpine
+          image: {{ template "nginx.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if .Values.resources }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
