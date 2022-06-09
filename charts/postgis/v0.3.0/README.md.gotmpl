@@ -1,0 +1,112 @@
+{{ template "chart.header" . }}
+
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.badgesSection" . }}
+
+{{ template "chart.description" . }}
+
+{{ template "chart.homepageLine" . }}
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+# Long Description
+
+This is Kartoza's Postgis Rancher charts
+
+Postgis is an extension of PostgreSQL database with added support for
+Spatial Data
+
+# How to Use
+
+For helm:
+
+```bash
+helm install release-name kartoza/postgis
+```
+
+# Intro
+
+This chart bootstrap a PostgreSQL database with Postgis installed in its
+main database.
+It behaves like a PostgreSQL database, but with Postgis extension installed
+in its database.
+
+# What it can do
+
+The default install uses kartoza/postgis image, which can do the following:
+
+- Generate superuser roles at startup
+- Generate new database at startup if volume empty
+- Generate one or more database with Postgis installed
+- Accept locale and collations settings for the database
+- Default TLS enabled
+- GDAL Driver installed
+- Support out-of-db rasters
+- Enable multiple extensions
+
+You can override the image to use your own Postgre Image.
+
+# Common use case
+
+## Using it as a headless service
+
+By default, we created a Headless service. Headless service can only be
+accessed within the cluster itself.
+The name of the service can be used as the hostname.
+If you need to expose this, you can further cascade it using
+LoadBalancer or NodePort.
+
+## Using custom certificate in conjunction with cert-manager.io
+
+With cert-manager you can automatically create certificate. First, you need
+an issuer and also the certificate request object.
+Cert-manager will then create the certificate and store it into a secret.
+This should happen before you create the Postgis App.
+
+Use the generated secret by filling out `tls` config options.
+Because Postgres works in L3/4 Layer, the generated CA must be accepted by
+your OS if you want to connect using self-signed certificate.
+If not, then you can just ignore the warning. However some Database client
+will check the CA, depending on what is the mode of the connection,
+which can be: disable, allow, required, verify-ca, verify-full.
+
+## Executing scripts after the database starts
+
+Sometimes you want to execute certain scripts after the database is ready.
+Our default image can do that (and most Postgres image based on official Postgres).
+
+The best way would be to create a ConfigMap with your scripts in it, then
+apply it to your Kubernetes Cluster.
+Reference:
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap
+
+Then mount it to the pod using our [extraVolume](#extraVolume) and
+[extraVolumeMounts](#extraVolumeMounts) config.
+If you mount it in the pod's path: `/docker-entrypoint-initdb.d/` ,
+it will be scanned by the image.
+The executed scripts are only files with the extensions `.sql` and `.sh`.
+
+Depending on the postgres image you use, you can also mount it to directory
+where the entrypoint script will be executed according to that image
+implementations.
+
+
+## Replications
+
+TODO: Describe how replication works with stateful set pods.
+
+
+{{ template "chart.valuesSectionHtml" . }}
+
+{{ template "helm-docs.versionFooter" . }}
+
+{{ template "chart.templates.version" . }}
+
+# Docs Version
+
+v2021.07.24
