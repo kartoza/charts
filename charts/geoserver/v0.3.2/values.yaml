@@ -1,7 +1,7 @@
 image:
   registry: docker.io
   repository: kartoza/geoserver
-  tag: "2.17.0"
+  tag: "2.20.4"
   pullPolicy: IfNotPresent
 
 geoserverDataDir: /opt/geoserver/data_dir
@@ -17,11 +17,17 @@ geoserverPassword:
 existingSecret: |
 
 # Define this for extra GeoServer environment variables
+# Format:
+# extraPodEnv: |
+#   - name: KEY_1
+#     value: "VALUE_1"
+#   - name: KEY_2
+#     value: "VALUE_2"
 extraPodEnv: |
-#  - name: KEY_1
-#    value: "VALUE_1"
-#  - name: KEY_2
-#    value: "VALUE_2"
+  - name: INITIAL_MEMORY
+    value: "2G"
+  - name: MAXIMUM_MEMORY
+    value: "4G"
 
 # This will be evaluated as pod spec
 extraPodSpec: |
