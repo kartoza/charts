@@ -33,7 +33,7 @@ dependencies:
       - map-backend
       - geoserver
   - name: rabbitmq
-    version: 7.6.6
+    version: 10.1.10
     repository: "https://charts.bitnami.com/bitnami"
     condition: rabbitmq.enabled
     tags:
