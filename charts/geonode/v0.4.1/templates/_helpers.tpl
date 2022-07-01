@@ -40,6 +40,23 @@ Also, we can't use a single if because lazy evaluation is not an option
 {{- end -}}
 
 {{/*
+Return the proper nginx image name
+*/}}
+{{- define "nginx.image" -}}
+{{- $repositoryName := "library/nginx" -}}
+{{- $tag := "1.17-alpine" | toString -}}
+{{- if .Values.global }}
+    {{- if .Values.global.imageRegistry }}
+        {{- printf "%s/%s:%s" .Values.global.imageRegistry $repositoryName $tag -}}
+    {{- else -}}
+        {{- printf "%s/%s:%s" "docker.io" $repositoryName $tag -}}
+    {{- end -}}
+{{- else -}}
+    {{- printf "%s/%s:%s" "docker.io" $repositoryName $tag -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Derive shared secret name for this release
 Must only depends on global values
 */}}
