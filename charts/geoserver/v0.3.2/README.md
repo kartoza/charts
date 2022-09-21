@@ -63,6 +63,8 @@ Full list of options can be seen in: https://github.com/kartoza/docker-geoserver
 | service.loadBalancerIP | Only used if you use LoadBalancer service.type |
 | service.externalIPs | External IPs to use for the service |
 | service.port | External port to use/expose |
+| affinity | Constrain pods to nodes |
+| tolerations | Pod scheduling tolerations |
 | ingress.enabled | Switch to true to enable ingress resource |
 | ingress.host | The host name/site name the ingress will serve |
 | ingress.tls.enabled | Set it to true to enable HTTPS |
