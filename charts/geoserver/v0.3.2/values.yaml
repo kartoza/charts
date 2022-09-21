@@ -74,6 +74,10 @@ service:
   # loadBalancerSourceRanges:
   # - 10.10.10.0/24
 
+affinity: {}
+
+tolerations: {}
+
 ingress:
   enabled: false
   annotations: {}
