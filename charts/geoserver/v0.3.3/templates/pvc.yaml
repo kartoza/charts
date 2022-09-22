@@ -1,0 +1,47 @@
+
+{{- if and .Values.persistence.geoserverDataDir.enabled (not .Values.persistence.geoserverDataDir.existingClaim) }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "geoserver.fullname" . }}-geoserver-data-dir
+{{- with .Values.persistence.geoserverDataDir.annotations }}
+  annotations:
+  {{- range $key, $value := . }}
+    {{ $key }}: {{ $value }}
+  {{- end }}
+{{- end }}
+spec:
+  accessModes:
+  {{- range .Values.persistence.geoserverDataDir.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+  {{ include "geoserver.geoserverDataDir.storageClass" . }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.geoserverDataDir.size | quote }}
+...
+{{- end }}
+{{- if and .Values.persistence.geowebcacheCacheDir.enabled (not .Values.persistence.geowebcacheCacheDir.existingClaim) }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "geoserver.fullname" . }}-geowebcache-cache-dir
+{{- with .Values.persistence.geowebcacheCacheDir.annotations }}
+  annotations:
+  {{- range $key, $value := . }}
+    {{ $key }}: {{ $value }}
+  {{- end }}
+{{- end }}
+spec:
+  accessModes:
+  {{- range .Values.persistence.geowebcacheCacheDir.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+  {{ include "geoserver.geowebcacheCacheDir.storageClass" . }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.geowebcacheCacheDir.size | quote }}
+...
+{{- end }}
