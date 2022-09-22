@@ -1,7 +1,7 @@
 image:
   registry: docker.io
   repository: kartoza/geoserver
-  tag: "2.20.4"
+  tag: "2.21.0"
   pullPolicy: IfNotPresent
 
 geoserverDataDir: /opt/geoserver/data_dir
