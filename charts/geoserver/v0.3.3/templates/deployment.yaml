@@ -37,6 +37,10 @@ spec:
         {{- (tpl . $) | nindent 8 }}
         {{- end }}
     spec:
+      {{- with .Values.securityContext }}
+      securityContext:
+        {{ . | toYaml | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ template "geoserver.fullname" . }}
           image: {{ template "geoserver.image" . }}

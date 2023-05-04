@@ -29,6 +29,14 @@ extraPodEnv: |
   - name: MAXIMUM_MEMORY
     value: "4G"
 
+
+# newer versions of geoserver docker image do not run as route, need to specify the security context to avoid a persmissions denied error.
+securityContext:
+  runAsUser: 1000
+  runAsGroup: 10001
+  fsGroup: 10001
+  fsGroupChangePolicy: "OnRootMismatch"
+
 # This will be evaluated as pod spec
 extraPodSpec: |
 #  nodeSelector:
