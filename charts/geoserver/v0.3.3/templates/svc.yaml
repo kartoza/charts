@@ -16,7 +16,7 @@ metadata:
     {{- tpl . $ | nindent 4 }}
     {{- end }}
 spec:
-  type: ClusterIP
+  type: {{ .Values.service.type }}
   {{- if .Values.service.externalIPs }}
   externalIPs: {{ .Values.service.externalIPs }}
   {{- end }}
@@ -24,7 +24,7 @@ spec:
     - name: http-geoserver
       port: 80
       protocol: TCP
-      targetPort: http-geoserver
+      targetPort: 8080
   selector:
     app: {{ template "geoserver.fullname" . }}
     release: {{ .Release.Name | quote }}
