@@ -1,0 +1,5 @@
+---
+postgresqlUsername: myuser
+postgresqlPassword:
+  value: mysecret
+postgresqlDatabase: dbone,dbtwo

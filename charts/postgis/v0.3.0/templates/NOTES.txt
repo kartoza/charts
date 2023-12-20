@@ -1,0 +1,53 @@
+To access postgres:
+
+1. Get user and password:
+
+   ```bash
+   export PGUSER=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "common.fullname" . }} -o jsonpath='{.data.postgresql-user}' | base64 --decode)
+   export PGPASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "common.fullname" . }} -o jsonpath='{.data.{{ template "common.secretKey" .Values.postgresqlPassword }}}' | base64 --decode)
+   ```
+
+{{- if (eq "ClusterIP" .Values.service.type) }}
+2. Connect to postgis by from within the pod
+
+   ```bash
+   kubectl exec -it ---namespace {{ .Release.Namespace }} postgis-0 -- PGPASSWORD=$PGPASSWORD psql -h localhost -U $PGUSER -l
+   ```
+
+{{- end }}
+
+{{- if (eq "LoadBalancer" .Values.service.type) }}
+2. Connect to postgis from load balancer IP
+
+   ```bash
+   psql -h {{ .Values.service.loadBalancerIP }} -p {{ .Values.service.port }} -l
+   ```
+
+{{- end }}
+
+{{- if .Values.tls.enabled }}
+3. You have enabled TLS. You can connect by specifying SSLMODE
+
+   ```bash
+   export PGSSLMODE=require
+   ```
+
+   To download certificate, you can do this:
+
+   ```bash
+   kubectl get secret --namespace {{ .Release.Namespace }} {{ .Values.tls.secretName }} -o "jsonpath={.data['tls\\.key']}" | base64 --decode > tls.key
+   kubectl get secret --namespace {{ .Release.Namespace }} {{ .Values.tls.secretName }} -o "jsonpath={.data['tls\\.crt']}" | base64 --decode > tls.crt
+   kubectl get secret --namespace {{ .Release.Namespace }} {{ .Values.tls.secretName }} -o "jsonpath={.data['ca\\.crt']}" | base64 --decode > ca.crt
+
+   export PGSSLROOTCERT=ca.crt
+   export PGSSLCERT=tls.crt
+   export PGSSLKEY=tls.key
+   ```
+
+   If you wish to view the certificate, you can check using openssl_client:
+
+   ```bash
+   openssl s_client -starttls postgres -connect <the IP address or FQDN>:<the port>
+   ```
+
+{{- end }}
