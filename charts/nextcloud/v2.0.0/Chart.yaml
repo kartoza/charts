@@ -30,6 +30,6 @@ dependencies:
     repository: "file://../../postgis/v0.2.4"
     condition: postgis.enabled
   - name: redis
-    version: 14.6.1
+    version: 18.6.1
     repository: "https://charts.bitnami.com/bitnami"
     condition: redis.enabled
