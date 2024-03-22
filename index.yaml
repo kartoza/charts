@@ -343,6 +343,33 @@ entries:
     urls:
     - https://github.com/kartoza/charts/releases/download/geoserver-0.1.1/geoserver-0.1.1.tgz
     version: 0.1.1
+  geoserver-standalone:
+  - apiVersion: v2
+    appVersion: 2.24.2
+    created: "2024-03-22T12:13:30.930304553Z"
+    dependencies:
+    - condition: postgis.enabled
+      name: postgis
+      repository: https://kartoza.github.io/charts
+      tags:
+      - geoserver-database
+      version: 0.2.4
+    description: Chart for GeoServer
+    digest: 4cd8a6a868b7e223416f467ca62f299c74e86e0f17330f4b2856f6e7dabde5c9
+    home: http://geoserver.org
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/GeoServer_500.png
+    keywords:
+    - GeoServer
+    - GIS
+    maintainers:
+    - email: charts4kubernetes@gmail.com
+      name: tharanath-kartoza
+    name: geoserver-standalone
+    sources:
+    - https://github.com/geoserver/geoserver
+    urls:
+    - https://github.com/kartoza/charts/releases/download/geoserver-standalone-0.1.1/geoserver-standalone-0.1.1.tgz
+    version: 0.1.1
   guacamole:
   - apiVersion: v2
     appVersion: 1.2.0
@@ -379,35 +406,37 @@ entries:
     appVersion: 21.0.2
     created: "2021-12-31T01:05:02.381974+07:00"
     dependencies:
-      - name: common
-        repository: file://../../common/v1.1.0
-        version: 1.1.0
-      - condition: postgis.enabled
-        name: postgis
-        repository: file://../../postgis/v0.2.4
-        version: 0.2.4
-      - condition: redis.enabled
-        name: redis
-        repository: https://charts.bitnami.com/bitnami
-        version: 14.6.1
-    description: 'A file sharing server that puts the control and security of your own data back into your hands.  Based on officially deprecated chart from https://github.com/helm/charts.git, but now heavily customized for Kartoza internal orchestration. '
+    - name: common
+      repository: file://../../common/v1.1.0
+      version: 1.1.0
+    - condition: postgis.enabled
+      name: postgis
+      repository: file://../../postgis/v0.2.4
+      version: 0.2.4
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 14.6.1
+    description: 'A file sharing server that puts the control and security of your
+      own data back into your hands.  Based on officially deprecated chart from https://github.com/helm/charts.git,
+      but now heavily customized for Kartoza internal orchestration. '
     digest: fbb56544ac473b76401449478c164da27ac414014f85046f2a2bbf4a7e9e9eb6
     home: https://nextcloud.com/
     icon: https://cdn.rawgit.com/docker-library/docs/defa5ffc7123177acd60ddef6e16bddf694cc35f/nextcloud/logo.svg
     keywords:
-      - nextcloud
-      - storage
-      - http
-      - web
-      - php
+    - nextcloud
+    - storage
+    - http
+    - web
+    - php
     maintainers:
-      - email: lana.pcfre@gmail.com
-        name: lucernae
+    - email: lana.pcfre@gmail.com
+      name: lucernae
     name: nextcloud
     sources:
-      - https://github.com/nextcloud/docker
+    - https://github.com/nextcloud/docker
     urls:
-      - https://github.com/kartoza/charts/releases/download/nextcloud-2.0.0/nextcloud-2.0.0.tgz
+    - https://github.com/kartoza/charts/releases/download/nextcloud-2.0.0/nextcloud-2.0.0.tgz
     version: 2.0.0
   - apiVersion: v1
     appVersion: 17.0.0
@@ -591,4 +620,4 @@ entries:
     urls:
     - https://github.com/kartoza/charts/releases/download/qgis-server-0.2.1/qgis-server-0.2.1.tgz
     version: 0.2.1
-generated: "2021-12-30T15:51:20.945616861Z"
+generated: "2024-03-22T12:13:30.930353434Z"
