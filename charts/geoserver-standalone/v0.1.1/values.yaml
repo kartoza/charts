@@ -1,0 +1,318 @@
+# Default values for geoserver.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Number of replicas to be created
+replicas: 1
+
+global:
+  ## global.imageRegistry Global Docker image registry
+  ##
+  imageRegistry: ""
+  ## global.imagePullSecrets Global Docker registry secret names as an array
+  ## e.g.
+  ## imagePullSecrets:
+  ##   - myRegistryKeySecretName
+  ##
+  imagePullSecrets: []
+  # Storage class name used to provision PV
+  storageClass: ""
+  
+image:
+  # Image registry
+  registry: docker.io
+  # Image repository
+  repository: kartoza/geoserver
+  # Image tag
+  tag: "2.24.2"
+  # Image digest
+  digest: ""
+  # (k8s/containers/image/imagePullPolicy) Image pullPolicy
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+# Annotations to add to the Geoserver deployment's. Optional.
+annotations: {}
+
+
+# Labels to add to the Geoserver deployment's. Optional.
+labels: {}
+
+
+geoserverUser: admin
+
+# For prefilled password
+# It will be stored in secret later
+geoserverPassword: ""
+
+httpScheme: https
+
+httpHost: 0.0.0.0
+
+httpPort: 8080
+
+httpProxyName: geoserver.hostname
+
+csrfWhitelist: ['geoserver.hostname']
+
+initialMemory: 2Gi
+
+maximumMemory: 4Gi
+
+communityExtensions:
+
+stableExtensions:
+
+printBaseUrl: geoserver.hostname
+
+# Use this if you have predefined secrets
+existingSecret: |
+
+# Use this if you have predefined configs
+existingConfig: |
+
+# Define this for extra GeoServer environment variables
+# Format:
+# extraPodEnv: |
+#   - name: KEY_1
+#     value: "VALUE_1"
+#   - name: KEY_2
+#     value: "VALUE_2"
+extraPodEnv: |
+
+# This will be evaluated as pod spec
+extraPodSpec: |
+#  nodeSelector:
+#    a.label: value
+
+# Define this for extra secrets to be included
+extraSecret: |
+#  key_1: value_1
+
+# Define this for extra configs to be included
+extraConfig: |
+#  key_1: value_1
+
+configMaps: {}
+
+# Define this for extra volume mounts in the pod
+extraVolumeMounts: []
+# You may potentially mount a config map/secret
+#  - name: custom-config
+#    mountPath: /docker-entrypoint.sh
+#    subPath: docker-entrypoint.sh
+#    readOnly: true
+
+# Define this for extra volume (in pair with extraVolumeMounts)
+extraVolumes: []
+# You may potentially mount a config map/secret
+#  - name: custom-config
+#    configMap:
+#      name: geoserver-config
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+
+service:
+  # Service Type to be used for the service
+  type: ClusterIP
+  # Service Type to be used for the service
+  port: 8080
+  # LoadBalancer IP to add to the service, if the service type is LoadBalancer.
+  loadBalancerIP: ""
+  # If there are external IPs that route to one or more cluster nodes, Kubernetes Services can be exposed on those externalIPs
+  externalIPs: []
+  # NodePort to use for the service. Optional.
+  nodePort: nil
+  # You can specify extra Labels to add to the service. Optional.
+  labels: {}
+  # You can specify extra Annotations to add to the Sevice. Optional.
+  annotations: {}
+
+## Strategy used to replace old pods
+## IMPORTANT: use with care, it is suggested to leave as that for upgrade purposes
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+strategy:
+    type: OnDelete
+    # type: RollingUpdate
+    # rollingUpdate:
+    #   maxSurge: 1
+    #   maxUnavailable: 0
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  labels: {}
+  host: geoserver.hostname
+  tls:
+    enabled: false
+    ## Provide secret name if tls is enabled
+    secretName: geoserver-tls
+
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: ""
+
+# whether to enable Role Based Access Control
+rbac:
+  enabled: false
+
+
+## Pod Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+podSecurityContext: {}
+  # fsGroup: 1001
+
+## Container Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+containerSecurityContext: {}
+  # runAsUser: 1001
+  # runAsNonRoot: true
+  # privileged: false
+  # readOnlyRootFilesystem: false
+  # allowPrivilegeEscalation: false
+  # capabilities:
+  #   drop: ["ALL"]
+  # seccompProfile:
+  #   type: "RuntimeDefault"
+
+# Tolerations to use for the Geoserver deployment. Optional.
+tolerations: []
+
+# Affinity to use for the Geoserver deployment. Optional.
+affinity: {}
+
+# Node selector to use for the Geoserver deployment. Optional.
+nodeSelector: {}
+
+## Liveness and readiness probe values
+
+## Liveness and readiness probe values
+## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+##
+livenessProbe:
+  enabled: true
+  failureThreshold: 15
+  successThreshold: 1
+  periodSeconds: 5
+  initialDelaySeconds: 120
+
+readinessProbe:
+  enabled: true
+  failureThreshold: 15
+  successThreshold: 1
+  periodSeconds: 5
+  initialDelaySeconds: 120
+
+startupProbe:
+  enabled: false
+  failureThreshold: 60
+  periodSeconds: 5
+
+
+# (k8s/containers/probe) Probe can be overridden
+# If set empty, it will use default probe
+# @notationType -- tpl
+customProbes: |
+
+
+persistence:
+  geoserverDataDir:
+    # Enable persistence. If set to false, the data directory
+    # will use ephemeral volume
+    enabled: true
+
+    ## If existingClaim is specified, no PVC will be created and this claim will
+    ## be used
+    existingClaim: ""
+
+    # The path the volume will be mounted at, useful when using different
+    # Geoserver images.
+    mountPath: /opt/geoserver/data_dir
+
+    # The subdirectory of the volume to mount to, useful in
+    # dev environments and one PV for multiple services. Default provisioner
+    # usually have .lost+found directory, so you might want to use this so
+    # the container can have empty volume
+    subPath: "data_dir"
+
+    # Size of the PV
+    size: 8Gi
+
+    # Default Access Modes
+    accessModes:
+      - ReadWriteMany
+    # You can specify extra annotations here
+    annotations: {}
+
+    # specify storageclass
+    storageClass: ""
+
+## Database Parameters
+##
+postgis:
+  ## postgis.enabled Deploy a PostgreSQL server to satisfy the applications database requirements
+  ## To use an external database set this to false and configure the `externalDatabase.*` parameters
+  ##
+  enabled: false
+  auth:
+    database: app
+    username: app
+    password: ""
+    existingSecret: ""
+
+## External Database Configuration
+## All of these values are only used if `postgis.enabled=false`
+##
+externalDatabase:
+  ## externalDatabase.host External Database server host
+  ##
+  host: localhost
+  ## externalDatabase.port External Database server port
+  ##
+  port: 5432
+  ## externalDatabase.user External Database username
+  ##
+  user: app
+  ## externalDatabase.password External Database user password
+  ##
+  password: ""
+  ## externalDatabase.database External Database database name
+  ##
+  database: app
+  ## externalDatabase.url External Database database url
+  ##
+  url: postgres://app:pass@localhost:5432/app
+  ## externalDatabase.existingSecret The name of an existing secret with database credentials
+  ## NOTE: When it's set, the `externalDatabase.password` parameter is ignored
+  ##
+  existingSecret: ""
