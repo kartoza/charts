@@ -10,7 +10,7 @@ GeoServer is an open source server for sharing geospatial data.
 For helm:
 
 ```bash
-helm install release-name oci://registry-1.docker.io/tgplinux/geoserver
+helm install release-name kartoza/geoserver-standalone
 ```
 
 # Intro
