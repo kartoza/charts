@@ -1,0 +1,107 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "geonode.fullname" . }}
+  labels:
+    app: {{ template "geonode.fullname" . }}
+    chart: {{ template "geonode.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    kubernetes.io/cluster-service: "true"
+spec:
+  type: ClusterIP
+  {{- if .Values.service.externalIPs }}
+  externalIPs: {{ .Values.service.externalIPs }}
+  {{- end }}
+  ports:
+    - name: http-geonode
+      port: 80
+      protocol: TCP
+      targetPort: nginx-geonode
+  selector:
+    app: {{ template "geonode.fullname" . }}
+    release: {{ .Release.Name | quote }}
+...
+{{- if .Values.geoserver.enabled }}
+---
+# Geoserver service for internal communications between GeoNode and GeoServer
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "geonode.fullname" . }}-geoserver
+  labels:
+    app: {{ template "geonode.fullname" . }}
+    chart: {{ template "geonode.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    kubernetes.io/cluster-service: "true"
+spec:
+  type: ClusterIP
+  {{- if .Values.service.externalIPs }}
+  externalIPs: {{ .Values.service.externalIPs }}
+  {{- end }}
+  ports:
+    - name: http-geoserver
+      port: 80
+      protocol: TCP
+      targetPort: http-geoserver
+  selector:
+    geonode/app: geonode
+    release: {{ .Release.Name | quote }}
+...
+{{- end }}
+{{- if .Values.postgis.enabled }}
+---
+# Database service for internal communications between GeoNode, GeoServer, Postgis
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "geonode.fullname" . }}-database
+  labels:
+    app: {{ template "geonode.fullname" . }}
+    chart: {{ template "geonode.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  type: ClusterIP
+  {{- if .Values.service.externalIPs }}
+  externalIPs: {{ .Values.service.externalIPs }}
+  {{- end }}
+  ports:
+    - name: tcp-database
+      port: 5432
+      protocol: TCP
+      targetPort: tcp-postgis
+  selector:
+    geonode/app: geonode
+    release: {{ .Release.Name | quote }}
+...
+{{- end }}
+{{- if .Values.postgis.enabled }}
+---
+# Geodatabase service for internal communications between GeoNode, GeoServer, Postgis
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "geonode.fullname" . }}-geodatabase
+  labels:
+    app: {{ template "geonode.fullname" . }}
+    chart: {{ template "geonode.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  type: ClusterIP
+  {{- if .Values.service.externalIPs }}
+  externalIPs: {{ .Values.service.externalIPs }}
+  {{- end }}
+  ports:
+    - name: tcp-database
+      port: 5432
+      protocol: TCP
+      targetPort: tcp-postgis
+  selector:
+    geonode/app: geonode
+    release: {{ .Release.Name | quote }}
+...
+{{- end }}

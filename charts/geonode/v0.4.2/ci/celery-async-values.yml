@@ -1,0 +1,32 @@
+---
+global:
+  geonodeSiteName: geonode.test
+  adminUser: admin
+  adminPassword:
+    value: admin
+  databasePassword:
+    value: mygeonode
+  geodatabasePassword:
+    value: mygeodatabase
+  geoserverURL: https://geonode.test/geoserver/
+  geoserverAdminPassword:
+    value: mygeoserver
+
+ingress:
+  enabled: true
+  host: geonode.test
+  annotations:
+    cert-manager.io/cluster-issuer: ca-issuer
+  tls:
+    enabled: true
+    secretName: geonode-self-tls
+
+geoserver:
+  ingress:
+    enabled: true
+    host: geonode.test
+    #annotations:
+    #cert-manager.io/cluster-issuer: ca-issuer
+    tls:
+      enabled: true
+      secretName: geonode-self-tls
