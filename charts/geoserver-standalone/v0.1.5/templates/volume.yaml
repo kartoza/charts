@@ -1,0 +1,21 @@
+
+{{- if and .Values.persistence.geoserverDataDir.enabled (not .Values.persistence.geoserverDataDir.existingClaim) }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "geoserver.fullname" . }}-data
+  {{- with .Values.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+  {{- range .Values.persistence.geoserverDataDir.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+  {{- include "geoserver.geoserverDataDir.storageClass" . | nindent 2 }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.geoserverDataDir.size | quote }}
+...
+{{- end }}
