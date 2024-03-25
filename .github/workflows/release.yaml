@@ -23,7 +23,7 @@ jobs:
       - name: Dereference README symlink
         run: |
           # Define the path to the dependency chart directory
-          DEPENDENCY_CHART_DIR="charts/common/README.md"
+          DEPENDENCY_CHART_DIR="charts/common"
           
           # Find the README symlink
           README_SYMLINK="${DEPENDENCY_CHART_DIR}/README.md"
