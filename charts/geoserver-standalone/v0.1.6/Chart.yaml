@@ -1,7 +1,7 @@
 apiVersion: v2
 name: geoserver-standalone
 
-version: 0.1.4
+version: 0.1.6
 appVersion: 2.24.2
 
 description: Chart for GeoServer
