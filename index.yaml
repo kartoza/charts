@@ -346,6 +346,32 @@ entries:
   geoserver-standalone:
   - apiVersion: v2
     appVersion: 2.24.2
+    created: "2024-03-25T09:59:31.540467721Z"
+    dependencies:
+    - condition: postgis.enabled
+      name: postgis
+      repository: https://kartoza.github.io/charts
+      tags:
+      - geoserver-database
+      version: 0.2.4
+    description: Chart for GeoServer
+    digest: c0697755d330f2d580024a42b52fb6ba2d630f3c0c7d7d2b7774a47471b39160
+    home: http://geoserver.org
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/GeoServer_500.png
+    keywords:
+    - GeoServer
+    - GIS
+    maintainers:
+    - email: charts4kubernetes@gmail.com
+      name: tharanath-kartoza
+    name: geoserver-standalone
+    sources:
+    - https://github.com/geoserver/geoserver
+    urls:
+    - https://github.com/kartoza/charts/releases/download/geoserver-standalone-0.1.6/geoserver-standalone-0.1.6.tgz
+    version: 0.1.6
+  - apiVersion: v2
+    appVersion: 2.24.2
     created: "2024-03-25T09:30:56.01570517Z"
     dependencies:
     - condition: postgis.enabled
@@ -646,4 +672,4 @@ entries:
     urls:
     - https://github.com/kartoza/charts/releases/download/qgis-server-0.2.1/qgis-server-0.2.1.tgz
     version: 0.2.1
-generated: "2024-03-25T09:30:56.015752518Z"
+generated: "2024-03-25T09:59:31.540522694Z"
