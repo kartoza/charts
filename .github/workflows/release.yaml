@@ -20,6 +20,18 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
+      - name: Dereference README symlink
+        run: |
+          # Define the path to the dependency chart directory
+          DEPENDENCY_CHART_DIR="charts/common/README.md"
+          
+          # Find the README symlink
+          README_SYMLINK="${DEPENDENCY_CHART_DIR}/README.md"
+          
+          # Dereference the symlink
+          # Replace the symlink with the actual README content
+          cat "${README_SYMLINK}" > "${README_SYMLINK}.tmp" && mv "${README_SYMLINK}.tmp" "${README_SYMLINK}"
+          
       - name: Run chart-releaser
         uses: lucernae/chart-releaser-action@rancher-1.0
         with:
