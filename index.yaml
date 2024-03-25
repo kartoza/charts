@@ -346,7 +346,7 @@ entries:
   geoserver-standalone:
   - apiVersion: v2
     appVersion: 2.24.2
-    created: "2024-03-25T06:09:17.241327252Z"
+    created: "2024-03-25T09:30:56.01570517Z"
     dependencies:
     - condition: postgis.enabled
       name: postgis
@@ -355,7 +355,7 @@ entries:
       - geoserver-database
       version: 0.2.4
     description: Chart for GeoServer
-    digest: 0acedf299c2f209c7993ed6d0d4ac8f80131d7e27addb97f5543a8916b0a77f7
+    digest: a2fed934f1f0c7694530bae08342fa24ffdfa648708c7f53646a2f2fb938cefe
     home: http://geoserver.org
     icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/GeoServer_500.png
     keywords:
@@ -368,8 +368,34 @@ entries:
     sources:
     - https://github.com/geoserver/geoserver
     urls:
-    - https://github.com/kartoza/charts/releases/download/geoserver-standalone-0.1.2/geoserver-standalone-0.1.2.tgz
-    version: 0.1.2
+    - https://github.com/kartoza/charts/releases/download/geoserver-standalone-0.1.4/geoserver-standalone-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
+    appVersion: 2.24.2
+    created: "2024-03-25T09:30:55.889633718Z"
+    dependencies:
+    - condition: postgis.enabled
+      name: postgis
+      repository: https://kartoza.github.io/charts
+      tags:
+      - geoserver-database
+      version: 0.2.4
+    description: Chart for GeoServer
+    digest: 73e362ddc328deb45459caa5a5cb716efdf69b8fe87b9a4418ed72c406db3186
+    home: http://geoserver.org
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/GeoServer_500.png
+    keywords:
+    - GeoServer
+    - GIS
+    maintainers:
+    - email: charts4kubernetes@gmail.com
+      name: tharanath-kartoza
+    name: geoserver-standalone
+    sources:
+    - https://github.com/geoserver/geoserver
+    urls:
+    - https://github.com/kartoza/charts/releases/download/geoserver-standalone-0.1.3/geoserver-standalone-0.1.3.tgz
+    version: 0.1.3
   guacamole:
   - apiVersion: v2
     appVersion: 1.2.0
@@ -620,4 +646,4 @@ entries:
     urls:
     - https://github.com/kartoza/charts/releases/download/qgis-server-0.2.1/qgis-server-0.2.1.tgz
     version: 0.2.1
-generated: "2024-03-25T06:09:17.241376574Z"
+generated: "2024-03-25T09:30:56.015752518Z"
