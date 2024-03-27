@@ -1,0 +1,232 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "geoserver.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "geoserver.fullname" . }}
+    chart: {{ template "geoserver.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  {{- with .Values.labels }}
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicas }}
+  {{- end }}
+  strategy:
+    {{- toYaml .Values.strategy | nindent 4 }}
+  selector:
+    matchLabels:
+      app: {{ template "geoserver.fullname" . }}
+      release: {{ .Release.Name | quote }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "geoserver.fullname" . }}
+        chart: {{ template "geoserver.chart" . }}
+        release: {{ .Release.Name | quote }}
+        heritage: {{ .Release.Service | quote }}
+    spec:
+    {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.global.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+    {{- end }}
+      serviceAccountName: {{ include "geoserver.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+        {{- if .Values.image.digest }}
+          image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
+        {{- else }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: HTTP_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "geoserver.configName" . }}
+                  key: httpHost
+            - name: HTTP_PORT
+              value: {{ .Values.httpPort | quote }}
+            - name: HTTP_PROXY_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "geoserver.configName" . }}
+                  key: httpProxyName
+            - name: HTTP_SCHEME
+              value: {{ .Values.httpScheme | quote }}
+            - name: COMMUNITY_EXTENSIONS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "geoserver.configName" . }}
+                  key: communityExtensions
+            - name: STABLE_EXTENSIONS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "geoserver.configName" . }}
+                  key: stableExtensions
+            - name: INITIAL_MEMORY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "geoserver.configName" . }}
+                  key: initialMemory
+            - name: MAXIMUM_MEMORY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "geoserver.configName" . }}
+                  key: maximumMemory
+            - name: CSRF_WHITELIST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "geoserver.configName" . }}
+                  key: csrfWhitelist
+            - name: GEOSERVER_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "geoserver.secretName" . }}
+                  key: geoserver-user
+            - name: GEOSERVER_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "geoserver.secretName" . }}
+                  key: geoserver-password
+            {{- if .Values.postgis.enabled }}
+            - name: POSTGRES_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "geoserver.databaseSecretName" . }}
+                  key: database-password
+            {{- end }}
+            {{- if .Values.postgis.enabled }}
+            - name: POSTGRES_USER
+              value: {{ .Values.postgis.auth.username | quote }}
+            {{- end }}
+            {{- if not .Values.postgis.enabled }}
+            - name: DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "geoserver.databaseSecretName" . }}
+                  key: database-user
+            - name: DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "geoserver.databaseSecretName" . }}
+                  key: database-host
+            - name: DATABASE_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "geoserver.databaseSecretName" . }}
+                  key: database-db
+            - name: DATABASE_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "geoserver.databaseSecretName" . }}
+                  key: database-password
+            - name: DATABASE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "geoserver.databaseSecretName" . }}
+                  key: database-port
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "geoserver.databaseSecretName" . }}
+                  key: database-url
+            {{- end }}
+            {{- with .Values.extraPodEnv }}
+            {{- tpl . $ | nindent 12 }}
+            {{- end }}
+          ports:
+            - name: http-geoserver
+              containerPort: 8080
+              protocol: TCP
+          {{- if .Values.customProbes }}
+            {{- with .Values.customProbes }}
+            {{- tpl . $ | nindent 10 }}
+            {{- end }}
+          {{- else }}
+          {{- with .Values.livenessProbe }}
+          {{- if .enabled }}
+          livenessProbe:
+            tcpSocket:
+              port: http-geoserver
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            periodSeconds: {{ .periodSeconds }}
+            successThreshold: {{ .successThreshold }}
+            failureThreshold: {{ .failureThreshold }}
+          {{- end }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          {{- if .enabled }}
+          readinessProbe:
+            tcpSocket:
+              port: http-geoserver
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            periodSeconds: {{ .periodSeconds }}
+            successThreshold: {{ .successThreshold }}
+            failureThreshold: {{ .failureThreshold }}
+          {{- end }}
+          {{- end }}
+          {{- with .Values.startupProbe }}
+          {{- if .enabled }}
+          startupProbe:
+            tcpSocket:
+              port: http-geoserver
+            periodSeconds: {{ .periodSeconds }}
+            failureThreshold: {{ .failureThreshold }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+          {{- if .Values.persistence.geoserverDataDir.enabled }}
+          - name: geoserver-data
+            mountPath: {{ .Values.persistence.geoserverDataDir.mountPath }}
+            {{- if .Values.persistence.geoserverDataDir.subPath }}
+            subPath: {{ .Values.persistence.geoserverDataDir.subPath }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.extraVolumeMounts }}
+          {{- toYaml .Values.extraVolumeMounts | nindent 8 }}
+          {{- end }}
+      restartPolicy: Always
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        {{- if .Values.extraVolumes }}
+        {{- toYaml .Values.extraVolumes | nindent 8 }}
+        {{- end }}
+      - name: geoserver-data
+      {{- if .Values.persistence.geoserverDataDir.enabled }}
+      {{- if .Values.persistence.geoserverDataDir.existingClaim }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.geoserverDataDir.existingClaim}}
+      {{- else }}
+        persistentVolumeClaim:
+          claimName: {{ template "geoserver.fullname" . }}-data
+      {{- end }}      
+      {{- else }}
+        emptyDir: {}
+      {{ end }}
