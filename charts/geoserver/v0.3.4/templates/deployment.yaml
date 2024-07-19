@@ -152,3 +152,11 @@ spec:
         - name: geowebcache-cache-dir
           emptyDir: {}
 {{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
