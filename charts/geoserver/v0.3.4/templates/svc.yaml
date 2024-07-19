@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "geoserver.fullname" . }}
+  labels:
+    app: {{ template "geoserver.fullname" . }}
+    chart: {{ template "geoserver.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    kubernetes.io/cluster-service: "true"
+    {{- with .Values.service.labels }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.service.annotations }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+spec:
+  type: ClusterIP
+  {{- if .Values.service.externalIPs }}
+  externalIPs: {{ .Values.service.externalIPs }}
+  {{- end }}
+  ports:
+    - name: http-geoserver
+      port: 80
+      protocol: TCP
+      targetPort: http-geoserver
+  selector:
+    app: {{ template "geoserver.fullname" . }}
+    release: {{ .Release.Name | quote }}

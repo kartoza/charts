@@ -1,0 +1,142 @@
+image:
+  registry: docker.io
+  repository: kartoza/geoserver
+  tag: "2.24.1"
+  pullPolicy: IfNotPresent
+
+geoserverDataDir: /opt/geoserver/data_dir
+geowebcacheCacheDir: /opt/geoserver/data_dir/gwc
+
+geoserverUser: admin
+
+# For prefilled password
+# It will be stored in secret later
+geoserverPassword:
+
+# Use this if you have predefined secrets
+existingSecret: |
+
+# Define this for extra GeoServer environment variables
+# Format:
+# extraPodEnv: |
+#   - name: KEY_1
+#     value: "VALUE_1"
+#   - name: KEY_2
+#     value: "VALUE_2"
+extraPodEnv: |
+  - name: INITIAL_MEMORY
+    value: "2G"
+  - name: MAXIMUM_MEMORY
+    value: "4G"
+
+# This will be evaluated as pod spec
+extraPodSpec: |
+#  nodeSelector:
+#    a.label: value
+
+# Define this for extra secrets to be included
+extraSecret: |
+#  key_1: value_1
+
+# Define this for extra config map
+extraConfigMap: |
+# file_1: conf content
+
+# Define this for extra volume mounts in the pod
+extraVolumeMounts: |
+# You may potentially mount a config map/secret
+#  - name: custom-config
+#    mountPath: /docker-entrypoint.sh
+#    subPath: docker-entrypoint.sh
+#    readOnly: true
+
+# Define this for extra volume (in pair with extraVolumeMounts)
+extraVolume: |
+# You may potentially mount a config map/secret
+#  - name: custom-config
+#    configMap:
+#      name: geoserver-config
+
+service:
+  ## GeoServer service type
+  type: ClusterIP
+  # clusterIP: ""
+  # externalIPs: ""
+  port: 80
+
+  # nodePort:
+
+  labels: |
+  annotations: |
+
+  # loadBalancerIP:
+
+  # loadBalancerSourceRanges:
+  # - 10.10.10.0/24
+
+affinity: {}
+
+tolerations: {}
+
+ingress:
+  enabled: false
+  annotations: {}
+  labels: {}
+  host: geoserver.hostname
+  tls:
+    enabled: false
+    ## Provide secret name if tls is enabled
+    secretName: geoserver-tls
+
+# probe can be overridden
+probe: |
+
+## You can also set global storage class
+# global.storageClass: "-"
+
+persistence:
+  geoserverDataDir:
+    enabled: true
+    existingClaim: false
+    mountPath: /opt/geoserver/data_dir
+    subPath: "data_dir"
+    size: 8Gi
+    # storageClass: "-"
+    accessModes:
+      - ReadWriteOnce
+    annotations: {}
+  geowebcacheCacheDir:
+    enabled: true
+    existingClaim: false
+    mountPath: /opt/geoserver/data_dir/gwc
+    subPath: "gwc"
+    size: 8Gi
+    # storageClass: "-"
+    accessModes:
+      - ReadWriteOnce
+    annotations: {}
+
+networkPolicy:
+  ## Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
+  ##
+  enabled: false
+
+  ## The Policy model to apply. When set to false, only pods with the correct
+  ## client label will have network access to the port PostgreSQL is listening
+  ## on. When true, PostgreSQL will accept connections from any source
+  ## (with the correct destination port).
+  ##
+  allowExternal: true
+
+  ## if explicitNamespacesSelector is missing or set to {}, only client Pods that are in the networkPolicy's namespace
+  ## and that match other criteria, the ones that have the good label, can reach the DB.
+  ## But sometimes, we want the DB to be accessible to clients from other namespaces, in this case, we can use this
+  ## LabelSelector to select these namespaces, note that the networkPolicy's namespace should also be explicitly added.
+  ##
+  ## Example:
+  ## explicitNamespacesSelector:
+  ##   matchLabels:
+  ##     role: frontend
+  ##   matchExpressions:
+  ##    - {key: role, operator: In, values: [frontend]}
+  explicitNamespacesSelector: {}
