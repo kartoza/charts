@@ -1,0 +1,23 @@
+---
+geoserverDataDir: /opt/mygeoserver/data_dir
+geowebcacheCacheDir: /opt/mygeoserver/gwc
+
+geoserverUser: superadmin
+geoserverPassword: superpasswordlol
+
+persistence:
+  geoserverDataDir:
+    storageClass: "default"
+    mountPath: /opt/mygeoserver/data_dir
+  geowebcacheCacheDir:
+    storageClass: "default"
+    mountPath: /opt/mygeoserver/gwc
+
+ingress:
+  enabled: true
+  host: geoserver.test
+  annotations:
+    cert-manager.io/cluster-issuer: selfsigned-issuer
+  tls:
+    enabled: true
+    secretName: geoserver-tls
