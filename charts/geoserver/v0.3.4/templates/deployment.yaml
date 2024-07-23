@@ -59,6 +59,10 @@ spec:
             - name: GEOWEBCACHE_CACHE_DIR
               value: {{ .Values.geowebcacheCacheDir | quote }}
             {{- end }}
+            {{- if .Values.geoserverContextRoot }}
+            - name: GEOSERVER_CONTEXT_ROOT
+              value: {{ .Values.geoserverContextRoot | quote }}
+            {{- end }}
             - name: GEOSERVER_ADMIN_USER
               valueFrom:
                 secretKeyRef:

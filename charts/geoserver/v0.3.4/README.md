@@ -1,6 +1,6 @@
 # GeoServer
 
-This is Kartoza's GeoServer Rancher charts
+This is Kartoza's GeoServer charts
 
 GeoServer is an open source server for sharing geospatial data.
 
@@ -16,7 +16,7 @@ helm install release-name kartoza/geoserver
 # Intro
 
 This chart bootstrap a GeoServer installation.
-Most GeoServer packages are shipped with Jetty or Tomcat Server to be directly used in production instance.
+Most GeoServer packages are shipped with Tomcat Server to be directly used in production instance.
 On top of that you can cascade with Nginx or Apache if you need more control over the routing mechanism.
 
 # What it can do
@@ -26,6 +26,7 @@ The default install uses kartoza/geoserver image, which can do the following:
 - Default TLS enabled
 - Generate new datadir at startup if volume empty
 - Some plugins are shipped
+- Default extensions are activated on startup
 
 Full list of options can be seen in: https://github.com/kartoza/docker-geoserver/
 
@@ -39,6 +40,7 @@ Full list of options can be seen in: https://github.com/kartoza/docker-geoserver
 | image.pullPolicy | Docker image pull policy |
 | geoserverDataDir | The directory of GeoServer Data Dir inside the pod |
 | geowebcacheCacheDir | GeoServer have GeoWebCache support built in. This will be the location of the cache dir |
+| geoserverContextRoot | Pass the environment variable to change the context-root at runtime |
 | geoserverUser | GeoServer super user name |
 | geoserverPassword | GeoServer password for super user. If you fill it, it will then stored in k8s secret. |
 | existingSecret | [tpl string] The name of the secret to get the geoserver password |
