@@ -294,6 +294,25 @@ entries:
     version: 0.1.1
   geoserver:
   - apiVersion: v2
+    appVersion: 2.25.0
+    created: "2024-07-24T13:36:12.514276471Z"
+    description: Chart for GeoServer
+    digest: e0ff1242a03ea3a188eecd4ee64f0bed814478323a1d8e38a9794305d6cfb946
+    home: http://geoserver.org
+    icon: https://raw.githubusercontent.com/kartoza/charts/master/assets/logo/GeoServer_500.png
+    keywords:
+    - GeoServer
+    - GIS
+    maintainers:
+    - email: lana.pcfre@gmail.com
+      name: lucernae
+    name: geoserver
+    sources:
+    - https://github.com/geoserver/geoserver
+    urls:
+    - https://github.com/kartoza/charts/releases/download/geoserver-0.3.4/geoserver-0.3.4.tgz
+    version: 0.3.4
+  - apiVersion: v2
     appVersion: 2.17.0
     created: "2021-01-26T16:04:48.315262581Z"
     description: Chart for GeoServer
@@ -750,4 +769,4 @@ entries:
     urls:
     - https://github.com/kartoza/charts/releases/download/qgis-server-0.2.1/qgis-server-0.2.1.tgz
     version: 0.2.1
-generated: "2024-03-27T08:22:20.826969197Z"
+generated: "2024-07-24T13:36:12.514340812Z"
