@@ -7,7 +7,7 @@ image:
 geoserverDataDir: /opt/geoserver/data_dir
 geowebcacheCacheDir: /opt/geoserver/data_dir/gwc
 
-geoserverContextRoot: /geoserver
+geoserverContextRoot: geoserver
 
 geoserverUser: admin
 
