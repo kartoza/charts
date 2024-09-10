@@ -145,7 +145,7 @@ spec:
                   key: database-url
             {{- end }}
             {{- with .Values.extraPodEnv }}
-            {{- tpl . $ | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
             {{- end }}
           ports:
             - name: http-geoserver
@@ -199,7 +199,7 @@ spec:
             {{- end }}
           {{- end }}
           {{- if .Values.extraVolumeMounts }}
-          {{- toYaml .Values.extraVolumeMounts | nindent 8 }}
+          {{- toYaml .Values.extraVolumeMounts | nindent 10 }}
           {{- end }}
       restartPolicy: Always
       {{- with .Values.nodeSelector }}
@@ -216,7 +216,7 @@ spec:
       {{- end }}
       volumes:
         {{- if .Values.extraVolumes }}
-        {{- toYaml .Values.extraVolumes | nindent 8 }}
+        {{- toYaml .Values.extraVolumes | nindent 6 }}
         {{- end }}
       - name: geoserver-data
       {{- if .Values.persistence.geoserverDataDir.enabled }}
