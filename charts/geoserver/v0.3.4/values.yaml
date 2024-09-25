@@ -60,22 +60,21 @@ extraVolume: |
 #      name: geoserver-config
 
 service:
-  ## GeoServer service type
-  type: ClusterIP
-  # clusterIP: ""
-  # externalIPs: ""
-  port: 80
-
-  # nodePort:
-
-  labels: |
-  annotations: |
-
-  # loadBalancerIP:
-
-  # loadBalancerSourceRanges:
-  # - 10.10.10.0/24
-
+  # Service Type to be used for the service
+  type: NodePort
+  # Service Type to be used for the service
+  port: 8080
+  # LoadBalancer IP to add to the service, if the service type is LoadBalancer.
+  loadBalancerIP: ""
+  # If there are external IPs that route to one or more cluster nodes, Kubernetes Services can be exposed on those externalIPs
+  externalIPs: []
+  # NodePort to use for the service. Optional.
+  nodePort: 32535
+  # You can specify extra Labels to add to the service. Optional.
+  labels: {}
+  # You can specify extra Annotations to add to the Sevice. Optional.
+  annotations: {}
+  
 affinity: {}
 
 tolerations: {}

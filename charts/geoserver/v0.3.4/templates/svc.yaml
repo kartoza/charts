@@ -16,15 +16,21 @@ metadata:
     {{- tpl . $ | nindent 4 }}
     {{- end }}
 spec:
-  type: ClusterIP
-  {{- if .Values.service.externalIPs }}
-  externalIPs: {{ .Values.service.externalIPs }}
+  type: {{ .Values.service.type }}
+  {{- if and (eq .Values.service.type "LoadBalancer") .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ default "" .Values.service.loadBalancerIP }}
   {{- end }}
-  ports:
-    - name: http-geoserver
-      port: 80
-      protocol: TCP
+  ports: 
+    - port: {{ .Values.service.port }}
       targetPort: http-geoserver
+      protocol: TCP
+      name: http-geoserver
+      {{- if eq .Values.service.type "NodePort" }}
+      nodePort: {{ default "" .Values.service.nodePort}}
+      {{- end }}
+  {{- if .Values.service.externalIPs }}
+  externalIPs: {{- toYaml .Values.service.externalIPs | nindent 4 }}
+  {{- end }}
   selector:
     app: {{ template "geoserver.fullname" . }}
     release: {{ .Release.Name | quote }}
