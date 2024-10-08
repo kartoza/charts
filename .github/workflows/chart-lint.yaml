@@ -64,7 +64,7 @@ jobs:
 
       - name: Run chart-testing (list-changed)
         id: list-changed
-        shell: direnv exec . bash -eo pipefail {0}
+        shell: sudo apt update && sudo apt install direnv && direnv exec . bash -eo pipefail {0}
         run: |
           changed=$(ct list-changed)
           if [[ -n "$changed" ]]; then
