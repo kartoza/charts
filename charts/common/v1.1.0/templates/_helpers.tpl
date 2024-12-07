@@ -105,6 +105,49 @@ Return password or secret value from values.yml or generate if it doesn't exists
 {{- end -}}
 {{- end -}}
 
+{{/*
+Return password or secret value from values.yml or an existing secret, or generate if it doesn't exist
+
+Usage:
+    {{- include "common.stickySecretValue" (dict "Config" .Values.postgresqlPassword "Context" . ) -}}
+
+Parameters
+    - Config            The password config
+    - Context           The context
+
+*/}}
+{{- define "common.stickySecretValue" -}}
+{{- if .Config.value -}}
+    {{- .Config.value -}}
+{{- else if .Config.valueFrom -}}
+    {{- include "common.getValueFromSecret" (dict "Namespace" .Context.Release.Namespace "Name" (default (include "common.fullname" .Context ) .Config.valueFrom.secretKeyRef.name ) "Key" .Config.valueFrom.secretKeyRef.key ) -}}
+{{- end -}}
+{{- end -}}
+
+
+{{/*
+Returns the available value for certain key in an existing secret (if it exists),
+otherwise it generates a random value.
+
+Usage:
+    {{- include "getValueFromSecret" (dict "Namespace" .Release.Namespace "Name" (include "common.fullname" .) "Length" 10 "Key" "postgis-password")  -}}
+
+Parameters:
+    - Namespace         The release namespace to search. (default: .Release.Namespace)
+    - Name              The name of the secret
+    - Length            The length of the generated secret (default 10)
+    - Key               The key within the secret to retrieve the value
+*/}}
+{{- define "common.getValueFromSecret" }}
+    {{- $len := (default 10 .Length) | int -}}
+    {{- $obj := (lookup "v1" "Secret" .Namespace .Name).data -}}
+    {{- if $obj }}
+        {{- index $obj .Key | b64dec -}}
+    {{- else -}}
+        {{- randAlphaNum $len -}}
+    {{- end -}}
+{{- end }}
+
 {{- /*
 common.util.merge will merge two YAML templates and output the result.
 This takes an array of three values:

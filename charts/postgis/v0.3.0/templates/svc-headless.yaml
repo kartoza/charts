@@ -1,0 +1,77 @@
+{{- define "postgis.service.basic" -}}
+metadata:
+  name: {{ include "postgresql.service.name" . }}
+  labels:
+    {{- with .Values.service.labels }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.service.annotations }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+spec:
+  type: ClusterIP
+  clusterIP: {{ .Values.service.clusterIP }}
+  ports:
+    - name: tcp-postgis
+      port: {{ .Values.service.port }}
+      targetPort: tcp-postgis
+      protocol: TCP
+{{- end -}}
+
+{{- define "postgis.service.headless" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-headless
+  labels:
+    {{- with .Values.service.labels }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.service.annotations }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+spec:
+  type: "ClusterIP"
+  clusterIP: None
+  ports:
+    - name: tcp-postgis
+      port: {{ .Values.service.port }}
+      targetPort: tcp-postgis
+      protocol: TCP
+{{- end -}}
+
+{{- define "postgis.service.loadbalancer" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-lb
+  labels:
+    {{- with .Values.service.labels }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.service.annotations }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+spec:
+  type: LoadBalancer
+  externalIPs:
+    {{- with .Values.service.externalIPs }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  ports:
+    - name: tcp-postgis
+      port: {{ .Values.service.port }}
+      targetPort: tcp-postgis
+      protocol: TCP
+{{- end -}}
+
+---
+{{- include "common.service" (list . "postgis.service.basic") }}
+...
+---
+{{- if (eq "ClusterIP" .Values.service.type) }}
+{{- include "common.service" (list . "postgis.service.headless") -}}
+{{- else if (eq "LoadBalancer" .Values.service.type) }}
+{{- include "common.service" (list . "postgis.service.loadbalancer") -}}
+{{- end }}
+...

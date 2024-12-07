@@ -1,0 +1,46 @@
+{{- include "common.pod" (list . "postgis.test.connection") -}}
+{{- define "postgis.test.connection" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-postgres-test
+  annotations:
+    helm.sh/hook: test
+spec:
+  restartPolicy: Never
+  containers:
+    {{- if not .Values.test.postgis.containers }}
+    - name: {{ .Release.Name }}-postgres-test
+      image: {{ template "common.image" . }}
+      env:
+        - name: POSTGRES_USER
+          value: {{ .Values.postgresqlUsername | quote }}
+        - name: POSTGRES_DBNAME
+          value: {{ .Values.postgresqlDatabase | quote }}
+        - name: POSTGRES_PASSWORD
+          {{- $param := dict "Value" .Values.postgresqlPassword "Context" . -}}
+          {{ include "common.secretFrom" $param | nindent 10 }}
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              key: database-url
+              name: {{ template "common.secretName" $param }}
+      command:
+        - /bin/bash
+        - -ceux
+        - |
+          echo "Test connection"
+          psql ${DATABASE_URL} -c "\dt+" > /tmp/test-output.txt
+          cat /tmp/test-output.txt
+          echo ""
+          echo "Test all database created"
+          for db in $(echo ${POSTGRES_DBNAME} | tr ',' ' '); do
+            echo "Check connection to DB: $db"
+            {{- $param = dict "Context"   . "Password"  "$POSTGRES_PASSWORD" "Database"  "$db" }}
+            psql {{ include "postgresql.connectionstring" $param }} -c "\dt+" > /tmp/test-output.txt
+            cat /tmp/test-output.txt
+          done
+    {{- else }}
+    {{- with .Values.test.postgis.containers }}
+    {{- tpl . $ | nindent 4 }}
+    {{- end }}
+    {{- end }}
+{{- end -}}

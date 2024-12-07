@@ -1,0 +1,19 @@
+{{- define "postgis.configmap" -}}
+metadata:
+  name: {{ template "common.fullname" . }}
+  {{- with .Values.labels }}
+  labels: {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+data:
+  {{- with .Values.extraConfigMap }}
+  {{- tpl . $ | nindent 2 }}
+  {{- end }}
+{{- end -}}
+
+{{- if .Values.extraConfigMap -}}
+{{- include "common.configmap" (list . "postgis.configmap") -}}
+{{- end -}}
